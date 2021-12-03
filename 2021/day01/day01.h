@@ -5,11 +5,10 @@
 #ifndef ADVENTOFCODE2021_DAY01_H
 #define ADVENTOFCODE2021_DAY01_H
 
+#include "../../common.h"
+
 namespace day01 {
-    extern const char* input;
-    extern const char* sample_input;
-    void puzzle1();
-    void puzzle2();
+    COMMON_HEADER
 }
 
 #endif //ADVENTOFCODE2021_DAY01_H
