@@ -9,6 +9,8 @@
 #include <iterator>
 #include <iostream>
 #include <unistd.h>
+#include <optional>
+#include <vector>
 
 template <typename T>
 class ifstream_container {
