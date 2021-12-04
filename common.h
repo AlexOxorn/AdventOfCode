@@ -13,12 +13,10 @@
 #include <vector>
 
 template <typename T>
-class ifstream_container {
-    std::ifstream input_file;
+class ifstream_container : public std::ifstream {
 public:
-    ifstream_container(const char* file_name) : input_file(file_name) {};
-
-    std::istream_iterator<T> begin() { return std::istream_iterator<T>(input_file); }
+    using std::ifstream::basic_ifstream;
+    std::istream_iterator<T> begin() { return std::istream_iterator<T>(*this); }
     std::istream_iterator<T> end() { return {}; }
 };
 
