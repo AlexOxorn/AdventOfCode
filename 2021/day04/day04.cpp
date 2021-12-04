@@ -15,8 +15,11 @@
 namespace day04 {
     constexpr int bingosize = 5;
     constexpr int poolsize = 99;
-    using bingo_array = std::array<std::array<std::pair<int, bool>*, bingosize>, bingosize>;
+    using ball_element = std::pair<int, bool>*;
+    using bingo_array = std::array<ball_element, bingosize * bingosize>;
     using bingo_inputs = std::vector<int>;
+    namespace stdv = std::views;
+    namespace stdr = std::ranges;
 
     static struct number_pool {
         using numberstate = std::pair<int, bool>;
@@ -38,27 +41,37 @@ namespace day04 {
     struct bingo_card {
         bingo_array array;
 
+        [[nodiscard]] const ball_element& get(int i, int j) const {
+            return array[i * bingosize + j];
+        }
+
+        [[nodiscard]] ball_element& get(int i, int j) {
+            return array[i * bingosize + j];
+        }
+        
         [[nodiscard]] bool check_vertical_for_win() const {
-            return std::ranges::any_of(std::views::iota(0, bingosize),
-                                [this](int i) {
-                                    return std::ranges::all_of(std::views::iota(0, bingosize),
-                                                               [this, i](int j) { return array[i][j]->second; });
+            return stdr::any_of(
+                    stdv::iota(0, bingosize),
+                    [this](int i) { return stdr::all_of(
+                            stdv::iota(0, bingosize),
+                            [this, i](int j) { return get(i, j)->second; }
+                    );
             });
         }
 
         [[nodiscard]] bool check_horizontal_for_win() const {
-            return std::ranges::any_of(std::views::iota(0, bingosize),
-                                       [this](int j) {
-                                           return std::ranges::all_of(std::views::iota(0, bingosize),
-                                                                      [this, j](int i) { return array[i][j]->second; });
+            return stdr::any_of(
+                    stdv::iota(0, bingosize),
+                    [this](int j) { return stdr::all_of(
+                            stdv::iota(0, bingosize),
+                            [this, j](int i) { return get(i, j)->second; }
+                    );
             });
         }
 
         [[nodiscard]] bool check_diagonal_for_win() const {
-            return std::ranges::all_of(std::views::iota(0, bingosize),
-                                       [this](int i) { return array[i][i]->second; }) ||
-                    std::ranges::all_of(std::views::iota(0, bingosize),
-                                        [this](int i) { return array[i][4-i]->second; });
+            return stdr::all_of(stdv::iota(0, bingosize), [this](int i) { return get(i, i)->second; }) ||
+                    stdr::all_of(stdv::iota(0, bingosize), [this](int i) { return get(i, 4-i)->second; });
         }
         
         [[nodiscard]] bool check_for_win() const {
@@ -66,19 +79,16 @@ namespace day04 {
         }
 
         [[nodiscard]] int get_score() const {
-            int score = 0;
-            for(int i = 0; i < bingosize; i++) {
-                for (int j = 0; j < bingosize; j++){
-                    if (!array[i][j]->second)
-                        score += array[i][j]->first;
-                }
-            }
-            return score;
+            auto unmarked = array
+                    | stdv::filter([](ball_element b) { return !b->second; })
+                    | stdv::transform([](ball_element b) { return b->first; });
+            return std::accumulate(unmarked.begin(), unmarked.end(), 0);
         }
         void print_state() {
-            for (auto x : array) {
-                for (auto y : x) {
-                    printf("\033[%dm%2d\033[0m ", y->second ? 31 : 0, y->first);
+            for (int x : stdv::iota(0, bingosize)) {
+                for (int y : stdv::iota(0, bingosize)) {
+                    auto elem = get(x, y);
+                    printf("\033[%dm%2d\033[0m ", elem->second ? 31 : 0, elem->first);
                 }
                 printf("\n");
             }
@@ -87,13 +97,13 @@ namespace day04 {
     };
 
     std::istream& operator >>(std::istream& in, bingo_card& bc) {
-        for(int i = 0; i < bingosize; i++) {
-            for (int j = 0; j < bingosize; j++){
+        for(int i : stdv::iota(0, bingosize)) {
+            for (int j : stdv::iota(0, bingosize)){
                 int x;
                 if (!(in >> x)) {
                     return in;
                 }
-                bc.array[i][j] = &main_pool.pool.at(x);
+                bc.get(i, j) = &main_pool.pool.at(x);
             }
         }
         return in;
