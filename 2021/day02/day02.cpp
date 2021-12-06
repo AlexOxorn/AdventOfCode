@@ -14,17 +14,32 @@
 #define DAY 02
 
 namespace day02 {
-    struct direction {
-        std::string dir;
-        int length;
+    enum class direction {
+        forward,
+        down,
+        up
+    };
+    struct step {
+        direction dir;
+        int magnitude;
     };
     using coordinates = std::tuple<int, int, int>;
 
-    std::istream& operator>>(std::istream& in, direction& out) {
-        return in >> out.dir >> out.length;
+    std::istream& operator>>(std::istream& in, step& out) {
+        std::string line;
+        int magnitude;
+        getline(in, line);
+        if (int a = sscanf(line.c_str(), "forward %d", &magnitude); a) {
+            out = {direction::forward, magnitude};
+        } else if (sscanf(line.c_str(), "down %d", &magnitude)) {
+            out = {direction::down, magnitude};
+        } else if (sscanf(line.c_str(), "up %d", &magnitude)) {
+            out = {direction::up, magnitude};
+        }
+        return in;
     }
 
-    DEFINE_DEFAULT_GET_VECTORS(direction)
+    DEFINE_DEFAULT_GET_VECTORS(step)
 
     void print_result(coordinates c) {
         auto [forward, depth, aim] = c;
@@ -32,45 +47,54 @@ namespace day02 {
         printf("Their product is %d\n", forward * depth);
     }
 
-    coordinates move_version1(coordinates c, const direction& d) {
+    coordinates move_version1(coordinates c, const step& d) {
         auto& [forward, depth, aim] = c;
-        const auto& [dir, length] = d;
-        if (dir == "forward")
-            forward += length;
-        if (dir == "down")
-            depth += length;
-        if (dir == "up")
-            depth -= length;
+        const auto& [dir, magnitude] = d;
+        switch (dir) {
+            case direction::forward:
+                forward += magnitude;
+                break;
+            case direction::down:
+                depth += magnitude;
+                break;
+            case direction::up:
+                depth -= magnitude;
+                break;
+        }
         return c;
     }
 
-    coordinates move_version2(coordinates c, const direction& d) {
+    coordinates move_version2(coordinates c, const step& d) {
         auto& [forward, depth, aim] = c;
         const auto& [dir, length] = d;
-        if (dir == "forward") {
-            forward += length;
-            depth += aim * length;
+        switch (dir) {
+            case direction::forward:
+                forward += length;
+                depth += aim * length;
+                break;
+            case direction::down:
+                aim += length;
+                break;
+            case direction::up:
+                aim -= length;
+                break;
         }
-        if (dir == "down")
-            aim += length;
-        if (dir == "up")
-            aim -= length;
         return c;
     }
 
     template <std::ranges::range R>
-    coordinates follow_path(R& vd, coordinates(*move_function)(coordinates, const direction&)) {
+    coordinates follow_path(R& vd, coordinates(*move_function)(coordinates, const step&)) {
         return std::accumulate(vd.begin(), vd.end(), coordinates(), move_function);
     }
 
     void puzzle1() {
-        auto input_vector = GET_STREAM(input, direction);
+        auto input_vector = GET_STREAM(input, step);
         auto result = follow_path(input_vector, move_version1);
         print_result(result);
     }
 
     void puzzle2() {
-        auto input_vector = GET_STREAM(input, direction);
+        auto input_vector = GET_STREAM(input, step);
         auto result = follow_path(input_vector, move_version2);
 
         print_result(result);

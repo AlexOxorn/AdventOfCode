@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <optional>
 #include <vector>
+#include <ranges>
 
 template <typename T>
 class ifstream_container : public std::ifstream {
@@ -19,6 +20,9 @@ public:
     std::istream_iterator<T> begin() { return std::istream_iterator<T>(*this); }
     std::istream_iterator<T> end() { return {}; }
 };
+
+namespace stdv = std::views;
+namespace stdr = std::ranges;
 
 #define XSTR(a) STR(a)
 #define STR(a) #a

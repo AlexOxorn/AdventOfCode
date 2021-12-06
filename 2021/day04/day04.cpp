@@ -18,8 +18,6 @@ namespace day04 {
     using ball_element = std::pair<int, bool>*;
     using bingo_array = std::array<ball_element, bingosize * bingosize>;
     using bingo_inputs = std::vector<int>;
-    namespace stdv = std::views;
-    namespace stdr = std::ranges;
 
     static struct number_pool {
         using numberstate = std::pair<int, bool>;

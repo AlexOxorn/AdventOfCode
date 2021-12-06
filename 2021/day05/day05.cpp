@@ -34,18 +34,10 @@ namespace day05 {
         }
     };
 
-    std::istream& operator>>(std::istream& in, point& p) {
-        in >> p.x;
-        in.ignore(std::numeric_limits<std::streamsize>::max(), ',');
-        in >> p.y;
-        return in;
-    }
-
-    std::istream& operator>>(std::istream& in, line& p) {
-        in >> p.p1;
-        in.ignore(std::numeric_limits<std::streamsize>::max(), '-');
-        in.ignore(std::numeric_limits<std::streamsize>::max(), '>');
-        in >> p.p2;
+    std::istream& operator>>(std::istream& in, line& l) {
+        std::string line;
+        std::getline(in, line);
+        std::sscanf(line.c_str(), "%d,%d -> %d,%d", &l.p1.x, &l.p1.y, &l.p2.x, &l.p2.y);
         return in;
     }
 

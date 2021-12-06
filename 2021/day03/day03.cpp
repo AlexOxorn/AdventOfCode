@@ -6,11 +6,15 @@
 #include <array>
 #include <sstream>
 #include <numeric>
+#include <algorithm>
+#include <bitset>
 
 #define YEAR 2021
 #define DAY 03
 
 namespace day03{
+    constexpr size_t bitwidth = 12;
+
     constexpr int power_of_2(unsigned x) {
         if (x == 0) return 1;
         int to_return = 1;
@@ -20,88 +24,104 @@ namespace day03{
         return to_return;
     }
 
-    class gamma_rate_part {
-        std::vector<int> part{};
-        int total_count = 0;
+    class reading : public std::bitset<bitwidth> {
+        class const_iterator {
+            friend reading;
+            const reading* r;
+            int index;
+            int dir;
 
-        void set_array(const std::string& s) {
-            part.clear();
-            for (char c : s) {
-                part.push_back(c - '0');
-            }
-            total_count = 1;
-        }
+            const_iterator(const reading& _r, int _index, int _dir = 1) : r(&_r), index(_index), dir(_dir) {};
+        public:
+            const_iterator& operator++() { index += dir; return *this; }
+            const_iterator& operator--() { index -= dir; return *this; }
+            bool operator*() { return (*r)[index]; }
+            auto operator<=>(const const_iterator& other) const = default;
+        };
+        class iterator {
+            friend reading;
+            reading* r;
+            int index;
+            int dir;
+
+            iterator(reading& _r, int _index, int _dir = 1) : r(&_r), index(_index), dir(_dir) {};
+        public:
+            iterator& operator++() { index += dir; return *this; }
+            iterator& operator--() { index -= dir; return *this; }
+            reading::reference operator*() { return (*r)[index]; }
+            auto operator<=>(const iterator& other) const = default;
+        };
     public:
-        [[nodiscard]] unsigned get_most_common() const {
-            int half = (total_count+1)/2;
-            int base = 1;
-            unsigned result = 0;
-            for(auto itr = part.rbegin(); itr != part.rend(); itr++, base <<= 1) {
-                if (*itr >= half)
-                    result += base;
-            }
-            return result;
-        }
-        std::pair<int, int> gamma_epsilon_rate() {
-            auto result = get_most_common();
-            return {result, (~result) % (1 << part.size())};
+        [[nodiscard]] const_iterator begin() const { return {*this, 0}; }
+        [[nodiscard]] const_iterator end() const { return {*this, bitwidth}; }
+        [[nodiscard]] iterator begin() { return {*this, 0}; }
+        [[nodiscard]] iterator end() { return {*this, bitwidth}; }
+    };
+
+    class bit_population_count {
+        std::vector<int> part = std::vector<int>(bitwidth);
+        int total_count = 0;
+    public:
+        bit_population_count& operator+(const reading& r) {
+            std::transform(r.begin(), r.end(), part.begin(), part.begin(), std::plus<>( ));
+            total_count++;
+            return *this;
         }
 
-        gamma_rate_part& operator+(const gamma_rate_part &other) {
-            size_t size = std::max(part.size(), other.part.size());
-            part.resize(size);
-            for(int i = 0; i < part.size(); i++) {
-                part[i] += other.part[i];
-            }
+        bit_population_count& operator+(const bit_population_count &other) {
+            std::transform(other.part.begin(), other.part.end(), part.begin(), part.begin(), std::plus<>( ));
             total_count += other.total_count;
             return *this;
         }
-        friend std::istream& operator>>(std::istream& in, gamma_rate_part& g);
-        friend std::vector<int>& operator+(std::vector<int>&&, const gamma_rate_part& g);
+
+        [[nodiscard]] unsigned common_to_integer() const {
+            reading r;
+            int half = (total_count+1)/2;
+            std::transform(part.begin(), part.end(), r.begin(), [half](int i) { return i > half; });
+            return r.to_ulong();
+        }
     };
 
-    std::istream& operator>>(std::istream& in, gamma_rate_part& g) {
-        std::string s;
-        std::getline(in, s);
-        g.set_array(s);
-        return in;
+    std::pair<int, int> gamma_epsilon_rate(unsigned long l, size_t width = bitwidth) {
+        return {l, (~l) % (1 << width)};
     }
 
-    std::vector<int>& operator+(std::vector<int>&& total, const gamma_rate_part &g) {
-        total.resize(power_of_2(g.part.size()));
-        total.at(g.get_most_common()) += 1;
+    std::vector<int>& operator+(std::vector<int>& total, const reading& g) {
+        total.at(g.to_ulong()) += 1;
+        return total;
+    }
+    std::vector<int> operator+(std::vector<int> total, const reading& g) {
+        total.at(g.to_ulong()) += 1;
         return total;
     }
 
     template <std::random_access_iterator iter, typename Compare = std::greater<int>>
     int recursive_decent(const iter true_begin, iter end, Compare c = Compare()) {
         std::random_access_iterator auto begin = true_begin;
-        while((begin + 1) != end) {
-            iter mid = begin + std::distance(begin, end) / 2;
+        long dist;
+        while((dist = std::distance(begin, end)) > 1) {
+            iter mid = begin + dist / 2;
             auto sum1 = std::accumulate(begin, mid, 0);
             auto sum2 = std::accumulate(mid, end, 0);
             if (sum1 + sum2 == 1) {
                 return std::find(begin, end, 1) - true_begin;
             }
-            if (c(sum1, sum2))
-                end = mid;
-            else
-                begin = mid;
+            (c(sum1, sum2) ? end : begin) = mid;
         }
         return begin - true_begin;
     }
 
     void puzzle1() {
-        auto input_stream = GET_STREAM(input, gamma_rate_part);
-        auto final = std::accumulate(input_stream.begin(), input_stream.end(), gamma_rate_part());
-        auto[gamma, epsilon] = final.gamma_epsilon_rate();
+        auto input_stream = GET_STREAM(input, reading);
+        auto final = std::accumulate(input_stream.begin(), input_stream.end(), bit_population_count());
+        auto[gamma, epsilon] = gamma_epsilon_rate(final.common_to_integer());
         printf("gamma is %d and epsilon is %d\n", gamma, epsilon);
         printf("their product is: %d\n", gamma * epsilon);
     }
 
     void puzzle2() {
-        auto input_stream = GET_STREAM(input, gamma_rate_part);
-        auto binary_tree = std::accumulate(input_stream.begin(), input_stream.end(), std::vector<int>());
+        auto input_stream = GET_STREAM(input, reading);
+        auto binary_tree = std::accumulate(input_stream.begin(), input_stream.end(), std::vector<int>(power_of_2(bitwidth)));
         int o2 = recursive_decent(binary_tree.begin(), binary_tree.end());
         int co2 = recursive_decent(binary_tree.begin(), binary_tree.end(), std::less_equal<>());
         printf("O2  is %d\n", o2);
