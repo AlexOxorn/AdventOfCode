@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.21)
 project(adventofcode2021)
 
 set(CMAKE_CXX_STANDARD 20)
-SET(CMAKE_CXX_FLAGS  "-fconcepts-diagnostics-depth=3")
+SET(CMAKE_CXX_FLAGS)
 
 add_executable(
         adventofcode2021
@@ -18,4 +18,6 @@ add_executable(
         2021/day04/day04.h
         2021/day05/day05.cpp
         2021/day05/day05.h
+        2021/day06/day06.cpp
+        2021/day06/day06.h
 )
