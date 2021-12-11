@@ -6,6 +6,7 @@
 #include <limits>
 #include <numeric>
 #include <ranges>
+#include <array>
 
 #define YEAR 2021
 #define DAY 06
