@@ -7,12 +7,13 @@
 #include "2021/day07/day07.h"
 #include "2021/day08/day08.h"
 #include "2021/day09/day09.h"
+#include "2021/day10/day10.h"
 #include <cstdio>
 
 int main() {
-    printf("Day 09:\n");
-    day09::puzzle1();
-    day09::puzzle2();
+    printf("Day 10:\n");
+    day10::puzzle1();
+    day10::puzzle2();
     printf("\n");
     return 0;
 }
