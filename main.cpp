@@ -8,12 +8,13 @@
 #include "2021/day08/day08.h"
 #include "2021/day09/day09.h"
 #include "2021/day10/day10.h"
+#include "2021/day11/day11.h"
 #include <cstdio>
 
 int main() {
-    printf("Day 10:\n");
-    day10::puzzle1();
-    day10::puzzle2();
+    printf("Day 11:\n");
+    day11::puzzle1();
+    day11::puzzle2();
     printf("\n");
     return 0;
 }
