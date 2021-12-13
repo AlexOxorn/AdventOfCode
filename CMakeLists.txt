@@ -30,4 +30,6 @@ add_executable(
         2021/day10/day10.h
         2021/day11/day11.cpp
         2021/day11/day11.h
+        2021/day12/day12.cpp
+        2021/day12/day12.h
 )
