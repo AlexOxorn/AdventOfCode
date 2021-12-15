@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.21)
 project(adventofcode2021)
 
 set(CMAKE_CXX_STANDARD 20)
-SET(CMAKE_CXX_FLAGS "-fdiagnostics-color=always")
+SET(CMAKE_CXX_FLAGS "-fdiagnostics-color=always -fsanitize=address")
 
 add_executable(
         adventofcode2021
@@ -34,4 +34,6 @@ add_executable(
         2021/day12/day12.h
         2021/day13/day13.cpp
         2021/day13/day13.h
+        2021/day14/day14.cpp
+        2021/day14/day14.h
 )
