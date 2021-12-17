@@ -8,6 +8,8 @@
 #include <numeric>
 #include <algorithm>
 #include <bitset>
+#include <ox/math.h>
+#include <ox/utils.h>
 
 #define YEAR 2021
 #define DAY 03
@@ -15,48 +17,7 @@
 namespace day03{
     constexpr size_t bitwidth = 12;
 
-    constexpr int power_of_2(unsigned x) {
-        if (x == 0) return 1;
-        int to_return = 1;
-        for(int i = 0; i < x; i++) {
-            to_return <<= 1;
-        }
-        return to_return;
-    }
-
-    class reading : public std::bitset<bitwidth> {
-        class const_iterator {
-            friend reading;
-            const reading* r;
-            int index;
-            int dir;
-
-            const_iterator(const reading& _r, int _index, int _dir = 1) : r(&_r), index(_index), dir(_dir) {};
-        public:
-            const_iterator& operator++() { index += dir; return *this; }
-            const_iterator& operator--() { index -= dir; return *this; }
-            bool operator*() { return (*r)[index]; }
-            auto operator<=>(const const_iterator& other) const = default;
-        };
-        class iterator {
-            friend reading;
-            reading* r;
-            int index;
-            int dir;
-
-            iterator(reading& _r, int _index, int _dir = 1) : r(&_r), index(_index), dir(_dir) {};
-        public:
-            iterator& operator++() { index += dir; return *this; }
-            iterator& operator--() { index -= dir; return *this; }
-            reading::reference operator*() { return (*r)[index]; }
-            auto operator<=>(const iterator& other) const = default;
-        };
-    public:
-        [[nodiscard]] const_iterator begin() const { return {*this, 0}; }
-        [[nodiscard]] const_iterator end() const { return {*this, bitwidth}; }
-        [[nodiscard]] iterator begin() { return {*this, 0}; }
-        [[nodiscard]] iterator end() { return {*this, bitwidth}; }
-    };
+    class reading : public ox::bitset_container<bitwidth> {};
 
     class bit_population_count {
         std::vector<int> part = std::vector<int>(bitwidth);
@@ -65,12 +26,6 @@ namespace day03{
         bit_population_count& operator+(const reading& r) {
             std::transform(r.begin(), r.end(), part.begin(), part.begin(), std::plus<>( ));
             total_count++;
-            return *this;
-        }
-
-        bit_population_count& operator+(const bit_population_count &other) {
-            std::transform(other.part.begin(), other.part.end(), part.begin(), part.begin(), std::plus<>( ));
-            total_count += other.total_count;
             return *this;
         }
 
@@ -86,10 +41,6 @@ namespace day03{
         return {l, (~l) % (1 << width)};
     }
 
-    std::vector<int>& operator+(std::vector<int>& total, const reading& g) {
-        total.at(g.to_ulong()) += 1;
-        return total;
-    }
     std::vector<int> operator+(std::vector<int> total, const reading& g) {
         total.at(g.to_ulong()) += 1;
         return total;
@@ -121,7 +72,7 @@ namespace day03{
 
     void puzzle2() {
         auto input_stream = GET_STREAM(input, reading);
-        auto binary_tree = std::accumulate(input_stream.begin(), input_stream.end(), std::vector<int>(power_of_2(bitwidth)));
+        auto binary_tree = std::accumulate(input_stream.begin(), input_stream.end(), std::vector<int>(ox::power_of_2(bitwidth)));
         int o2 = recursive_decent(binary_tree.begin(), binary_tree.end());
         int co2 = recursive_decent(binary_tree.begin(), binary_tree.end(), std::less_equal<>());
         printf("O2  is %d\n", o2);

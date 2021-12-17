@@ -39,8 +39,6 @@ namespace day02 {
         return in;
     }
 
-    DEFINE_DEFAULT_GET_VECTORS(step)
-
     void print_result(coordinates c) {
         auto [forward, depth, aim] = c;
         printf("Coordinates are %d forward and %d down\n", forward, depth);

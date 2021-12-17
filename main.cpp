@@ -17,8 +17,8 @@
 
 int main() {
     printf("Day 15:\n");
-    day15::puzzle1();
-    day15::puzzle2();
+    day04::puzzle1();
+    day04::puzzle2();
     printf("\n");
     return 0;
 }
