@@ -1,0 +1,3 @@
+[submodule "ox_lib"]
+	path = ox_lib
+	url = https://github.com/AlexOxorn/ox_lib.git
