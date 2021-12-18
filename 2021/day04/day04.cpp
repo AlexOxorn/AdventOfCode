@@ -92,7 +92,7 @@ namespace day04 {
         return in;
     }
 
-    bingo_inputs extract_roller(ifstream_container<bingo_card> &in) {
+    bingo_inputs extract_roller(ox::ifstream_container<bingo_card> &in) {
         bingo_inputs to_return;
         std::string bingo_inputs;
         std::getline(in, bingo_inputs);

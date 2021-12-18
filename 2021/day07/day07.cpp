@@ -7,18 +7,12 @@
 #include <numeric>
 #include <ranges>
 #include <cmath>
+#include <ox/math.h>
 
 #define YEAR 2021
 #define DAY 07
 
 namespace day07 {
-    using count_type = long;
-
-    constexpr int triangle_sum(int x) {
-        auto y = stdv::iota(1, x+1);
-        return std::accumulate(y.begin(), y.end(), 0);
-    }
-
     class crab_positions {
         std::vector<int> positions{};
     public:
@@ -39,7 +33,7 @@ namespace day07 {
         std::pair<int, int> mean() {
             auto m = std::accumulate(positions.begin(), positions.end(), 0.0);
             auto mean_value = m / positions.size();
-            return {std::floor(m/positions.size()), std::ceil(m/positions.size())};
+            return {std::floor(mean_value), std::ceil(mean_value)};
         }
 
         int calculate_fuel() {
@@ -52,7 +46,7 @@ namespace day07 {
         }
 
         int calculate_fuel2(int mean) {
-            auto per_crab_fuel = positions | stdv::transform([mean](int a) { return triangle_sum(std::abs(mean - a)); });
+            auto per_crab_fuel = positions | stdv::transform([mean](int a) { return ox::triangle_sum(std::abs(mean - a)); });
             return std::accumulate(per_crab_fuel.begin(), per_crab_fuel.end(), 0);
         }
     };

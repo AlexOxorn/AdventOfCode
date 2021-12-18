@@ -2,8 +2,11 @@ cmake_minimum_required(VERSION 3.21)
 project(adventofcode)
 
 set(CMAKE_CXX_STANDARD 20)
-SET(CMAKE_CXX_FLAGS "-fdiagnostics-color=always -g -fsanitize=address,undefined")
-
+if(CMAKE_BUILD_TYPE EQUAL "Debug")
+    SET(CMAKE_CXX_FLAGS "-O0 -Wall -Wextra -fdiagnostics-color=always -g -fconcepts-diagnostics-depth=5")
+elseif(CMAKE_BUILD_TYPE EQUAL "Release")
+    SET(CMAKE_CXX_FLAGS "-O2 -fdiagnostics-color=always")
+endif()
 add_subdirectory(ox_lib)
 
 add_executable(

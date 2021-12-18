@@ -12,22 +12,15 @@
 #include <optional>
 #include <vector>
 #include <ranges>
+#include <ox/io.h>
+#include <ox/std_abbreviation.h>
 
-template <typename T>
-class ifstream_container : public std::ifstream {
-public:
-    using std::ifstream::basic_ifstream;
-    std::istream_iterator<T> begin() { return std::istream_iterator<T>(*this); }
-    std::istream_iterator<T> end() { return {}; }
-};
-
-namespace stdv = std::views;
-namespace stdr = std::ranges;
+using namespace ox::std_abbreviations;
 
 #define XSTR(a) STR(a)
 #define STR(a) #a
 
-#define GET_STREAM(name, type) ifstream_container<type>{"../" XSTR(YEAR) "/day" XSTR(DAY) "/" #name ".txt"}
+#define GET_STREAM(name, type) ox::ifstream_container<type>{"../" XSTR(YEAR) "/day" XSTR(DAY) "/" #name ".txt"}
 
 #define DEFINE_VECTOR_FROM_ISTREAM_INPUT_METHOD(name, type)\
 std::vector<type> get_##name() {\

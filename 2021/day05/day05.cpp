@@ -7,6 +7,7 @@
 #include <limits>
 #include <ranges>
 #include <algorithm>
+#include <ox/grid.h>
 
 namespace day05 {
     #define YEAR 2021
@@ -25,13 +26,8 @@ namespace day05 {
         point& p1 = first;
         point& p2 = second;
 
-        [[nodiscard]] bool vertical() const {
-            return p1.x == p2.x;
-        }
-
-        [[nodiscard]] bool horizontal() const {
-            return p1.y == p2.y;
-        }
+        [[nodiscard]] bool vertical() const { return p1.x == p2.x; }
+        [[nodiscard]] bool horizontal() const { return p1.y == p2.y; }
     };
 
     std::istream& operator>>(std::istream& in, line& l) {
@@ -41,21 +37,13 @@ namespace day05 {
         return in;
     }
 
-    class grid {
-        std::array<int, grid_size * grid_size> data{};
+    class grid : public ox::grid<int, std::array<int, grid_size * grid_size>> {
         int largest = 0;
         bool diag = false;
 
-        [[nodiscard]] const int& get(int i, int j) const {
-            return data[j * grid_size + i];
-        }
-
-        [[nodiscard]] int& get(int i, int j) {
-            return data[i * grid_size + j];
-        }
     public:
-        grid() = default;
-        explicit grid(bool b) : diag(b) {};
+        grid() : ox::grid<int, std::array<int, grid_size * grid_size>>(grid_size) {};
+        explicit grid(bool b) : ox::grid<int, std::array<int, grid_size * grid_size>>(grid_size), diag(b) {};
 
         void add_line(const line& l) {
             largest = std::max({largest, l.p1.x, l.p1.y, l.p2.x, l.p2.y});
@@ -82,15 +70,11 @@ namespace day05 {
             }
         }
 
-        void print_grid(int max = 100) const {
-            int size = std::min(max, largest);
-            for (int x : stdv::iota(0, size+1)) {
-                for (int y : stdv::iota(0, size+1)) {
-                    int elem = get(x, y);
-                    printf(elem ? "%d " : ". ", elem);
-                }
-                printf("\n");
-            }
+        void print_grid() {
+            leveled_foreach(
+                    [](auto& elem) { printf(elem ? "%d " : ". ", elem); },
+                    []() { printf("\n"); });
+            printf("\n");
         }
 
         [[nodiscard]] auto count_score() const {

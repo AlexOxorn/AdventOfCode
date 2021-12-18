@@ -48,7 +48,7 @@ namespace day14 {
             return pair_count;
         }
     public:
-        polymer_decoding(ifstream_container<insertion_rule>& in) {
+        polymer_decoding(ox::ifstream_container<insertion_rule>& in) {
             getline(in, current_template);
             in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             for (auto& node : in) {
