@@ -1,7 +1,8 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.16)
 project(adventofcode)
 
 set(CMAKE_CXX_STANDARD 20)
+message(${CMAKE_BUILD_TYPE})
 if(CMAKE_BUILD_TYPE EQUAL "Debug")
     SET(CMAKE_CXX_FLAGS "-O0 -Wall -Wextra -fdiagnostics-color=always -g -fconcepts-diagnostics-depth=5")
 elseif(CMAKE_BUILD_TYPE EQUAL "Release")
@@ -28,6 +29,7 @@ add_executable(
         2021/day13/day13.cpp
         2021/day14/day14.cpp
         2021/day15/day15.cpp
+        2021/day16/day16.cpp
 )
 
 target_link_libraries("${PROJECT_NAME}" PRIVATE "ox")
