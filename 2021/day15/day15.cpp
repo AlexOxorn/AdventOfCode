@@ -19,18 +19,6 @@
 #define DAY 15
 
 namespace day15 {
-    struct node {
-        int value;
-        int index;
-        int g_cost = std::numeric_limits<int>::max();
-        node *parent = nullptr;
-        bool in_path = false;
-
-        auto operator<=>(const node &other) const {
-            return g_cost <=> other.g_cost;
-        };
-    };
-
     class grid : public ox::grid<int> {
         using ox::grid<int>::grid;
     public:
@@ -60,7 +48,7 @@ namespace day15 {
                                    auto n = neighbours | valid_index();
                                    return std::vector(n.begin(), n.end());
                                },
-                               [](auto next, auto prev) {
+                               [](auto next, auto) {
                                    return *next;
                                },
                                ox::range_iterator_hash<decltype(data)>()
