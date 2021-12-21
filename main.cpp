@@ -15,12 +15,13 @@
 #include "2021/day15/day15.h"
 #include "2021/day16/day16.h"
 #include "2021/day17/day17.h"
+#include "2021/day18/day18.h"
 #include <cstdio>
 
 int main() {
-    printf("Day 17:\n");
-    day17::puzzle1();
-    day17::puzzle2();
+    printf("Day 18:\n");
+    day18::puzzle1();
+    day18::puzzle2();
     printf("\n");
     return 0;
 }

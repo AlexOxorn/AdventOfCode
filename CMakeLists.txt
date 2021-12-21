@@ -2,10 +2,9 @@ cmake_minimum_required(VERSION 3.16)
 project(adventofcode)
 
 set(CMAKE_CXX_STANDARD 20)
-message(${CMAKE_BUILD_TYPE})
-if(CMAKE_BUILD_TYPE EQUAL "Debug")
-    SET(CMAKE_CXX_FLAGS "-O0 -Wall -Wextra -fdiagnostics-color=always -g -fconcepts-diagnostics-depth=5")
-elseif(CMAKE_BUILD_TYPE EQUAL "Release")
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    SET(CMAKE_CXX_FLAGS "-O0 -Wall -Wextra -fdiagnostics-color=always -fsanitize=address,undefined -g -fconcepts-diagnostics-depth=5")
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     SET(CMAKE_CXX_FLAGS "-O2 -fdiagnostics-color=always")
 endif()
 add_subdirectory(ox_lib)
@@ -31,7 +30,7 @@ add_executable(
         2021/day15/day15.cpp
         2021/day16/day16.cpp
         2021/day17/day17.cpp
+        2021/day18/day18.cpp
 )
 
 target_link_libraries("${PROJECT_NAME}" PRIVATE "ox")
-
