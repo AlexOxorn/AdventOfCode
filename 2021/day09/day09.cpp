@@ -47,7 +47,6 @@ namespace day09 {
         }
 
         int get_score() {
-            auto [w, h] = get_dimensions();
             auto x = data
                      | ox::ranges::views::iterators()
                      | stdv::filter([this] (auto x) { return is_low_point(x); })
@@ -56,7 +55,6 @@ namespace day09 {
         }
 
         int get_score2() {
-            auto [w, h] = get_dimensions();
             auto x = data
                      | ox::ranges::views::iterators()
                      | stdv::filter([this] (auto x) { return is_low_point(x); })
@@ -80,7 +78,7 @@ namespace day09 {
     void puzzle1() {
         heightmap h(GET_STREAM(input, ox::line), [](char a) {return a - '0';});
         auto [x, y] = h.get_dimensions();
-        printf("size = %d x %d\n", x, y);
+        printf("size = %zu x %zu\n", x, y);
         h.print_array();
         printf("score = %d\n", h.get_score());
     }

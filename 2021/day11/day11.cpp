@@ -66,7 +66,7 @@ namespace day11 {
     void puzzle1() {
         int number_of_steps = 100;
         octopuses o(GET_STREAM(input, ox::line), [](char a) {return a - '0';});
-        auto scores = stdv::iota(0, number_of_steps) | stdv::transform([&o] (int a) { return o.next_step(); });
+        auto scores = stdv::iota(0, number_of_steps) | stdv::transform([&o] (int) { return o.next_step(); });
         printf("Number of flashes after %d steps: %d\n", number_of_steps, std::accumulate(scores.begin(), scores.end(), 0));
     }
 

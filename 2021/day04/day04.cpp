@@ -31,7 +31,7 @@ namespace day04 {
         }
 
         void reset() {
-            for (auto n: pool) {
+            for (auto& n: pool) {
                 n.second = false;
             }
         }
