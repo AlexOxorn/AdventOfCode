@@ -119,7 +119,7 @@ namespace day16 {
             case 5: return [](long i, const packet& p) { return i > evaluate_packet(p); };
             case 6: return [](long i, const packet& p) { return i < evaluate_packet(p); };
             case 7: return [](long i, const packet& p) { return i == evaluate_packet(p); };
-            default: return [](long, const packet& p) { return 0l; };
+            default: return [](long, const packet&) { return 0l; };
         }
     }
 
@@ -138,7 +138,7 @@ namespace day16 {
     }
 
     void print_packet(const packet& p, int indent = 0);
-    void print_literal(const Literal& l, int indent = 0) {
+    void print_literal(const Literal& l) {
         printf("(%lu)", parse_int_from_bool(l.number.begin(), l.number.end()));
     }
     void print_operator(const Operator& o, int indent = 0) {

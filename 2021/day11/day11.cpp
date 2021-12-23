@@ -74,7 +74,7 @@ namespace day11 {
         octopuses o(GET_STREAM(input, ox::line), [](char a) {return a - '0';});
         auto scores = stdv::iota(1)
                 | stdv::transform([&o] (int a) { return std::make_pair(a, o.next_step()); })
-                | stdv::filter([&o](std::pair<int, int> a) { return a.second == o.get_size(); })
+                | stdv::filter([&o](std::pair<int, int> a) { return std::size_t(a.second) == o.get_size(); })
                 | stdv::take(1);
         printf("first point when all octopuses flash: %d\n", (*scores.begin()).first);
     }
