@@ -31,6 +31,7 @@ add_executable(
         2021/day16/day16.cpp
         2021/day17/day17.cpp
         2021/day18/day18.cpp
+        2021/day19/day19.cpp
 )
 
 target_link_libraries("${PROJECT_NAME}" PRIVATE "ox")
