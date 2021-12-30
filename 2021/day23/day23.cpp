@@ -29,8 +29,8 @@ namespace day23 {
     };
 
     struct cave_state_hash {
-        template <size_t Depth>
-        size_t operator()(const day23::cave_state<Depth> & x) const {
+        template<size_t Depth>
+        size_t operator()(const day23::cave_state<Depth>& x) const {
             size_t to_return = 0;
             for (size_t i = 0; i < x.hallway.size(); i++) {
                 to_return += (i + 2) * (std::hash<char>()(x.hallway[i]) + i * 13);
@@ -61,6 +61,7 @@ namespace day23 {
         constexpr std::array end_steps{0, 1, 3, 5, 7, 9, 10};
         auto not_empty_itr = stdv::filter([&c](auto i) { return c.hallway[*i] != '\0'; });
         auto not_empty = stdv::filter([&c](auto i) { return c.hallway[i] != '\0'; });
+        auto still_empty = stdv::take_while([&c](auto i) { return c.hallway[i] == '\0'; });
 
         auto add_change_hallway_to_state = [&](int old_position, int new_position) {
             auto cpy = c;
@@ -80,9 +81,7 @@ namespace day23 {
                 to_return.push_back(
                        std::make_pair(
                               cpy,
-                              cost_multiplier(type) * (
-                                     std::abs(index_from - 2 * (type - 'A' + 1)) + (non_correct.base() - in_cave.begin()))
-                              ));
+                              cost_multiplier(type) * (std::abs(index_from - 2 * (type - 'A' + 1)) + (non_correct.base() - in_cave.begin()))));
             }
         };
 
@@ -94,7 +93,7 @@ namespace day23 {
             to_return.push_back(
                    std::make_pair(
                           cpy,
-                          cost_multiplier(cpy.hallway[index_to]) * (cave_index + 2)));
+                          cost_multiplier(cpy.hallway[index_to]) * (cave_index + 1 + std::abs(index_to - 2 * (cave_id + 1)))));
         };
 
         // Move from hallway into cave
@@ -102,37 +101,32 @@ namespace day23 {
             char crab = c.hallway[hallway_position];
             int target = (crab - 'A' + 1) * 2;
             if (target > hallway_position) {
-                if (stdr::all_of(stdv::iota(hallway_position + 1, target + 1), [&](int i) { return !c.hallway[i]; } )) {
+                if (stdr::all_of(stdv::iota(hallway_position + 1, target + 1), [&](int i) { return !c.hallway[i]; })) {
                     into_cave(hallway_position, crab);
                 }
             } else {
-                if (stdr::all_of(stdv::iota(target, hallway_position), [&](int i) { return !c.hallway[i]; } )) {
+                if (stdr::all_of(stdv::iota(target, hallway_position), [&](int i) { return !c.hallway[i]; })) {
                     into_cave(hallway_position, crab);
                 }
             }
         }
 
         if (to_return.empty()) {
-            // Move from hallway
-            for (auto hallway_position : end_steps | ox::ranges::views::iterators | not_empty_itr) {
-                if (hallway_position != std::prev(end_steps.end()) && c.hallway[hallway_position[1]] == '\0') {
-                    add_change_hallway_to_state(*hallway_position, hallway_position[1]);
-                }
-                if (hallway_position != end_steps.begin() && c.hallway[hallway_position[-1]] == '\0') {
-                    add_change_hallway_to_state(*hallway_position, hallway_position[-1]);
-                }
-            }
-
-            // Move from hallway
+            // Move from cave
             for (auto& cave : c.caves | ox::ranges::views::iterators) {
                 auto top = std::find_if(cave->begin(), cave->end(), std::identity());
-                if (std::all_of(top, cave->end(), [&](char crab) { return crab == 'A' + (cave - c.caves.begin()); } ))
+                if (std::all_of(top, cave->end(), [&](char crab) { return crab == 'A' + (cave - c.caves.begin()); }))
                     continue;
                 if (top != cave->end()) {
                     int index = cave - c.caves.begin();
                     int hallway_index = 2 * (index + 1);
-                    from_cave(hallway_index + 1, index, top - cave->begin());
-                    from_cave(hallway_index - 1, index, top - cave->begin());
+                    auto middle = stdr::find_if(end_steps, [=](int i) { return i > hallway_index; });
+                    for (int x : stdr::subrange(middle, end_steps.end()) | still_empty) {
+                        from_cave(x, index, top - cave->begin());
+                    }
+                    for (int x : stdr::subrange(end_steps.begin(), middle) | stdv::reverse | still_empty) {
+                        from_cave(x, index, top - cave->begin());
+                    }
                 }
             }
         }
@@ -140,7 +134,7 @@ namespace day23 {
         return to_return;
     }
 
-    template <int Depth>
+    template<int Depth>
     long heuristic_distance_to_end(const cave_state<Depth>& state, const cave_state<Depth>&) {
         constexpr std::array end_steps{0, 1, 3, 5, 7, 9, 10};
         long cost = 0;
@@ -164,7 +158,6 @@ namespace day23 {
             if (char type = state.hallway[x_pos]; type) {
                 cost += cost_multiplier(type) * std::abs(x_pos - (type - 'A' + 1) * 2);
             }
-
         }
 
         return cost;
@@ -189,13 +182,10 @@ namespace day23 {
         auto [path, cost] = ox::dikstra(
                part1, cave_state<2>({'A', 'A'}, {'B', 'B'}, {'C', 'C'}, {'D', 'D'}),
                get_neighbour_states<2>,
-               [](...) { return 0; }/*heuristic_distance_to_end<2>*/,
-               cave_state_hash(),
-               [](auto& c) {
-                   printf("\033[2J");
-                   printf("\033[1;1H");
-                   print_state<2>(c);
-               });
+               [](...) {
+                   return 0;
+               },
+               cave_state_hash());
 
         for (auto& [state, cost] : path) {
             print_state<2>(state);
@@ -205,25 +195,28 @@ namespace day23 {
     }
 
     void puzzle2() {
-        cave_state<4> part1(
+        cave_state<4> part2(
                {'C', 'D', 'D', 'B'},
                {'A', 'C', 'B', 'A'},
                {'B', 'B', 'A', 'D'},
                {'D', 'A', 'C', 'C'});
+        cave_state<4> test(
+               {'B', 'D', 'D', 'A'},
+               {'C', 'C', 'B', 'D'},
+               {'B', 'B', 'A', 'C'},
+               {'D', 'A', 'C', 'A'});
 
         auto [path, cost] = ox::dikstra(
-               part1, cave_state<4>(
-                             {'A', 'A', 'A', 'A'},
-                             {'B', 'B', 'B', 'B'},
-                             {'C', 'C', 'C', 'C'},
-                             {'D', 'D', 'D', 'D'}),
+               part2, cave_state<4>({'A', 'A', 'A', 'A'}, {'B', 'B', 'B', 'B'}, {'C', 'C', 'C', 'C'}, {'D', 'D', 'D', 'D'}),
                get_neighbour_states<4>,
                [](...) { return 0; },
                cave_state_hash());
 
-        for (auto& [state, cost] : path) {
+        for (auto part : path | ox::ranges::views::iterators) {
+            auto& [state, cost] = *part;
             print_state<4>(state);
-            printf("Cost is %ld\n\n", cost);
+            if (part != path.begin())
+                printf("Cost is %ld\n\n", cost - part[-1].second);
         }
         printf("Cost is %ld\n", cost);
     }
