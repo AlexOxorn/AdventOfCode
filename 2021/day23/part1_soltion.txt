@@ -1,0 +1,104 @@
+...........
+  C A B D
+  B A D C
+Cost is 0
+
+...A.......
+  C . B D
+  B A D C
+Cost is 2
+
+.A.........
+  C . B D
+  B A D C
+Cost is 4
+
+A..........
+  C . B D
+  B A D C
+Cost is 5
+
+A..A.......
+  C . B D
+  B . D C
+Cost is 8
+
+AA.........
+  C . B D
+  B . D C
+Cost is 10
+
+AA...B.....
+  C . . D
+  B . D C
+Cost is 30
+
+AA.........
+  C . . D
+  B B D C
+Cost is 60
+
+AA.C.......
+  . . . D
+  B B D C
+Cost is 260
+
+AA...C.....
+  . . . D
+  B B D C
+Cost is 460
+
+AA.B.C.....
+  . . . D
+  . B D C
+Cost is 490
+
+A..B.C.....
+  . . . D
+  A B D C
+Cost is 493
+
+...B.C.....
+  A . . D
+  A B D C
+Cost is 496
+
+.....C.....
+  A B . D
+  A B D C
+Cost is 516
+
+.....C.D...
+  A B . .
+  A B D C
+Cost is 2516
+
+.....C.D.C.
+  A B . .
+  A B D .
+Cost is 2816
+
+.....C...C.
+  A B . .
+  A B D D
+Cost is 5816
+
+.....C.D.C.
+  A B . .
+  A B . D
+Cost is 8816
+
+.......D.C.
+  A B . .
+  A B C D
+Cost is 9116
+
+.........C.
+  A B . D
+  A B C D
+Cost is 11116
+
+...........
+  A B C D
+  A B C D
+Cost is 11516

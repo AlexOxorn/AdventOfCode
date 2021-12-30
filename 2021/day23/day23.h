@@ -6,6 +6,7 @@
 #define ADVENTOFCODE2021_day23_H
 
 #include "../../common.h"
+#include <algorithm>
 
 namespace day23 {
     COMMON_HEADER

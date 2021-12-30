@@ -42,7 +42,7 @@ namespace day15 {
             }
         }
 
-        std::pair<std::vector<raw_iterator>, int> find_path() {
+        auto find_path() {
             return ox::dikstra(
                    data.begin(), data.end() - 1,
                    [this](auto curr) -> std::vector<std::pair<raw_iterator, int>> {

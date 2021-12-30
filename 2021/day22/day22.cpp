@@ -163,12 +163,12 @@ namespace day22 {
     void puzzle2() {
         long on_cubes = 0;
 
-        for(auto x_iter : x_boundaries | ox::ranges::views::iterators()) {
+        for(auto x_iter : x_boundaries | ox::ranges::views::iterators) {
             printf("%ld out of %zu\n", x_iter - x_boundaries.begin(), x_boundaries.size());
             if (std::next(x_iter) == x_boundaries.end()) break;
-            for (auto y_iter : y_boundaries | ox::ranges::views::iterators()) {
+            for (auto y_iter : y_boundaries | ox::ranges::views::iterators) {
                 if (std::next(y_iter) == y_boundaries.end()) continue;
-                for (auto z_iter : z_boundaries | ox::ranges::views::iterators()) {
+                for (auto z_iter : z_boundaries | ox::ranges::views::iterators) {
                     if (std::next(z_iter) == z_boundaries.end()) continue;
                     double x = *x_iter + 0.5;
                     double y = *y_iter + 0.5;

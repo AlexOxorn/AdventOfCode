@@ -27,7 +27,7 @@ namespace day11 {
             std::set<raw_iterator> indices_flashed{};
             std::queue<raw_iterator> dfs;
 
-            for(auto& x : data | ox::ranges::views::iterators()) {
+            for(auto& x : data | ox::ranges::views::iterators) {
                 if(++(*x) > 9) {
                     dfs.push(x);
                 }

@@ -48,7 +48,7 @@ namespace day09 {
 
         int get_score() {
             auto x = data
-                     | ox::ranges::views::iterators()
+                     | ox::ranges::views::iterators
                      | stdv::filter([this] (auto x) { return is_low_point(x); })
                      | stdv::transform([this] (auto x) { return *x + 1; });
             return std::accumulate(x.begin(), x.end(), 0);
@@ -56,7 +56,7 @@ namespace day09 {
 
         int get_score2() {
             auto x = data
-                     | ox::ranges::views::iterators()
+                     | ox::ranges::views::iterators
                      | stdv::filter([this] (auto x) { return is_low_point(x); })
                      | stdv::transform([this] (auto x) { return get_basin_size(x); });
             std::vector basin_sizes(x.begin(), x.end());
