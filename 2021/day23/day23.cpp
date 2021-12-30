@@ -212,11 +212,9 @@ namespace day23 {
                [](...) { return 0; },
                cave_state_hash());
 
-        for (auto part : path | ox::ranges::views::iterators) {
-            auto& [state, cost] = *part;
+        for (auto& [state, cost] : path) {
             print_state<4>(state);
-            if (part != path.begin())
-                printf("Cost is %ld\n\n", cost - part[-1].second);
+            printf("Cost is %ld\n\n", cost);
         }
         printf("Cost is %ld\n", cost);
     }

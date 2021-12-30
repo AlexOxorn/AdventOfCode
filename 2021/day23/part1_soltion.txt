@@ -3,25 +3,10 @@
   B A D C
 Cost is 0
 
-...A.......
-  C . B D
-  B A D C
-Cost is 2
-
-.A.........
-  C . B D
-  B A D C
-Cost is 4
-
 A..........
   C . B D
   B A D C
 Cost is 5
-
-A..A.......
-  C . B D
-  B . D C
-Cost is 8
 
 AA.........
   C . B D
@@ -37,11 +22,6 @@ AA.........
   C . . D
   B B D C
 Cost is 60
-
-AA.C.......
-  . . . D
-  B B D C
-Cost is 260
 
 AA...C.....
   . . . D

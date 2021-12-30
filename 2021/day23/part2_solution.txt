@@ -1,24 +1,9 @@
-Cost is 11516
 ...........
   C A B D
   D C B A
   D B A C
   B A D C
 Cost is 0
-
-.......B...
-  C A . D
-  D C B A
-  D B A C
-  B A D C
-Cost is 20
-
-.........B.
-  C A . D
-  D C B A
-  D B A C
-  B A D C
-Cost is 40
 
 ..........B
   C A . D
@@ -34,34 +19,6 @@ Cost is 50
   B A D C
 Cost is 2050
 
-.......A.DB
-  C A . .
-  D C B .
-  D B A C
-  B A D C
-Cost is 2053
-
-.....A...DB
-  C A . .
-  D C B .
-  D B A C
-  B A D C
-Cost is 2055
-
-...A.....DB
-  C A . .
-  D C B .
-  D B A C
-  B A D C
-Cost is 2057
-
-.A.......DB
-  C A . .
-  D C B .
-  D B A C
-  B A D C
-Cost is 2059
-
 A........DB
   C A . .
   D C B .
@@ -69,275 +26,205 @@ A........DB
   B A D C
 Cost is 2060
 
-A....B...DB
+AB.......DB
   C A . .
   D C . .
   D B A C
   B A D C
-Cost is 2090
+Cost is 2130
 
-A..B.....DB
+AB.C.....DB
   C A . .
   D C . .
-  D B A C
+  D B A .
   B A D C
-Cost is 2110
+Cost is 2930
 
-A..B.A...DB
+AB.C.C...DB
   C A . .
   D C . .
-  D B . C
-  B A D C
-Cost is 2114
-
-AB...A...DB
-  C A . .
-  D C . .
-  D B . C
-  B A D C
-Cost is 2134
-
-AB.A.....DB
-  C A . .
-  D C . .
-  D B . C
-  B A D C
-Cost is 2136
-
-AB.A...C.DB
-  C A . .
-  D C . .
-  D B . .
-  B A D C
-Cost is 2536
-
-AB.A.C...DB
-  C A . .
-  D C . .
-  D B . .
-  B A D C
-Cost is 2736
-
-AB.A.C.C.DB
-  C A . .
-  D C . .
-  D B . .
+  D B A .
   B A D .
-Cost is 3236
+Cost is 3630
 
-AB.A.C.C..B
+AB.C.C....B
+  C A . .
+  D C . .
+  D B A .
+  B A D D
+Cost is 8630
+
+AB.C.C...AB
   C A . .
   D C . .
   D B . .
   B A D D
-Cost is 8236
+Cost is 8636
 
-AB.A.C...CB
-  C A . .
-  D C . .
-  D B . .
-  B A D D
-Cost is 8436
-
-AB.A.C.D.CB
+AB.C.C.D.AB
   C A . .
   D C . .
   D B . .
   B A . D
-Cost is 13436
+Cost is 13636
 
-AB.A...D.CB
+AB.C...D.AB
   C A . .
   D C . .
   D B . .
   B A C D
-Cost is 13936
+Cost is 14136
 
-AB.A.....CB
+AB.....D.AB
   C A . .
   D C . .
-  D B . D
+  D B C .
   B A C D
-Cost is 17936
+Cost is 14736
 
-AB.A......B
-  C A . .
-  D C . .
-  D B C D
-  B A C D
-Cost is 18536
-
-AB...A....B
+AB.......AB
   C A . .
   D C . .
   D B C D
   B A C D
-Cost is 18538
+Cost is 18736
 
-AB.....A..B
-  C A . .
-  D C . .
-  D B C D
-  B A C D
-Cost is 18540
-
-AB.C...A..B
+AB.C.....AB
   . A . .
   D C . .
   D B C D
   B A C D
-Cost is 18740
+Cost is 18936
 
-AB.....A..B
+AB.......AB
   . A . .
   D C C .
   D B C D
   B A C D
-Cost is 19240
+Cost is 19436
 
-AB.D...A..B
+AB.D.....AB
   . A . .
   . C C .
   D B C D
   B A C D
-Cost is 22240
+Cost is 22436
 
-AB...D.A..B
+AB.......AB
   . A . .
-  . C C .
+  . C C D
   D B C D
   B A C D
-Cost is 24240
-
-AB.D.D.A..B
-  . A . .
-  . C C .
-  . B C D
-  B A C D
-Cost is 28240
-
-AB.D.D...AB
-  . A . .
-  . C C .
-  . B C D
-  B A C D
-Cost is 28242
+Cost is 29436
 
 AB.D.....AB
   . A . .
   . C C D
   . B C D
   B A C D
-Cost is 33242
+Cost is 33436
 
 AB.......AB
   . A . D
   . C C D
   . B C D
   B A C D
-Cost is 39242
-
-AB...A...AB
-  . . . D
-  . C C D
-  . B C D
-  B A C D
-Cost is 39244
+Cost is 39436
 
 AB.....A.AB
   . . . D
   . C C D
   . B C D
   B A C D
-Cost is 39246
+Cost is 39440
 
 AB...C.A.AB
   . . . D
   . . C D
   . B C D
   B A C D
-Cost is 39546
+Cost is 39740
 
 AB.....A.AB
   . . C D
   . . C D
   . B C D
   B A C D
-Cost is 39746
+Cost is 39940
 
 AB.B...A.AB
   . . C D
   . . C D
   . . C D
   B A C D
-Cost is 39786
+Cost is 39980
 
 AB.B.A.A.AB
   . . C D
   . . C D
   . . C D
   B . C D
-Cost is 39791
+Cost is 39985
 
 AB...A.A.AB
   . . C D
   . . C D
   . . C D
   B B C D
-Cost is 39841
+Cost is 40035
 
 A....A.A.AB
   . . C D
   . . C D
   . B C D
   B B C D
-Cost is 39901
+Cost is 40095
 
 A..B.A.A.AB
   . . C D
   . . C D
   . B C D
   . B C D
-Cost is 39951
+Cost is 40145
 
 ...B.A.A.AB
   . . C D
   . . C D
   . B C D
   A B C D
-Cost is 39957
+Cost is 40151
 
 .....A.A.AB
   . . C D
   . B C D
   . B C D
   A B C D
-Cost is 39987
+Cost is 40181
 
 .......A.AB
   . . C D
   . B C D
   A B C D
   A B C D
-Cost is 39993
+Cost is 40187
 
 .........AB
   . . C D
   A B C D
   A B C D
   A B C D
-Cost is 40000
+Cost is 40194
 
 ..........B
   A . C D
   A B C D
   A B C D
   A B C D
-Cost is 40008
+Cost is 40202
 
 ...........
   A B C D
   A B C D
   A B C D
   A B C D
-Cost is 40078
+Cost is 40272
