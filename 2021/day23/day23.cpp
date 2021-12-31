@@ -59,17 +59,8 @@ namespace day23 {
         std::vector<std::pair<cave_state<Depth>, long>> to_return;
 
         constexpr std::array end_steps{0, 1, 3, 5, 7, 9, 10};
-        auto not_empty_itr = stdv::filter([&c](auto i) { return c.hallway[*i] != '\0'; });
         auto not_empty = stdv::filter([&c](auto i) { return c.hallway[i] != '\0'; });
         auto still_empty = stdv::take_while([&c](auto i) { return c.hallway[i] == '\0'; });
-
-        auto add_change_hallway_to_state = [&](int old_position, int new_position) {
-            auto cpy = c;
-            std::swap(cpy.hallway[old_position], cpy.hallway[new_position]);
-            to_return.push_back(
-                   std::make_pair(
-                          cpy, cost_multiplier(cpy.hallway[new_position]) * (std::abs(new_position - old_position))));
-        };
 
         auto into_cave = [&](int index_from, char type) {
             auto cpy = c;

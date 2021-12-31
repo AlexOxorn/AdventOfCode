@@ -3,10 +3,11 @@
 //
 
 #include "day09.h"
+#include "algorithms/_helper_iterators.h"
 #include <vector>
 #include <numeric>
 #include <queue>
-#include <set>
+#include <unordered_set>
 #include <ranges>
 #include <ox/grid.h>
 #include <ox/ranges.h>
@@ -28,11 +29,11 @@ namespace day09 {
         }
 
         int get_basin_size(const_raw_iterator index) {
-            std::set<const_raw_iterator> indices_in_basin{index};
+            std::unordered_set<const_raw_iterator, ox::iterator_hash<const_raw_iterator>> indices_in_basin{index};
             std::queue<const_raw_iterator> dfs;
             dfs.push(index);
             while(!dfs.empty()) {
-                const_raw_iterator current = dfs.front();
+                auto current = dfs.front();
                 dfs.pop();
                 indices_in_basin.insert(current);
                 auto neighbours = cardinal_neighbour_range(current);

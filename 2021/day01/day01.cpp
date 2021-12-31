@@ -13,8 +13,8 @@
 namespace day01 {
     template<std::input_iterator I>
     int count_difference(I begin, I end, int offset) {
-        int count = 0;
-        ox::predicateCounter<int> counter([](int i) {return i>0;}, count);
+        size_t count = 0;
+        ox::predicateCounter<int> counter([](const int& i) {return i>0;}, count);
         ox::offset_difference(begin,end,counter, offset);
         return count;
     }

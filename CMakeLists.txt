@@ -6,6 +6,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     SET(CMAKE_CXX_FLAGS "-O0 -Wall -Wextra -fdiagnostics-color=always -fsanitize=address,undefined -g -fconcepts-diagnostics-depth=5")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     SET(CMAKE_CXX_FLAGS "-O2 -fdiagnostics-color=always")
+elseif(CMAKE_BUILD_TYPE STREQUAL "Perf")
+    SET(CMAKE_CXX_FLAGS "-O0")
 endif()
 add_subdirectory(ox_lib)
 

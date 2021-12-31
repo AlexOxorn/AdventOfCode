@@ -34,11 +34,8 @@ namespace day20 {
         for(std::size_t j : stdv::iota(std::size_t(0), new_image.get_width())) {
             for (std::size_t i : stdv::iota(std::size_t(0), new_image.get_height())) {
                 auto neighbours = cardinal_directions | stdv::transform([i, j, empty_space,&image](auto offset) {
-                    try {
-                        return image.get(i + offset.first - 1, j + offset.second - 1);
-                    } catch (std::out_of_range&) {
-                        return empty_space;
-                    }
+                    auto get_opt = image.get_opt(i + offset.first - 1, j + offset.second - 1);
+                    return get_opt.value_or(empty_space);
                 });
 
                 auto index = std::accumulate(neighbours.begin(), neighbours.end(), 0, [](int sum, bool next) {

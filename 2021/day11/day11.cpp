@@ -3,12 +3,13 @@
 //
 
 #include "day11.h"
+#include "algorithms/_helper_iterators.h"
 
 #define YEAR 2021
 #define DAY 11
 
 #include <vector>
-#include <set>
+#include <unordered_set>
 #include <queue>
 #include <numeric>
 #include <optional>
@@ -24,7 +25,7 @@ namespace day11 {
         }
 
         int next_step() {
-            std::set<raw_iterator> indices_flashed{};
+            std::unordered_set<raw_iterator, ox::iterator_hash<raw_iterator>> indices_flashed{};
             std::queue<raw_iterator> dfs;
 
             for(auto& x : data | ox::ranges::views::iterators) {

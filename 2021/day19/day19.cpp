@@ -6,6 +6,7 @@
 #include <ox/matrix.h>
 #include <cassert>
 #include <queue>
+#include <ox/algorithms.h>
 
 #define YEAR 2021
 #define DAY 19
@@ -75,31 +76,38 @@ namespace day19 {
     }
 
     std::optional<ox::matrix<int>> change_scanner_b_relative_to_a(const scanner& a, scanner& b) {
-        for (const auto& beacon_from_one : a) {
-            scanner a_cpy;
-            a_cpy.reserve(a.size());
-            std::transform(a.begin(), a.end(), std::back_inserter(a_cpy), [&beacon_from_one](auto x) { return x - beacon_from_one; });
-            stdr::sort(a_cpy);
+        static scanner a_cpy;
+        static scanner b_rotated;
+        static scanner b_cpy;
+        static scanner merged;
 
-            for (auto rotation : all_3d_rotations) {
-                scanner b_rotated;
-                b_rotated.reserve(b.size());
-                std::transform(b.begin(), b.end(), std::back_inserter(b_rotated), [&rotation](auto x) { return rotation * x; });
+        a_cpy.resize(a.size());
+        b_cpy.resize(b.size());
+        b_rotated.resize(b.size());
 
-                for (const auto& beacon_from_b : b_rotated) {
-                    scanner b_cpy;
-                    b_cpy.reserve(b_rotated.size());
-                    std::transform(b_rotated.begin(), b_rotated.end(), std::back_inserter(b_cpy), [&beacon_from_b](auto x) { return x - beacon_from_b; });
-                    auto temp_first = b_cpy.front();
-                    stdr::sort(b_cpy);
+        for (const auto& rotation : all_3d_rotations) {
+            std::copy(b.begin(), b.end(), b_rotated.begin());
+            for (int i = 0; i < b.size(); i++) {
+                ox::matrix<int>::in_place_multiplication(b_rotated[i], rotation, b[i]);
+            }
 
-                    scanner merged;
-                    merged.reserve(a_cpy.size() + b_cpy.size());
-                    stdr::merge(a_cpy, b_cpy, std::back_inserter(merged));
-                    auto unique_end = std::unique(merged.begin(), merged.end());
-                    auto number_of_unique = std::distance(unique_end, merged.end());
-                    if (number_of_unique >= 12) {
-                        std::transform(b_cpy.begin(), b_cpy.end(), b.begin(), [&beacon_from_one](auto x) { return x + beacon_from_one; });
+            for (const auto& beacon_from_b : b_rotated) {
+                std::copy(b_rotated.begin(), b_rotated.end(), b_cpy.begin());
+                for (auto& b_cpy_elem : b_cpy) {
+                    b_cpy_elem -= beacon_from_b;
+                }
+                stdr::sort(b_cpy);
+
+                for (const auto& beacon_from_one : a) {
+                    std::copy(a.begin(), a.end(), a_cpy.begin());
+                    for (auto& a_cpy_elem : a_cpy) {
+                        a_cpy_elem -= beacon_from_one;
+                    }
+                    stdr::sort(a_cpy);
+                    size_t overlap = 0;
+                    std::set_intersection(a_cpy.begin(), a_cpy.end(), b_cpy.begin(), b_cpy.end(), ox::predicateCounter<ox::matrix<int>>(overlap));
+                    if (overlap >= 12) {
+                        std::transform(b_cpy.begin(), b_cpy.end(), b.begin(), [&beacon_from_one](auto x) { return x += beacon_from_one; });
                         return beacon_from_one - beacon_from_b;
                     }
                 }

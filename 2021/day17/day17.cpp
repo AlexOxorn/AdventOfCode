@@ -75,9 +75,6 @@ namespace day17 {
         input >> t;
 
         std::vector<std::pair<int, int>> initial_speeds = get_all_valid_starts(t);
-        for (std::pair<int, int> init : initial_speeds) {
-            printf("<%d, %d>\n", init.first, init.second);
-        }
         printf("The number of valid initial speeds are %zu\n", initial_speeds.size());
     }
 } // namespace day17
