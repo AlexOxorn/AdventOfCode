@@ -9,26 +9,37 @@
 #include <numeric>
 #include <stack>
 #include <cassert>
+#include <ranges>
 
 #define YEAR 2021
-#define DAY 24
+#define DAY  24
 
 namespace day24 {
-    enum opcode {
-        INP,
-        ADD,
-        MUL,
-        DIV,
-        MOD,
-        EQL,
-        SET
+    enum opcode { INP, ADD, MUL, DIV, MOD, EQL, SET };
+    enum variable { W, X, Y, Z };
+    struct instruction {
+        opcode op;
+        variable dest;
+        union {
+            variable source_reg;
+            int source_lit;
+        };
+        bool literal;
     };
-    enum variable {
-        W,
-        X,
-        Y,
-        Z
-    };
+
+    static std::vector<instruction> instructions;
+    static std::vector<char> As;
+    static std::vector<int> Bs;
+    static std::vector<int> Cs;
+
+#define CALL_NEXT() \
+  if (instruction_iter == instructions.end()) \
+    goto end; \
+  current_instruction = *instruction_iter++; \
+  goto* jump_table[current_instruction.op];
+
+#define GET_SOURCE() \
+  (current_instruction.literal ? current_instruction.source_lit : registers[current_instruction.source_reg])
 
     const char* opcode_name(opcode op) {
         switch (op) {
@@ -69,36 +80,16 @@ namespace day24 {
         return SET;
     }
 
-#define CALL_NEXT()                             \
-    if (instruction_iter == instructions.end()) \
-        goto end;                               \
-    current_instruction = *instruction_iter++;  \
-    goto* jump_table[current_instruction.op];
-
-#define GET_SOURCE() \
-    (current_instruction.literal ? current_instruction.source_lit : registers[current_instruction.source_reg])
-
-    struct instruction {
-        opcode op;
-        variable dest;
-        union {
-            variable source_reg;
-            int source_lit;
-        };
-        bool literal;
-    };
-
     /* ================================================
      * BYTE CODE SIMULATION
      * ===============================================
      */
-    template<stdr::forward_range InstructionRange, stdr::input_range InputRange>
+    template <stdr::forward_range InstructionRange, stdr::input_range InputRange>
     std::array<long, 4> simulate(InstructionRange instructions, InputRange inputs) {
         std::array<long, 4> registers{};
         auto instruction_iter = instructions.begin();
         auto inputs_iter = inputs.begin();
-        static void* jump_table[] = {
-               &&inp, &&add, &&mul, &&div, &&mod, &&eql, &&set};
+        static void* jump_table[] = {&&inp, &&add, &&mul, &&div, &&mod, &&eql, &&set};
         instruction current_instruction{};
 
         CALL_NEXT();
@@ -127,7 +118,7 @@ namespace day24 {
         return registers;
     }
 
-    std::array<long, 4> simulate(const std::array<long, 14>& input) {
+    std::array<long, 4> simulate(stdr::random_access_range auto& input) {
         long w = 0, x = 0, y = 0, z = 0;
         auto in = input.begin();
         w = *in++;
@@ -408,6 +399,14 @@ namespace day24 {
         return z;
     }
 
+    long new_raw(bool a, long b, long c, long input, long z) {
+        bool x = z % 26l != input - b;
+        z /= a ? 1l : 26l;
+        z *= x ? 26l : 1l;
+        z += x ? (input + c) : 0l;
+        return z;
+    }
+
     void print_stack(long z) {
         for (long i = z; i > 0l; i /= 26l) {
             printf("%ld ", i % 26l);
@@ -415,28 +414,61 @@ namespace day24 {
         printf("\n");
     }
 
-    long new_z(bool a, long b, long c, long input, long z) {
-        bool x = z % 26l != input - b;
-        assert(a == x);
-        z /= a ? 1l : 26l;
-        z *= x ? 26l : 1l;
-        z += x ? (input + c) : 0l;
+    long new_z_debug(bool a, long b, long c, long input, long z) {
+        long next = new_raw(a, b, c, input, z);
         printf("\033[%dm", a ? 0 : 31);
-        printf("\t%ld\n", z);
+        printf("\t%ld\n", next);
         print_stack(z);
         printf("\033[0m");
         return z;
     }
 
-    void stack_simulate_rec(bool a, long b, long c, long input, std::stack<long>& s);
+    template <bool Min = false>
+    std::vector<long> get_valid_input(const std::vector<char>& a, const std::vector<int>& b,
+                                      const std::vector<int>& c) {
+        std::stack<std::pair<int, int>> s;
+        std::vector<long> to_return(a.size());
+        for (auto [aItr, bItr, cItr] = std::make_tuple(a.begin(), b.begin(), c.begin()); aItr != a.end();
+             ++aItr, ++bItr, ++cItr) {
+            if (*aItr) {
+                s.emplace(*cItr, aItr - a.begin());
+            } else {
+                auto [c_val, p_index] = s.top();
+                long c_index = aItr - a.begin();
+                s.pop();
 
-    long stack_simulate(bool a, long b, long c, long input, long z) {
-        bool x = z % 26l != input - b;
-        z = z * 26l + input + c;
-        printf("\t%ld\n", z);
-        return z;
+                int sum = *bItr + c_val;
+                if constexpr (Min) {
+                    if (sum < 0) {
+                        assert(sum > -9);
+                        to_return[p_index] = 1 - sum;
+                        to_return[c_index] = 1;
+                    } else if (sum == 0) {
+                        to_return[p_index] = 1;
+                        to_return[c_index] = 1;
+                    } else if (sum > 0) {
+                        assert(sum < 9);
+                        to_return[p_index] = 1;
+                        to_return[c_index] = 1 + sum;
+                    }
+                } else {
+                    if (sum < 0) {
+                        assert(sum > -9);
+                        to_return[p_index] = 9;
+                        to_return[c_index] = 9 + sum;
+                    } else if (sum == 0) {
+                        to_return[p_index] = 9;
+                        to_return[c_index] = 9;
+                    } else if (sum > 0) {
+                        assert(sum < 9);
+                        to_return[p_index] = 9 - sum;
+                        to_return[c_index] = 9;
+                    }
+                }
+            }
+        }
+        return to_return;
     }
-
 
     /* ================================================
      * BYTE CODE SPLITTING
@@ -481,14 +513,13 @@ namespace day24 {
     }
 
     void print_as_c(const std::vector<instruction>& instructions) {
-        printf("std::array<long, 4> simulate(const std::array<char, 14>& input) {");
+        printf("std::array<long, 4> simulate(const std::array<char, 14>& "
+               "input) {");
         printf("int w, x, y, z;"
                "auto in = input.begin();");
         for (const instruction& inst : instructions) {
             switch (inst.op) {
-                case INP:
-                    printf("%c = *in++", variable_name(inst.dest));
-                    break;
+                case INP: printf("%c = *in++", variable_name(inst.dest)); break;
                 case ADD:
                     printf("%c +=", variable_name(inst.dest));
                     inst.literal ? printf(" %d", inst.source_lit) : printf(" %c", variable_name(inst.source_reg));
@@ -552,134 +583,69 @@ namespace day24 {
     }
 
     /* ================================================
-     * MODEL ITERATION
+     * TESTING
      * ===============================================
      */
-    using model_type = std::array<int, 14>;
-    class model_iteration {
-    public:
-        using iteration_category = std::forward_iterator_tag;
-        using value_type = model_type;
-        using difference_type = int;
-        using reference = value_type&;
-        using const_reference = const value_type&;
-
-    private:
-        model_type val = {
-               9, 9, 9, 9, 9, 9, 9,
-               9, 9, 9, 9, 9, 9, 9};
-
-    private:
-        void increment(const model_type::reverse_iterator& r) {
-            if (r == val.rend())
-                return;
-            if (*r == 1) {
-                *r = 9;
-                return increment(r + 1);
-            }
-            (*r)--;
+    void print_answer(const std::vector<long>& answer) {
+        for (int i = 0; i < 14; i++) {
+            printf("%ld", answer[i]);
         }
+        printf("\n");
+    }
 
-    public:
-        model_iteration() = default;
-        model_iteration(bool)
-            : val{1, 1, 1, 1, 1, 1, 1,
-                   1, 1, 1, 1, 1, 1, 1} {}
+    void test_answer(const std::vector<long>& answer) {
+        printf("Testing: ");
+        print_answer(answer);
 
-        value_type operator*() const {
-            return val;
-        }
+        auto simulate1 = simulate(instructions, answer)[3];
+        printf("simulate bytecode: %ld\n", simulate1);
 
-        model_iteration& operator++() {
-            increment(val.rbegin());
-            return *this;
-        }
+        auto simulate2 = simulate(answer)[3];
+        assert(simulate2 == simulate1);
+        printf("simulate c translation: %ld\n", simulate2);
 
-        model_iteration operator++(int) {
-            auto cpy = *this;
-            ++*this;
-            return cpy;
-        }
+        auto Aitr = As.begin();
+        auto Bitr = Bs.begin();
+        auto Citr = Cs.begin();
+        long isolated_0 = std::accumulate(answer.begin(), answer.end(), 0l, [&](long old_z, long input) {
+            return new_z0(*Aitr++, *Bitr++, *Citr++, input, old_z);
+        });
+        assert(isolated_0 == simulate1);
+        printf("new_z0: %ld\n", isolated_0);
 
-        bool operator<=>(const model_iteration& other) const = default;
-    };
+        Aitr = As.begin();
+        Bitr = Bs.begin();
+        Citr = Cs.begin();
+        long isolated_1 = std::accumulate(answer.begin(), answer.end(), 0l, [&](long old_z, long input) {
+            return new_raw(*Aitr++, *Bitr++, *Citr++, input, old_z);
+        });
+        assert(isolated_1 == simulate1);
+        printf("new_raw: %ld\n", isolated_1);
+    }
 
-    void puzzle1() {
+    void init() {
         auto instruction_range = GET_STREAM(input, instruction);
-        std::vector instructions(instruction_range.begin(), instruction_range.end());
+        instructions = std::vector(instruction_range.begin(), instruction_range.end());
 
         auto split = split_code(instructions);
         auto As_range = split | stdv::transform([](auto instructions) { return instructions[4].source_lit == 1; });
         auto Bs_range = split | stdv::transform([](auto instructions) { return instructions[5].source_lit; });
         auto Cs_range = split | stdv::transform([](auto instructions) { return instructions[15].source_lit; });
 
-        std::vector<char> As(As_range.begin(), As_range.end());
-        std::vector<int> Bs(Bs_range.begin(), Bs_range.end());
-        std::vector<int> Cs(Cs_range.begin(), Cs_range.end());
-
-        /*
-                auto model_numbers = stdr::subrange(model_iteration(), model_iteration(true))
-                       | stdv::filter([&](auto s) {
-                             printf("\033[2J\033[1;1H");
-                             for (auto x : s) {
-                                 printf("%1d", x);
-                             }
-                             printf(": ");
-                             auto Aitr = As.begin();
-                             auto Bitr = Bs.begin();
-                             auto Citr = Cs.begin();
-                             int temp = std::accumulate(s.begin(), s.end(), 0, [&](int old_z, int input) {
-                                 return new_z(*Aitr++, *Bitr++, *Citr++, input, old_z);
-                             });
-                             printf("%d\n", temp);
-                             return temp == 0;
-                         })
-                       | stdv::take(1);
-        */
-
-        while (true) { //               -2          -5 -4    -1 +3 -8 +6
-            std::array<long, 14> s{9,2,7,9,3,9,4,9,4,8,9,9,9,5};
-//            for (int i = 0; i < 14; i++) {
-//                s[i] = (rand() % 9 + 1);
-//                printf("%ld", s[i]);
-//            }
-//            printf("\n");
-            auto simulate1 = simulate(instructions, s)[3];
-            printf("simulate bytecode: %ld\n", simulate1);
-
-            auto simulate2 = simulate(s)[3];
-            //            assert(simulate2 == simulate1);
-            printf("simulate c translation: %ld\n", simulate2);
-
-            auto Aitr = As.begin();
-            auto Bitr = Bs.begin();
-            auto Citr = Cs.begin();
-            long isolated_0 = std::accumulate(s.begin(), s.end(), 0l, [&](long old_z, long input) {
-                return new_z0(*Aitr++, *Bitr++, *Citr++, input, old_z);
-            });
-            //            assert(isolated_0 == simulate1);
-            printf("new_z0: %ld\n", isolated_0);
-
-            Aitr = As.begin();
-            Bitr = Bs.begin();
-            Citr = Cs.begin();
-            long isolated_1 = std::accumulate(s.begin(), s.end(), 0l, [&](long old_z, long input) {
-                return new_z(*Aitr++, *Bitr++, *Citr++, input, old_z);
-            });
-            //            assert(isolated_1 == simulate1);
-            printf("new_z: %ld\n", isolated_1);
-            break;
-        }
-
-        /*model_type best_model_number = *model_numbers.begin();
-        printf("The best model number is ");
-        for (int i : best_model_number) {
-            printf("%1d", int(i));
-        }
-        printf("\n");*/
+        As = std::vector<char>(As_range.begin(), As_range.end());
+        Bs = std::vector<int>(Bs_range.begin(), Bs_range.end());
+        Cs = std::vector<int>(Cs_range.begin(), Cs_range.end());
+    }
+    void puzzle1() {
+        init();
+        auto answer = get_valid_input<false>(As, Bs, Cs);
+        print_answer(answer);
     }
 
-    void puzzle2() {}
+    void puzzle2() {
+        auto answer = get_valid_input<true>(As, Bs, Cs);
+        print_answer(answer);
+    }
 
 #undef CALL_NEXT
 #undef GET_SOURCE
