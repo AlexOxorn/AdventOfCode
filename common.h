@@ -20,7 +20,7 @@ using namespace ox::std_abbreviations;
 #define XSTR(a) STR(a)
 #define STR(a) #a
 
-#define GET_STREAM(name, type) ox::ifstream_container<type>{"../" XSTR(YEAR) "/day" XSTR(DAY) "/" #name ".txt"}
+#define GET_STREAM(name, type) ox::ifstream_container<type>{"../puzzles/day" XSTR(DAY) "/" #name ".txt"}
 
 #define DEFINE_VECTOR_FROM_ISTREAM_INPUT_METHOD(name, type)\
 std::vector<type> get_##name() {\

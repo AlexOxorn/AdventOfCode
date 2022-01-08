@@ -15,31 +15,31 @@ add_executable(
         "${PROJECT_NAME}"
         main.cpp
         common.h
-        2021/day01/day01.cpp
-        2021/day02/day02.cpp
-        2021/day03/day03.cpp
-        2021/day04/day04.cpp
-        2021/day05/day05.cpp
-        2021/day06/day06.cpp
-        2021/day07/day07.cpp
-        2021/day08/day08.cpp
-        2021/day09/day09.cpp
-        2021/day10/day10.cpp
-        2021/day11/day11.cpp
-        2021/day12/day12.cpp
-        2021/day13/day13.cpp
-        2021/day14/day14.cpp
-        2021/day15/day15.cpp
-        2021/day16/day16.cpp
-        2021/day17/day17.cpp
-        2021/day18/day18.cpp
-        2021/day19/day19.cpp
-        2021/day20/day20.cpp
-        2021/day21/day21.cpp
-        2021/day22/day22.cpp
-        2021/day23/day23.cpp
-        2021/day24/day24.cpp
-        2021/day25/day25.cpp
+        puzzles/day01/day01.cpp
+        puzzles/day02/day02.cpp
+        puzzles/day03/day03.cpp
+        puzzles/day04/day04.cpp
+        puzzles/day05/day05.cpp
+        puzzles/day06/day06.cpp
+        puzzles/day07/day07.cpp
+        puzzles/day08/day08.cpp
+        puzzles/day09/day09.cpp
+        puzzles/day10/day10.cpp
+        puzzles/day11/day11.cpp
+        puzzles/day12/day12.cpp
+        puzzles/day13/day13.cpp
+        puzzles/day14/day14.cpp
+        puzzles/day15/day15.cpp
+        puzzles/day16/day16.cpp
+        puzzles/day17/day17.cpp
+        puzzles/day18/day18.cpp
+        puzzles/day19/day19.cpp
+        puzzles/day20/day20.cpp
+        puzzles/day21/day21.cpp
+        puzzles/day22/day22.cpp
+        puzzles/day23/day23.cpp
+        puzzles/day24/day24.cpp
+        puzzles/day25/day25.cpp
 )
 
 target_link_libraries("${PROJECT_NAME}" PRIVATE "ox")
