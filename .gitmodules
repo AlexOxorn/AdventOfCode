@@ -1,0 +1,3 @@
+[submodule "AdventOfCode2021"]
+	path = AdventOfCode2021
+	url = https://github.com/AlexOxorn/AdventOfCode2021
