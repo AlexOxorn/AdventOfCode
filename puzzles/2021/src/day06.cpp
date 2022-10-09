@@ -51,7 +51,7 @@ namespace day06 {
     void run_test(const char* filename, int generations) {
         auto input = get_stream<int>(filename);
         fish_population fishes(input);
-        for(int a : stdv::iota(0, generations)) {
+        for([[maybe_unused]] int a : stdv::iota(0, generations)) {
             ++fishes;
         }
         fishes.print_state();

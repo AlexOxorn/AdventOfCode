@@ -79,7 +79,7 @@ namespace day20 {
         printf("Total number of # are %ld\n\n", count);
     }
 
-    void puzzle2(const char* filename) {
+    void puzzle2([[maybe_unused]] const char* filename) {
         for (int i = puzzle_1_iteration_count; i < puzzle_2_iteration_count; i++) {
             auto [new_image, new_empty] = next_image(image, decoder, empty);
             empty = new_empty;

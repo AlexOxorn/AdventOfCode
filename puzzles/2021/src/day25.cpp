@@ -114,5 +114,5 @@ namespace day25 {
         printf("Stops moving after %d step\n", i);
     }
 
-    void puzzle2(const char* filename) {}
+    void puzzle2([[maybe_unused]] const char* filename) {}
 } // namespace day25

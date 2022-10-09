@@ -56,7 +56,7 @@ namespace day16 {
         if (o.lengthId) {
             o.length = parse_int_from_bool(current_position, current_position + 11);
             current_position += 11;
-            for (int i : stdv::iota(0, o.length)) {
+            for ([[maybe_unused]] int i : stdv::iota(0, o.length)) {
                 auto [packet, new_position] = parse_packet(current_position);
                 o.packets.push_back(std::move(packet));
                 current_position = new_position;

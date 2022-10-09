@@ -40,7 +40,7 @@ namespace day21 {
         bool take_turn(int player) {
             auto& [player_placement, player_score] = player_scores.at(player);
 
-            for (int i : stdv::iota(0, rolls_per_turn)) {
+            for ([[maybe_unused]] int i : stdv::iota(0, rolls_per_turn)) {
                 int move = get_next_roll();
                 player_placement += move;
             }

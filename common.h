@@ -26,7 +26,7 @@ extern long year, day;
 template <typename T>
 auto get_stream(const char* name) {
     auto filename =
-            fmt::format("{}/../puzzles/{}/inputs/day{}_{}.txt", ox::executable_folder().c_str(), year, day, name);
+            fmt::format("{}/../puzzles/{}/inputs/day{:02}_{}.txt", ox::executable_folder().c_str(), year, day, name);
     return ox::ifstream_container<T>{filename};
 }
 

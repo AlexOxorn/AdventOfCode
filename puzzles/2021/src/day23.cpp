@@ -166,7 +166,7 @@ namespace day23 {
 #undef GET_CHR_
     }
 
-    void puzzle1(const char* filename) {
+    void puzzle1([[maybe_unused]] const char* filename) {
         cave_state<2> part1({'C', 'B'}, {'A', 'A'}, {'B', 'D'}, {'D', 'C'});
 
         auto [path, cost] = ox::dikstra(
@@ -184,7 +184,7 @@ namespace day23 {
         printf("Cost is %ld\n", cost);
     }
 
-    void puzzle2(const char* filename) {
+    void puzzle2([[maybe_unused]] const char* filename) {
         cave_state<4> part2(
                {'C', 'D', 'D', 'B'},
                {'A', 'C', 'B', 'A'},

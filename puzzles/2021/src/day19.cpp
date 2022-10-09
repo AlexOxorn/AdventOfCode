@@ -155,7 +155,7 @@ namespace day19 {
         printf("unique list size: %zu\n", unique_end - full_list.begin());
     }
 
-    void puzzle2(const char* filename) {
+    void puzzle2([[maybe_unused]] const char* filename) {
         int max = 0;
 
         for (auto x = final_offsets.begin(); x != final_offsets.end(); ++x) {

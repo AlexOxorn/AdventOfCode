@@ -101,7 +101,7 @@ namespace day22 {
         solve(true);
     }
 
-    void puzzle2(const char* filename) {
+    void puzzle2([[maybe_unused]] const char* filename) {
         solve();
     }
 } // namespace day22

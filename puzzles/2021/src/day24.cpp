@@ -641,7 +641,7 @@ namespace day24 {
         print_answer(answer);
     }
 
-    void puzzle2(const char* filename) {
+    void puzzle2([[maybe_unused]] const char* filename) {
         auto answer = get_valid_input<true>(As, Bs, Cs);
         print_answer(answer);
     }
