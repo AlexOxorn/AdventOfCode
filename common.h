@@ -12,32 +12,77 @@
 #include <optional>
 #include <vector>
 #include <ranges>
+#include <fmt/core.h>
 #include <ox/io.h>
 #include <ox/std_abbreviation.h>
 
 using namespace ox::std_abbreviations;
 
 #define XSTR(a) STR(a)
-#define STR(a) #a
+#define STR(a)  #a
 
-#define GET_STREAM(name, type) ox::ifstream_container<type>{"../puzzles/day" XSTR(DAY) "/" #name ".txt"}
+extern long year, day;
 
-#define DEFINE_VECTOR_FROM_ISTREAM_INPUT_METHOD(name, type)\
-std::vector<type> get_##name() {\
-    static std::optional<std::vector<type>> input_vector;\
-    if (!input_vector) {\
-        auto ss = GET_STREAM(name, type);\
-        input_vector.emplace(std::begin(ss), std::end(ss));\
-    }\
-    return input_vector.value();\
+template <typename T>
+auto get_stream(const char* name) {
+    auto filename =
+            fmt::format("{}/../puzzles/{}/inputs/day{}_{}.txt", ox::executable_folder().c_str(), year, day, name);
+    return ox::ifstream_container<T>{filename};
 }
 
-#define DEFINE_DEFAULT_GET_VECTORS(type)\
-DEFINE_VECTOR_FROM_ISTREAM_INPUT_METHOD(input, type)\
-DEFINE_VECTOR_FROM_ISTREAM_INPUT_METHOD(sample_input, type)
+#define DEFINE_VECTOR_FROM_ISTREAM_INPUT_METHOD(name, type) \
+  std::vector<type> get_##name() { \
+    static std::optional<std::vector<type>> input_vector; \
+    if (!input_vector) { \
+      auto ss = get_stream<type>("name"); \
+      input_vector.emplace(std::begin(ss), std::end(ss)); \
+    } \
+    return input_vector.value(); \
+  }
 
-#define COMMON_HEADER\
-    void puzzle1();\
-    void puzzle2();\
+#define DEFINE_DEFAULT_GET_VECTORS(type) \
+  DEFINE_VECTOR_FROM_ISTREAM_INPUT_METHOD(input, type) \
+  DEFINE_VECTOR_FROM_ISTREAM_INPUT_METHOD(sample_input, type)
 
-#endif //ADVENTOFCODE2021_COMMON_H
+#define PER_DAY(MACRO) \
+  MACRO(01) \
+  MACRO(02) \
+  MACRO(03) \
+  MACRO(04) \
+  MACRO(05) \
+  MACRO(06) \
+  MACRO(07) \
+  MACRO(08) \
+  MACRO(09) \
+  MACRO(10) \
+  MACRO(11) \
+  MACRO(12) \
+  MACRO(13) \
+  MACRO(14) \
+  MACRO(15) \
+  MACRO(16) \
+  MACRO(17) \
+  MACRO(18) \
+  MACRO(19) \
+  MACRO(20) \
+  MACRO(21) \
+  MACRO(22) \
+  MACRO(23) \
+  MACRO(24) \
+  MACRO(25)
+
+using puzzle_sig = void (*)(const char*);
+using dayfunctions = std::pair<puzzle_sig, puzzle_sig>;
+using yearfunctions = std::array<dayfunctions, 25>;
+
+#define PUZZLE_PAIR(X) {day##X::puzzle1, day##X::puzzle2},
+#define INCLUDE_DAY(X) \
+  namespace day##X { \
+    COMMON_HEADER \
+  }
+
+#define COMMON_HEADER \
+  void puzzle1(const char*); \
+  void puzzle2(const char*);
+
+#endif // ADVENTOFCODE2021_COMMON_H

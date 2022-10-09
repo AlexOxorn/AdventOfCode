@@ -1,34 +1,34 @@
-#include "puzzles/day01/day01.h"
-#include "puzzles/day02/day02.h"
-#include "puzzles/day03/day03.h"
-#include "puzzles/day04/day04.h"
-#include "puzzles/day05/day05.h"
-#include "puzzles/day06/day06.h"
-#include "puzzles/day07/day07.h"
-#include "puzzles/day08/day08.h"
-#include "puzzles/day09/day09.h"
-#include "puzzles/day10/day10.h"
-#include "puzzles/day11/day11.h"
-#include "puzzles/day12/day12.h"
-#include "puzzles/day13/day13.h"
-#include "puzzles/day14/day14.h"
-#include "puzzles/day15/day15.h"
-#include "puzzles/day16/day16.h"
-#include "puzzles/day17/day17.h"
-#include "puzzles/day18/day18.h"
-#include "puzzles/day19/day19.h"
-#include "puzzles/day20/day20.h"
-#include "puzzles/day21/day21.h"
-#include "puzzles/day22/day22.h"
-#include "puzzles/day23/day23.h"
-#include "puzzles/day24/day24.h"
-#include "puzzles/day25/day25.h"
 #include <cstdio>
+#include <cstdlib>
+#include <puzzles.h>
 
-int main() {
-    printf("Day 25:\n");
-    day25::puzzle1();
-    day25::puzzle2();
+#define MIN_YEAR 2021
+
+long year = -1, day = -1;
+
+int main(int argc, const char** argv) {
+    const char* filename = nullptr;
+
+    for (int i = 1; i < argc; ++i) {
+        char* end;
+        long argument = strtol(argv[i], &end, 10);
+        if (*end != 0) {
+            filename = argv[i];
+            continue;
+        }
+        (argument < 1000 ? day : year) = argument;
+    }
+
+    year = year < 0 ? puzzles.size() - 1 + MIN_YEAR : year;
+    filename = filename ?: "input";
+    if (day < 0) {
+        printf("ERROR: No day given");
+        exit(1);
+    }
+
+    printf("Year %02ld, Day %02ld:\n", year, day);
+    puzzles[year - MIN_YEAR][day-1].first(filename);
+    puzzles[year - MIN_YEAR][day-1].second(filename);
     printf("\n");
     return 0;
 }
