@@ -18,7 +18,8 @@ add_executable(
         main.cpp
         common.h
 )
-find_package(fmt)
+
+find_package(fmt REQUIRED)
 
 target_link_libraries("${PROJECT_NAME}" PRIVATE "ox")
 target_link_libraries("${PROJECT_NAME}" PRIVATE "puzzles")
