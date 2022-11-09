@@ -10,7 +10,10 @@
 
 namespace aoc2020 {
     PER_DAY(INCLUDE_DAY)
-    constexpr yearfunctions days{{PUZZLE_PAIR(01)}};
+    constexpr yearfunctions days{{
+             PUZZLE_PAIR(01)
+             PUZZLE_PAIR(02)
+    }};
 }
 
 #endif // ADVENTOFCODE_2021_H
