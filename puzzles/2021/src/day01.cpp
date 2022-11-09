@@ -9,7 +9,7 @@
 
 #define DAY 01
 
-namespace day01 {
+namespace aoc2021::day01 {
     template<std::input_iterator I>
     int count_difference(I begin, I end, int offset) {
         size_t count = 0;

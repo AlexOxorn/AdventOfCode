@@ -7,10 +7,12 @@
 
 #include <array>
 #include "../common.h"
+#include <2020.h>
 #include <2021.h>
 
-constexpr std::array<yearfunctions, 1> puzzles {{
-    aoc2021::days,
+constexpr std::array<yearfunctions, 2> puzzles {{
+         aoc2020::days,
+         aoc2021::days,
 }};
 
 #endif // ADVENTOFCODE_PUZZLES_H

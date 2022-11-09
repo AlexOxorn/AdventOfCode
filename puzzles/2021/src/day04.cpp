@@ -12,7 +12,7 @@
 
 #define DAY 04
 
-namespace day04 {
+namespace aoc2021::day04 {
     constexpr int bingosize = 5;
     constexpr int poolsize = 99;
     using ball_element = std::pair<int, bool> *;

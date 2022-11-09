@@ -9,7 +9,7 @@
 
 #define DAY 17
 
-namespace day17 {
+namespace aoc2021::day17 {
     struct target_area : public std::pair<std::pair<int, int>, std::pair<int, int>> {};
 
     std::istream& operator>>(std::istream& in, target_area& t) {
@@ -76,4 +76,4 @@ namespace day17 {
         std::vector<std::pair<int, int>> initial_speeds = get_all_valid_starts(t);
         printf("The number of valid initial speeds are %zu\n", initial_speeds.size());
     }
-} // namespace day17
+} // namespace aoc2021::day17

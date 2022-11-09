@@ -12,7 +12,7 @@
 
 #define DAY 16
 
-namespace day16 {
+namespace aoc2021::day16 {
     struct packet;
     struct Literal {
         std::vector<bool> number;

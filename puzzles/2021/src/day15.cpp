@@ -17,7 +17,7 @@
 
 #define DAY 15
 
-namespace day15 {
+namespace aoc2021::day15 {
     class grid : public ox::grid<int> {
         using ox::grid<int>::grid;
 
@@ -70,4 +70,4 @@ namespace day15 {
         auto [path, risk] = g.find_path();
         printf("Total Risk = %d\n", risk);
     }
-} // namespace day15
+} // namespace aoc2021::day15

@@ -10,7 +10,7 @@
 
 #define DAY 10
 
-namespace day10 {
+namespace aoc2021::day10 {
     class parser {
         std::stack<char> state;
         char fail = 0;

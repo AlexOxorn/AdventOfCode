@@ -11,7 +11,7 @@
 
 #define DAY 07
 
-namespace day07 {
+namespace aoc2021::day07 {
     class crab_positions {
         std::vector<int> positions{};
     public:

@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <puzzles.h>
 
-#define MIN_YEAR 2021
+#define MIN_YEAR 2020
 
 long year = -1, day = -1;
 

@@ -15,7 +15,7 @@
 
 #define DAY 09
 
-namespace day09 {
+namespace aoc2021::day09 {
 
     class heightmap : public ox::grid<int> {
         using ox::grid<int>::grid;

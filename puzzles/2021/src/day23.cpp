@@ -11,7 +11,7 @@
 
 #define DAY 23
 
-namespace day23 {
+namespace aoc2021::day23 {
     template<size_t Depth>
     struct cave_state {
         using cave = std::array<char, Depth>;
@@ -208,4 +208,4 @@ namespace day23 {
         }
         printf("Cost is %ld\n", cost);
     }
-} // namespace day23
+} // namespace aoc2021::day23

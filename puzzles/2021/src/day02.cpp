@@ -12,7 +12,7 @@
 
 #define DAY 02
 
-namespace day02 {
+namespace aoc2021::day02 {
     enum class direction {
         forward,
         down,

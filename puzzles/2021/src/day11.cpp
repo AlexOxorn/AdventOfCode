@@ -15,7 +15,7 @@
 #include <concepts>
 #include "ox/grid.h"
 
-namespace day11 {
+namespace aoc2021::day11 {
     class octopuses : public ox::grid<int> {
         using ox::grid<int>::grid;
     public:

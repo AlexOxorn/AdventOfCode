@@ -13,7 +13,7 @@
 
 #define DAY 03
 
-namespace day03{
+namespace aoc2021::day03{
     constexpr size_t bitwidth = 12;
 
     class reading : public ox::bitset_container<bitwidth> {};

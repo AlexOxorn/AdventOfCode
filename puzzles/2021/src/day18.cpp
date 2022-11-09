@@ -15,7 +15,7 @@
 
 #define DAY 18
 
-namespace day18 {
+namespace aoc2021::day18 {
     using snail_number_node = ox::binary_tree_node<std::optional<int>>;
     using snail_number = ox::binary_tree<std::optional<int>>;
 
@@ -167,4 +167,4 @@ namespace day18 {
         }
         printf("largest magnitude is equal to %d\n", max);
     }
-} // namespace day18
+} // namespace aoc2021::day18

@@ -9,7 +9,7 @@
 
 #define DAY  25
 
-namespace day25 {
+namespace aoc2021::day25 {
     enum class space : char { EMPTY, SOUTH_FACING, RIGHT_FACING, ERROR };
 
     class sea_floor : public ox::grid<space> {
@@ -115,4 +115,4 @@ namespace day25 {
     }
 
     void puzzle2([[maybe_unused]] const char* filename) {}
-} // namespace day25
+} // namespace aoc2021::day25

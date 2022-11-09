@@ -11,7 +11,7 @@
 
 #define DAY 21
 
-namespace day21 {
+namespace aoc2021::day21 {
     struct part1_simulation {
         constexpr static int winning_score = 1000;
         constexpr static int sides_of_die = 100;
@@ -152,4 +152,4 @@ namespace day21 {
         part2_simulation s(input);
         s.simulate();
     }
-} // namespace day21
+} // namespace aoc2021::day21

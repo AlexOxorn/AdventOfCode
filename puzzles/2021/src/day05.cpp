@@ -9,7 +9,7 @@
 #include <algorithm>
 #include "ox/grid.h"
 
-namespace day05 {
+namespace aoc2021::day05 {
         #define DAY 05
     namespace stdv = std::views;
     namespace stdr = std::ranges;

@@ -10,7 +10,7 @@
 
 #define DAY 06
 
-namespace day06 {
+namespace aoc2021::day06 {
     using count_type = long;
 
     class fish_population {

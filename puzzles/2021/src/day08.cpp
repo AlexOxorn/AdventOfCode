@@ -12,7 +12,7 @@
 
 #define DAY 08
 
-namespace day08 {
+namespace aoc2021::day08 {
     class signals {
         using lights = std::set<char>;
         struct custom_set_comp {

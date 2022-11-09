@@ -15,7 +15,7 @@
 #include <concepts>
 #include <algorithm>
 
-namespace day13 {
+namespace aoc2021::day13 {
     struct fold : public std::pair<char, int> {};
 
     struct paper {

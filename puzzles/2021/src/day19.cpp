@@ -10,7 +10,7 @@
 
 #define DAY 19
 
-namespace day19 {
+namespace aoc2021::day19 {
     using transformation = ox::matrix<int>;
     using beacon = ox::matrix<int>;
     using scanner = std::vector<beacon>;
@@ -168,4 +168,4 @@ namespace day19 {
 
         printf("Largest distance is %d\n", max);
     }
-} // namespace day19
+} // namespace aoc2021::day19

@@ -9,7 +9,7 @@
 
 #define DAY 20
 
-namespace day20 {
+namespace aoc2021::day20 {
     constexpr std::array<std::pair<int, int>, 9> cardinal_directions = {{
            {-1, -1}, {0, -1}, {1, -1},
            {-1, 0}, {0, 0}, {1, 0},

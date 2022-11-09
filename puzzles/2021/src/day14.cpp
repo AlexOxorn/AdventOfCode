@@ -11,7 +11,7 @@
 
 #define DAY 14
 
-namespace day14 {
+namespace aoc2021::day14 {
     struct insertion_rule : public std::pair<std::string, char> {};
 
     std::istream& operator>>(std::istream& in, insertion_rule& i) {

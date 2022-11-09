@@ -10,7 +10,7 @@
 
 #define DAY 22
 
-namespace day22 {
+namespace aoc2021::day22 {
     struct cube {
         long x;
         long y;

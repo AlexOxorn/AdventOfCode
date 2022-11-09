@@ -13,7 +13,7 @@
 
 #define DAY  24
 
-namespace day24 {
+namespace aoc2021::day24 {
     enum opcode { INP, ADD, MUL, DIV, MOD, EQL, SET };
     enum variable { W, X, Y, Z };
     struct instruction {
@@ -649,4 +649,4 @@ namespace day24 {
 #undef CALL_NEXT
 #undef GET_SOURCE
 #undef PARSE_REG
-} // namespace day24
+} // namespace aoc2021::day24

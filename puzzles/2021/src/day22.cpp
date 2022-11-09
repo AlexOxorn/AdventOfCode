@@ -11,7 +11,7 @@
 
 #define DAY 22
 
-namespace day22 {
+namespace aoc2021::day22 {
     struct cube {
         long x1, x2, y1, y2, z1, z2;
         auto operator<=>(const cube& other) const = default;
@@ -104,4 +104,4 @@ namespace day22 {
     void puzzle2([[maybe_unused]] const char* filename) {
         solve();
     }
-} // namespace day22
+} // namespace aoc2021::day22
