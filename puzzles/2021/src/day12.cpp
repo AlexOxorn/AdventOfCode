@@ -11,6 +11,7 @@
 #include <optional>
 #include <unordered_map>
 #include <ranges>
+#include <algorithm>
 
 #define pushpop(p, a, X) \
 p.push_back(a);\

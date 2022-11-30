@@ -7,6 +7,7 @@
 #include <numeric>
 #include <ranges>
 #include <cmath>
+#include <algorithm>
 #include "ox/math.h"
 
 #define DAY 07

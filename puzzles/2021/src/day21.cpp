@@ -122,9 +122,18 @@ namespace aoc2021::day21 {
         }
 
         void simulate() {
+#ifdef _LIBCPP_VERSION
+            volatile bool stop = false;
+            std::thread a([this, &stop]() {
+#else
             std::jthread a([this](const std::stop_token& stop_token) {
+#endif
                 using namespace std::literals::chrono_literals;
-                while (!stop_token.stop_requested()) {
+#ifdef _LIBCPP_VERSION
+                while (!stop) {
+#else
+                while(!stop_token.stop_requested()) {
+#endif
                     printf("%ld | %ld\r", number_of_victories[0], number_of_victories[1]);
                     fflush(stdout);
                     std::this_thread::sleep_for(100ms);
@@ -132,7 +141,11 @@ namespace aoc2021::day21 {
             });
 
             _recursion({{{starting_positions[0], 0}, {starting_positions[1], 0}}}, 0);
+#ifdef _LIBCPP_VERSION
+            stop = true;
+#else
             a.request_stop();
+#endif
             printf("player 1 won %ld times\n", number_of_victories[0]);
             printf("player 2 won %ld times\n", number_of_victories[1]);
         }

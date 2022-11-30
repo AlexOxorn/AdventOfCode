@@ -3,7 +3,7 @@ project(adventofcode)
 
 set(CMAKE_CXX_STANDARD 20)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    SET(CMAKE_CXX_FLAGS "-O0 -Wall -Wextra -fdiagnostics-color=always -fsanitize=address,undefined -g -fconcepts-diagnostics-depth=5")
+    SET(CMAKE_CXX_FLAGS "-O0 -Wall -Wextra -fdiagnostics-color=always -fsanitize=address,undefined -g")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     SET(CMAKE_CXX_FLAGS "-O2 -fdiagnostics-color=always")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Perf")
@@ -23,4 +23,3 @@ find_package(fmt REQUIRED)
 
 target_link_libraries("${PROJECT_NAME}" PRIVATE "ox")
 target_link_libraries("${PROJECT_NAME}" PRIVATE "puzzles")
-target_link_libraries("${PROJECT_NAME}" PRIVATE fmt::fmt)

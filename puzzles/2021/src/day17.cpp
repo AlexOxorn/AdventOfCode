@@ -31,7 +31,7 @@ namespace aoc2021::day17 {
 
     bool is_valid_xy(target_area t, int init_x, int init_y) {
         int x = 0, y = 0, vx = init_x, vy = init_y;
-        for(int step = 0; ; step++) {
+        for([[maybe_unused]] int step = 0; ; step++) {
             x += vx;
             y += vy;
             vx = std::max(0, vx - 1);

@@ -376,7 +376,7 @@ namespace aoc2021::day24 {
     }
 
     long new_z0(bool a, long b, long c, long input, long z) {
-        long w, x, y;
+        long w = 0, x = 0, y = 0;
         w = input;
         x *= 0l;
         x += z;

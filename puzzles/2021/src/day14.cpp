@@ -5,6 +5,7 @@
 #include <cassert>
 #include <set>
 #include <map>
+#include <unordered_map>
 #include <algorithm>
 #include <limits>
 #include "../../../common.h"

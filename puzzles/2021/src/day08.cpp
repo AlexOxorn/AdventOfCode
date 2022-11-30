@@ -136,7 +136,7 @@ namespace aoc2021::day08 {
             temp->second = 6; ns.at(6) = &temp->first;
 
             // Determining '9'
-            temp = std::find_if(size6, size7, [this](auto x) { return x.second == -1; });
+            temp = std::find_if(size6, size7, [](auto x) { return x.second == -1; });
             assert(temp != size7);
             temp->second = 9; ns.at(9) = &temp->first;
 
@@ -146,7 +146,7 @@ namespace aoc2021::day08 {
             temp->second = 3; ns.at(3) = &temp->first;
 
             // Determining '2'
-            temp = std::find_if(size5, size6, [this](auto x) { return x.second == -1; });
+            temp = std::find_if(size5, size6, [](auto x) { return x.second == -1; });
             assert(temp != size6);
             temp->second = 2; ns.at(2) = &temp->first;
         }

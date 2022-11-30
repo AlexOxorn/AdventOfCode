@@ -4,9 +4,7 @@
 
 #include "../../../common.h"
 #include <cstdio>
-#include <numeric>
 #include <unordered_set>
-#include "ox/algorithms.h"
 
 #define DAY 01
 

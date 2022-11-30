@@ -7,6 +7,7 @@
 #include <numeric>
 #include <ranges>
 #include <array>
+#include <algorithm>
 
 #define DAY 06
 

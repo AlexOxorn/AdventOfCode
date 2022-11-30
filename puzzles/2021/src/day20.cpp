@@ -33,7 +33,7 @@ namespace aoc2021::day20 {
         for(std::size_t j : stdv::iota(std::size_t(0), new_image.get_width())) {
             for (std::size_t i : stdv::iota(std::size_t(0), new_image.get_height())) {
                 auto neighbours = cardinal_directions | stdv::transform([i, j, empty_space,&image](auto offset) {
-                    auto get_opt = image.get_opt(i + offset.first - 1, j + offset.second - 1);
+                    std::optional<bool> get_opt = image.get(i + offset.first - 1, j + offset.second - 1);
                     return get_opt.value_or(empty_space);
                 });
 
@@ -41,7 +41,7 @@ namespace aoc2021::day20 {
                     return (sum << 1) + next;
                 });
 
-                new_image.get(i, j) = decoder[index];
+                new_image.at(i, j) = decoder[index];
             }
         }
 

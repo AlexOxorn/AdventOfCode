@@ -16,7 +16,6 @@
 #define DAY 09
 
 namespace aoc2021::day09 {
-
     class heightmap : public ox::grid<int> {
         using ox::grid<int>::grid;
     public:
@@ -50,7 +49,7 @@ namespace aoc2021::day09 {
             auto x = data
                      | ox::ranges::views::iterators
                      | stdv::filter([this] (auto x) { return is_low_point(x); })
-                     | stdv::transform([this] (auto x) { return *x + 1; });
+                     | stdv::transform([] (auto x) { return *x + 1; });
             return std::accumulate(x.begin(), x.end(), 0);
         }
 

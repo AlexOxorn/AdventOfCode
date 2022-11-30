@@ -7,6 +7,7 @@
 #include <numeric>
 #include <vector>
 #include <typeinfo>
+#include <algorithm>
 
 #define DAY 10
 

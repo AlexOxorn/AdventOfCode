@@ -5,7 +5,7 @@
 #include "../../../common.h"
 #include <cstdio>
 #include <algorithm>
-#include <fmt/core.h>
+#include <cstring>
 
 #define DAY 01
 

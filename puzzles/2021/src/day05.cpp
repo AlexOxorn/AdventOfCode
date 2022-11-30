@@ -50,13 +50,13 @@ namespace aoc2021::day05 {
                 auto horizontal = l.p1.x;
                 auto [min, max] = std::minmax(l.p1.y, l.p2.y);
                 for (int vertical : stdv::iota(min, max+1)) {
-                    get(horizontal, vertical)++;
+                    at(horizontal, vertical)++;
                 }
             } else if(l.horizontal()) {
                 auto vertical = l.p1.y;
                 auto [min, max] = std::minmax(l.p1.x, l.p2.x);
                 for (int horizontal : stdv::iota(min, max+1)) {
-                    get(horizontal, vertical)++;
+                    at(horizontal, vertical)++;
                 }
             } else if(diag) {
                 auto [left, right] = std::minmax(l.p1, l.p2);
@@ -64,7 +64,7 @@ namespace aoc2021::day05 {
                 int length = std::abs(sign);
                 sign /= length;
                 for (int i : stdv::iota(0, length+1)) {
-                    get(left.x + i, left.y + sign * i)++;
+                    at(left.x + i, left.y + sign * i)++;
                 }
             }
         }

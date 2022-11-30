@@ -42,7 +42,7 @@ namespace aoc2021::day04 {
                     stdv::iota(0, bingosize),
                     [this](int i) { return stdr::all_of(
                             stdv::iota(0, bingosize),
-                            [this, i](int j) { return get(i, j)->second; }
+                            [this, i](int j) { return at(i, j)->second; }
                     );
             });
         }
@@ -54,8 +54,8 @@ namespace aoc2021::day04 {
         }
 
         [[nodiscard]] bool check_diagonal_for_win() const {
-            return stdr::all_of(stdv::iota(0, bingosize), [this](int i) { return get(i, i)->second; }) ||
-                   stdr::all_of(stdv::iota(0, bingosize), [this](int i) { return get(i, 4 - i)->second; });
+            return stdr::all_of(stdv::iota(0, bingosize), [this](int i) { return at(i, i)->second; }) ||
+                   stdr::all_of(stdv::iota(0, bingosize), [this](int i) { return at(i, 4 - i)->second; });
         }
 
         [[nodiscard]] bool check_for_win() const {
@@ -85,7 +85,7 @@ namespace aoc2021::day04 {
                 if (!(in >> x)) {
                     return in;
                 }
-                bc.get(i, j) = &main_pool.pool.at(x);
+                bc.at(i, j) = &main_pool.pool.at(x);
             }
         }
         return in;

@@ -12,8 +12,6 @@
 #include <optional>
 #include <vector>
 #include <ranges>
-#define FMT_HEADER_ONLY
-#include <fmt/core.h>
 #include <ox/io.h>
 #include <ox/std_abbreviation.h>
 
@@ -26,14 +24,14 @@ extern long year, day;
 
 template <typename T>
 auto get_stream(const char* name) {
-    auto filename =
-            fmt::format("{}/../puzzles/{}/inputs/day{:02}_{}.txt", ox::executable_folder().c_str(), year, day, name);
+    char filename[512];
+    sprintf(filename, "%s/../puzzles/%ld/inputs/day%02ld_%s.txt", ox::executable_folder().c_str(), year, day, name);
     return ox::ifstream_container<T>{filename};
 }
 
 #define DEFINE_VECTOR_FROM_ISTREAM_INPUT_METHOD(name, type) \
   std::vector<type> get_##name() { \
-    static std::optional<std::vector<type>> input_vector; \
+    static std::optional<std::vector<(type)>> input_vector; \
     if (!input_vector) { \
       auto ss = get_stream<type>("name"); \
       input_vector.emplace(std::begin(ss), std::end(ss)); \
