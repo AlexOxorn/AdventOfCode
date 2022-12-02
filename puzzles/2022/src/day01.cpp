@@ -12,8 +12,6 @@ namespace aoc2022::day01 {
     struct elf {
         long calories;
 
-        auto operator<=>(const elf& other) const { return calories <=> other.calories; }
-        bool operator==(const elf& other) const = default;
         friend std::istream& operator>>(std::istream& in, elf& self);
 
         elf operator+(const elf& other) const {
@@ -32,14 +30,14 @@ namespace aoc2022::day01 {
 
     void puzzle1(const char* filename) {
         auto elves = get_stream<elf>(filename);
-        auto max = stdr::max(elves);
+        auto max = stdr::max(elves, std::less<>(), &elf::calories);
         printf("the max elf is %ld\n", max.calories);
     }
 
     void puzzle2(const char* filename) {
         auto elf_stream = get_stream<elf>(filename);
         std::vector elves(elf_stream.begin(), elf_stream.end());
-        stdr::partial_sort(elves, elves.begin() + 3, std::greater<>());
+        stdr::nth_element(elves, elves.begin() + 3, std::greater<>(), &elf::calories);
         auto total = std::accumulate(
                 elves.begin(), elves.begin() + 3, elf{});
         printf("the max three elves sum to %ld", total.calories);
