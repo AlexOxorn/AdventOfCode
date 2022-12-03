@@ -10,6 +10,8 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Perf")
     SET(CMAKE_CXX_FLAGS "-O0")
 endif()
 
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+
 add_subdirectory(ox_lib)
 add_subdirectory(puzzles)
 

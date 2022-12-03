@@ -3,6 +3,7 @@ add_library(
         include/2022.h
         src/day01.cpp
         src/day02.cpp
+        src/day03.cpp
 )
 
 target_link_libraries("2022" PRIVATE "ox")
