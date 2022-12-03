@@ -11,7 +11,8 @@
 namespace aoc2022 {
     PER_DAY(INCLUDE_DAY)
     constexpr yearfunctions days{{
-             PUZZLE_PAIR(01)
+                    PUZZLE_PAIR(01)
+                    PUZZLE_PAIR(02)
     }};
 }
 
