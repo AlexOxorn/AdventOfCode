@@ -93,7 +93,7 @@ namespace aoc2021::day21 {
         constexpr static int spaces_on_board = 10;
         using player = std::pair<int, int>;
         std::array<int, 2> starting_positions{};
-        std::array<long, 2> number_of_victories{};
+        std::array<std::atomic_long, 2> number_of_victories{};
 
         part2_simulation(stdr::range auto& f) {
             int starting = 0;
@@ -123,18 +123,18 @@ namespace aoc2021::day21 {
 
         void simulate() {
 #ifdef _LIBCPP_VERSION
-            volatile bool stop = false;
+            volatile std::atomic_bool stop = false;
             std::thread a([this, &stop]() {
 #else
             std::jthread a([this](const std::stop_token& stop_token) {
 #endif
                 using namespace std::literals::chrono_literals;
 #ifdef _LIBCPP_VERSION
-                while (!stop) {
+                while (!stop.load()) {
 #else
                 while(!stop_token.stop_requested()) {
 #endif
-                    printf("%ld | %ld\r", number_of_victories[0], number_of_victories[1]);
+                    printf("%ld | %ld\r", number_of_victories[0].load(), number_of_victories[1].load());
                     fflush(stdout);
                     std::this_thread::sleep_for(100ms);
                 }
@@ -146,8 +146,11 @@ namespace aoc2021::day21 {
 #else
             a.request_stop();
 #endif
-            printf("player 1 won %ld times\n", number_of_victories[0]);
-            printf("player 2 won %ld times\n", number_of_victories[1]);
+            printf("player 1 won %ld times\n", number_of_victories[0].load());
+            printf("player 2 won %ld times\n", number_of_victories[1].load());
+#ifdef _LIBCPP_VERSION
+            a.join();
+#endif
         }
     };
 
