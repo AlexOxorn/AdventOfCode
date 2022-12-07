@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <deque>
 #include <stack>
+#include <functional>
 
 namespace aoc2022::day05 {
     unsigned line_index_to_stack(unsigned i) {
@@ -83,7 +84,7 @@ namespace aoc2022::day05 {
         for (direction x : input) {
             (stacks.*move)(x);
         }
-        auto res_stream = stacks | stdv::filter([](const std::deque<char>& x) { return !x.empty(); })
+        auto res_stream = stacks | stdv::filter(std::not_fn<>(&std::deque<char>::empty))
                         | stdv::transform((char& (std::deque<char>::*) ()) & std::deque<char>::back);
         std::string result(res_stream.begin(), res_stream.end());
         printf("The Top Line is %s\n", result.c_str());
