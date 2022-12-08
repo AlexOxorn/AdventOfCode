@@ -29,6 +29,16 @@ auto get_stream(const char* name) {
     return ox::ifstream_container<T>{filename};
 }
 
+template <typename T, typename C = std::vector<T>>
+C get_from_input(const char* filename) {
+    static std::optional<C> input_vector;
+    if (!input_vector) {
+        auto ss = get_stream<T>(filename);
+        input_vector.emplace(std::begin(ss), std::end(ss));
+    }
+    return input_vector.value();
+}
+
 #define DEFINE_VECTOR_FROM_ISTREAM_INPUT_METHOD(name, type) \
   std::vector<type> get_##name() { \
     static std::optional<std::vector<(type)>> input_vector; \

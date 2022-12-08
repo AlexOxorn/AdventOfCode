@@ -6,6 +6,7 @@ add_library(
         src/day03.cpp
         src/day04.cpp
         src/day05.cpp
+        src/day06.cpp
 )
 
 target_link_libraries("2022" PRIVATE "ox")
