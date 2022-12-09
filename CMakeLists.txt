@@ -13,6 +13,8 @@ endif()
 #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fconcepts-diagnostics-depth=2")
 
+set(OXLIB_CANVAS ON)
+
 add_subdirectory(ox_lib)
 add_subdirectory(puzzles)
 
