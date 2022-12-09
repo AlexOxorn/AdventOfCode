@@ -18,6 +18,7 @@ namespace aoc2022 {
                     PUZZLE_PAIR(05)
                     PUZZLE_PAIR(06)
                     PUZZLE_PAIR(07)
+                    PUZZLE_PAIR(08)
     }};
 }
 
