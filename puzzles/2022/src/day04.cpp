@@ -38,13 +38,13 @@ namespace aoc2022::day04 {
 
     void puzzle1(const char* filename) {
         auto groups = get_stream<std::pair<range, range>>(filename);
-        size_t count = stdr::count_if(groups | stdv::filter(overlap_full), [](...) { return true; });
+        size_t count = stdr::distance(groups | stdv::filter(overlap_full));
         printf("number of fully overlapping teams is %zu\n", count);
     }
 
     void puzzle2(const char* filename) {
         auto groups = get_stream<std::pair<range, range>>(filename);
-        size_t count = stdr::count_if(groups | stdv::filter(overlap_full), [](...) { return true; });
+        size_t count = stdr::distance(groups | stdv::filter(overlap_full));
         printf("number of partially overlapping teams is %zu\n", count);
     }
 } // namespace aoc2022::day04
