@@ -16,6 +16,8 @@ namespace aoc2022::day11 {
     using troupe = std::vector<monkey>;
 
     struct monkey {
+        static long modulo;
+
         troupe* group{};
         long divisible_test{};
         int true_monkey{};
@@ -32,11 +34,15 @@ namespace aoc2022::day11 {
                 item = operation(item);
                 if constexpr (calm)
                     item /= 3;
+                else
+                    item %= modulo;
                 group->at(item % divisible_test == 0 ? true_monkey : false_monkey).worry.push_back(item);
                 inspection_count++;
             }
         }
     };
+
+    long monkey::modulo = 0;
 
     std::istream& operator>>(std::istream& in, monkey& mon) {
         std::string s;
@@ -98,12 +104,13 @@ namespace aoc2022::day11 {
         for (monkey& mon : monkeys) {
             mon.group = &monkeys;
         }
+        auto divs = monkeys | stdv::transform(&monkey::divisible_test);
+        monkey::modulo = std::accumulate(divs.begin(), divs.end(), 1l, std::multiplies<>());
         for (int i = 0; i < Iterations; i++) {
             stdr::for_each(monkeys, &monkey::round<calm>);
         }
         std::vector<long> inspections;
         stdr::transform(monkeys, std::back_inserter(inspections), &monkey::inspection_count);
-        stdr::sort(inspections);
         stdr::nth_element(inspections, inspections.begin() + 2, std::greater<>());
 
         printf("the product for the two most handsy monkeys are %ld\n", inspections[0] * inspections[1]);
