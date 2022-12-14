@@ -9,10 +9,11 @@
 
 namespace aoc2022::day12 {
     struct heightmap : public ox::grid<char> {
-        raw_iterator start;
-        raw_iterator end;
+        using position = raw_iterator;
+        position start;
+        position end;
         struct mock_end_sentinel {
-            friend bool operator==(const raw_iterator& r, const mock_end_sentinel&) { return *r == 'a'; }
+            friend bool operator==(const position& r, const mock_end_sentinel&) { return *r == 'a'; }
         };
 
         template <typename R>
@@ -23,16 +24,17 @@ namespace aoc2022::day12 {
             *end = 'z';
         }
 
-        auto find_path_part1() {
+        template <typename End, typename Filter>
+        auto find_path(position start, End end, Filter neighbour_filter) {
             auto x = stdr::subrange(start, end);
             return ox::dikstra(
                     start,
                     end,
-                    [this](auto curr) -> std::vector<std::pair<heightmap::raw_iterator, int>> {
-                        auto neighbours = cardinal_neighbour_range(curr);
+                    [neighbour_filter, this](auto curr) -> std::vector<std::pair<position, int>> {
+                        auto neighbours = this->cardinal_neighbour_range(curr);
                         auto n = neighbours | valid_index()
-                               | stdv::filter([&](const auto& x) { return *x <= *curr + 1; })
-                               | stdv::transform([](const auto& x) -> std::pair<raw_iterator, int> {
+                               | stdv::filter([&](const auto& x) { return neighbour_filter(curr, x); })
+                               | stdv::transform([](const auto& x) -> std::pair<position, int> {
                                      return std::make_pair(x, 1);
                                  });
                         return std::vector(n.begin(), n.end());
@@ -41,21 +43,12 @@ namespace aoc2022::day12 {
                     ox::range_iterator_hash<decltype(data)>());
         }
 
+        auto find_path_part1() {
+            return find_path(start, end, [](position curr, position x) { return *x <= *curr + 1; });
+        }
+
         auto find_path_part2() {
-            return ox::dikstra(
-                    end,
-                    mock_end_sentinel{},
-                    [this](auto curr) -> std::vector<std::pair<heightmap::raw_iterator, int>> {
-                        auto neighbours = cardinal_neighbour_range(curr);
-                        auto n = neighbours | valid_index()
-                               | stdv::filter([&](const auto& x) { return *x + 1 >= *curr; })
-                               | stdv::transform([](const auto& x) -> std::pair<raw_iterator, int> {
-                                     return std::make_pair(x, 1);
-                                 });
-                        return std::vector(n.begin(), n.end());
-                    },
-                    [](...) { return 0; },
-                    ox::range_iterator_hash<decltype(data)>());
+            return find_path(end, mock_end_sentinel{}, [](position curr, position x) { return *x + 1 >= *curr; });
         }
     };
 
