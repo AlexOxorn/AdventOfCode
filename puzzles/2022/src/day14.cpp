@@ -11,6 +11,7 @@
 #include <numeric>
 #include <thread>
 #include <ox/canvas.h>
+#include <ox/hash.h>
 
 namespace aoc2022::day14 {
     using namespace std::chrono_literals;
@@ -29,12 +30,6 @@ namespace aoc2022::day14 {
     constexpr auto after_puzzle_wait = 5s;
     constexpr int scale = 10;
 
-    struct coord_hash {
-        std::size_t operator()(const coord& c) const {
-            return 2 * std::hash<int>()(c.first) + 3 * std::hash<int>()(c.second);
-        }
-    };
-
     namespace drawer {
         static std::optional<ox::sdl_instance> drawing_window;
 
@@ -44,7 +39,7 @@ namespace aoc2022::day14 {
         }
     } // namespace drawer
 
-    struct grid : public std::unordered_map<coord, occupied_by, coord_hash> {
+    struct grid : public std::unordered_map<coord, occupied_by, ox::pair_hash<>> {
         template <stdr::range R>
         requires std::is_base_of_v<std::string, typename R::value_type>
         explicit grid(R& r) : max_depth(0) {

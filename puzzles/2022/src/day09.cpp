@@ -9,18 +9,14 @@
 #include <numeric>
 #include <thread>
 #include <ox/canvas.h>
+#include <ox/hash.h>
 
 namespace aoc2022::day09 {
     using namespace std::chrono_literals;
     using coord = std::pair<int, int>;
     template <size_t N>
     using rope = std::array<coord, N>;
-    struct coord_hash {
-        std::size_t operator()(const coord& c) const {
-            return 2 * std::hash<int>()(c.first) + 3 * std::hash<int>()(c.second);
-        }
-    };
-    using positionlog = std::unordered_set<coord, coord_hash>;
+    using positionlog = std::unordered_set<coord, ox::pair_hash<>>;
 
     namespace drawer {
         static std::optional<ox::sdl_instance> drawing_window;
