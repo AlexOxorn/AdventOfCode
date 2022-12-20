@@ -19,7 +19,7 @@ namespace aoc2022::day13 {
         using std::variant<int, list>::variant;
     };
 
-    bool operator<(const element&, const element&);
+    std::strong_ordering operator<=>(const element&, const element&);
 
     struct element_comparison_overload {
         auto operator()(int l, int r) { return l < r; }
@@ -40,8 +40,12 @@ namespace aoc2022::day13 {
         };
     };
 
-    bool operator<(const element& lhs, const element& rhs) {
-        return std::visit(element_comparison_overload{}, lhs, rhs);
+    std::strong_ordering operator<=>(const element& lhs, const element& rhs) {
+        if (lhs == rhs) {
+            return std::strong_ordering::equal;
+        }
+        return std::visit(element_comparison_overload{}, lhs, rhs) ? std::strong_ordering::less
+                                                                   : std::strong_ordering::greater;
     }
 
     std::istream& operator>>(std::istream& in, element& elm) {
