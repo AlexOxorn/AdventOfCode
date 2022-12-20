@@ -26,7 +26,6 @@ namespace aoc2022::day12 {
 
         template <typename End, typename Filter>
         auto find_path(position start, End end, Filter neighbour_filter) {
-            auto x = stdr::subrange(start, end);
             return ox::dikstra(
                     start,
                     end,
