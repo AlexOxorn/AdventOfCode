@@ -106,8 +106,8 @@ namespace aoc2022::day13 {
 
     void puzzle2(const char* filename) {
         list input = get_from_input<element>(filename);
-        element two(list{element{list{element{2}}}});
-        element six(list{element{list{element{6}}}});
+        const element two(list{element{list{element{2}}}});
+        const element six(list{element{list{element{6}}}});
 
         input.emplace_back(two);
         input.emplace_back(six);

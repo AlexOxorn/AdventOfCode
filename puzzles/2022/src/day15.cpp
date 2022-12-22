@@ -25,7 +25,7 @@ namespace aoc2022::day15 {
                 left(x - distance), up(y + distance), right(x + distance), down(y - distance) {}
     };
 
-    int distance_between(coord start, coord end) {
+    long distance_between(coord start, coord end) {
         return std::abs(start.first - end.first) + std::abs(start.second - end.second);
     }
 
@@ -42,7 +42,7 @@ namespace aoc2022::day15 {
         void add_reading(const std::string& s) {
             int x1, x2, y1, y2;
             sscanf(s.c_str(), "Sensor at x=%d, y=%d: closest beacon is at x=%d, y=%d", &x1, &y1, &x2, &y2);
-            int distance = distance_between({x1, y1}, {x2, y2});
+            long distance = distance_between({x1, y1}, {x2, y2});
             insert(std::make_pair(coord{x1, y1}, distance));
             insert(std::make_pair(coord{x2, y2}, 0));
         }
@@ -51,7 +51,7 @@ namespace aoc2022::day15 {
     boundaries covering_square(const std::string& s) {
         int x1, x2, y1, y2;
         sscanf(s.c_str(), "Sensor at x=%d, y=%d: closest beacon is at x=%d, y=%d", &x1, &y1, &x2, &y2);
-        int distance = distance_between({x1, y1}, {x2, y2});
+        long distance = distance_between({x1, y1}, {x2, y2});
         auto [new_x, new_y] = rotate_ccl(x1, y1);
         return {new_x, new_y, distance};
     }
@@ -132,18 +132,15 @@ namespace aoc2022::day15 {
         auto horizontal_boundaries = get_candiates(left_boundaries, right_boundaries);
 
         cave_map& map = get_cave_map(filename);
-        coord res;
 
         for (int old_x : horizontal_boundaries) {
             for (int old_y : vertical_boundaries) {
                 auto candidate_pos = rotate_cl(old_x, old_y);
                 if (stdr::all_of(map, std::not_fn(std::bind_front(within_range, candidate_pos)))) {
-                    res = candidate_pos;
-                    goto end;
+                    printf("%ld\n", candidate_pos.first * 4'000'000 + candidate_pos.second);
+                    return;
                 }
             }
         }
-        end:
-        printf("%ld\n", res.first * 4'000'000 + res.second);
     }
 } // namespace aoc2022::day15
