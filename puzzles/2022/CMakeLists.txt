@@ -17,7 +17,7 @@ add_library(
         src/day14.cpp
         src/day15.cpp
         src/day16.cpp
-        src/day17.cpp src/day18.cpp)
+        src/day17.cpp src/day18.cpp src/day19.cpp)
 
 target_link_libraries("2022" PRIVATE "ox")
 target_include_directories("2022" PUBLIC "include")

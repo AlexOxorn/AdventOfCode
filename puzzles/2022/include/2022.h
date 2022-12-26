@@ -13,7 +13,7 @@ namespace aoc2022 {
     constexpr yearfunctions days{{PUZZLE_PAIR(01) PUZZLE_PAIR(02) PUZZLE_PAIR(03) PUZZLE_PAIR(04) PUZZLE_PAIR(
             05) PUZZLE_PAIR(06) PUZZLE_PAIR(07) PUZZLE_PAIR(08) PUZZLE_PAIR(09) PUZZLE_PAIR(10) PUZZLE_PAIR(11)
                                           PUZZLE_PAIR(12) PUZZLE_PAIR(13) PUZZLE_PAIR(14) PUZZLE_PAIR(15)
-                                                  PUZZLE_PAIR(16) PUZZLE_PAIR(17) PUZZLE_PAIR(18)}};
+                                                  PUZZLE_PAIR(16) PUZZLE_PAIR(17) PUZZLE_PAIR(18) PUZZLE_PAIR(19)}};
 } // namespace aoc2022
 
 #endif // ADVENTOFCODE_2021_H
