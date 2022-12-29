@@ -4,11 +4,11 @@
 
 #include "../../../common.h"
 #include <ox/hash.h>
-#include <chrono>
 #include <unordered_set>
 #include <set>
 #include <numeric>
 #include <algorithm>
+#include <cstring>
 #include <ox/graph.h>
 #include <ox/grid.h>
 
@@ -35,7 +35,7 @@ namespace aoc2022::day16 {
         return x.first->second;
     }
 
-    struct vents : public std::string {
+    struct vents : public std::array<char, 36> {
     private:
         vents& set_state(int vent, char state) {
             (*this)[vent] = state;
@@ -43,8 +43,6 @@ namespace aoc2022::day16 {
         }
         [[nodiscard]] bool is_state(int vent, char state) const { return (*this)[vent] == state; }
     public:
-        explicit vents(int i) : std::string(i, '-') {}
-
         [[nodiscard]] bool is_open(int vent) const { return is_state(vent, '*'); }
         [[nodiscard]] bool is_closed(int vent) const { return is_state(vent, '-'); }
 
@@ -97,17 +95,20 @@ namespace aoc2022::day16 {
     }
 
     struct flow_state {
-        vents pipes_opened = vents(static_cast<int>(pipe_flows.size()));
+        vents pipes_opened;
 
-        int time_remaining = 30;
-        int remaining_potential = -1;
-
+        int time_remaining;
+        int remaining_potential;
         int current_position;
         int elephant_position;
+        int remaining_distance;
 
-        int remaining_distance = -1;
-
-        void set_initial_potential() { remaining_potential = std::accumulate(pipe_flows.begin(), pipe_flows.end(), 0); }
+        void init() {
+            remaining_distance = -1;
+            std::memset(pipes_opened.data(), '-', 36);
+            pipes_opened[pipe_flows.size()] = '\0';
+            remaining_potential = std::accumulate(pipe_flows.begin(), pipe_flows.end(), 0);
+        }
 
         [[nodiscard]] flow_state open_valve(int me) const {
             if (remaining_distance >= 0)
@@ -302,14 +303,8 @@ namespace std {
     template <>
     struct hash<aoc2022::day16::flow_state> {
         size_t operator()(const aoc2022::day16::flow_state& x) const {
-            size_t result = 0;
-            result += std::hash<std::string>()(x.pipes_opened);
-            result += 2 * std::hash<int>()(x.current_position);
-            result += 3 * std::hash<int>()(x.elephant_position);
-            result += 5 * std::hash<int>()(x.remaining_potential);
-            result += 7 * std::hash<int>()(x.remaining_distance);
-            result += 11 * std::hash<int>()(x.time_remaining);
-            return result;
+            static_assert(std::is_trivial_v<aoc2022::day16::flow_state>);
+            return std::hash<std::string_view>()(std::string_view(reinterpret_cast<const char*>(&x), sizeof(x)));
         };
     };
 } // namespace std
@@ -345,7 +340,7 @@ namespace aoc2022::day16 {
                                .current_position = get_pipe_index("AA"),
                                .elephant_position = get_pipe_index("AA")};
 
-        start_state.set_initial_potential();
+        start_state.init();
 
         ox::dikstra_solver solver(ox::a_start{}, start_state, eruption(), neighbour_func, min_remaining_pressure_loss);
 
@@ -355,7 +350,7 @@ namespace aoc2022::day16 {
             printf("%2d & %2d: %s at t = %d -> %ld:\n",
                    x.current_position,
                    x.elephant_position,
-                   x.pipes_opened.c_str() + 1,
+                   x.pipes_opened.data() + 1,
                    start_time - x.time_remaining,
                    y);
         }
