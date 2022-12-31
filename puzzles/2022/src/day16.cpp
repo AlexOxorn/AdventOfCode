@@ -336,9 +336,14 @@ namespace aoc2022::day16 {
             set_flows(pipe_flows, pipe_flows0);
         }
 
-        flow_state start_state{.time_remaining = start_time,
-                               .current_position = get_pipe_index("AA"),
-                               .elephant_position = get_pipe_index("AA")};
+        flow_state start_state{
+                .pipes_opened = {},
+                .time_remaining = start_time,
+                .remaining_potential = 0,
+                .current_position = get_pipe_index("AA"),
+                .elephant_position = get_pipe_index("AA"),
+                .remaining_distance = -1
+        };
 
         start_state.init();
 

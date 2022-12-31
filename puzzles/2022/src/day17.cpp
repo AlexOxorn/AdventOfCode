@@ -93,7 +93,7 @@ namespace aoc2022::day17 {
             }
         }
     public:
-        void print(int take_amount = 15) {
+        void print([[maybe_unused]] int take_amount = 15) {
             for (unsigned char c : spots | stdv::reverse | stdv::take(15)) {
                 printf("|" BYTE_TO_BINARY_PATTERN "|\n", BYTE_TO_BINARY(c));
             }
@@ -196,7 +196,7 @@ namespace aoc2022::day17 {
         solve(filename, 2022, false);
     }
 
-    void puzzle2(const char* filename) {
-//        solve(filename, 1'000'000'000'000);
+    void puzzle2([[maybe_unused]] const char* filename) {
+        //        solve(filename, 1'000'000'000'000);
     }
 } // namespace aoc2022::day17
