@@ -5,41 +5,57 @@
 #include "../../../common.h"
 #include <unordered_map>
 #include <algorithm>
-#include <thread>
 #include <queue>
 #include <numeric>
+#include <ox/types.h>
+#include <ox/graph.h>
 
 namespace aoc2022::day19 {
+#define FOR_ROCK for (int i = 0; i < rock_types; i++)
+    using namespace ox::int_alias;
+
     constexpr int rock_types = 4;
-    struct material {
-        std::array<long, rock_types> rocks;
 
-        bool operator<=(const material& other) const {
-            for (int i = 0; i < rock_types; i++)
-                if (rocks[i] > other.rocks[i])
-                    return false;
-            return true;
+    u16 triangle_sum2(u16 steps, u16 robots, u16 time_remaining) {
+        u16 res = 0;
+        for (int i = 0; i < time_remaining; ++i) {
+            res += steps - (robots + i);
         }
+        return res;
+    }
 
-        bool operator==(const material&) const = default;
-
-        auto operator<=>(const material& other) const {
-            if (*this == other)
-                return std::partial_ordering::equivalent;
-            if (*this <= other)
-                return std::partial_ordering::less;
-            return std::partial_ordering::unordered;
-        }
+    union material {
+        u16 rocks[rock_types];
+        i64 data;
+        struct {
+            u16 ore, clay, obsidian, geode;
+        };
 
         material& operator-=(const material& other) {
-            for (int i = 0; i < rock_types; i++)
+            FOR_ROCK {
                 rocks[i] -= other.rocks[i];
+            }
             return *this;
         }
 
-        [[nodiscard]] bool savable(std::array<long, rock_types> robots) const {
-            for (int i = 0; i < rock_types; i++) {
-                if (rocks[i] && robots[i])
+        material& operator+=(const material& other) {
+            FOR_ROCK {
+                rocks[i] += other.rocks[i];
+            }
+            return *this;
+        }
+        material operator+(const material& other) const {
+            auto res = *this;
+            res += other;
+            return res;
+        }
+
+        bool operator==(const material& other) const { return this->data == other.data; };
+        auto operator<=>(const material& other) const { return this->data <=> other.data; };
+
+        [[nodiscard]] bool can_by(material m) const {
+            FOR_ROCK {
+                if (rocks[i] < m.rocks[i])
                     return false;
             }
             return true;
@@ -49,121 +65,84 @@ namespace aoc2022::day19 {
     struct blueprint {
         int id;
         material ore_robot, clay_robot, obsidian_robot, geode_robot;
-        std::array<long, rock_types> max_robots;
-
-        [[nodiscard]] size_t savable(std::array<long, rock_types> robots) const {
-            return stdr::count_if(std::array{ore_robot, clay_robot, obsidian_robot, geode_robot},
-                                  [&](material& m) { return m.savable(robots); });
-        }
-
-        void set_maximums() {
-            auto x = std::array{ore_robot, clay_robot, obsidian_robot, geode_robot};
-            for (int i = 0; i < rock_types - 1; i++) {
-                max_robots[i] = stdr::max(x, std::less<>(), [i](material m) { return m.rocks[i]; }).rocks[i];
-            }
-            max_robots[rock_types - 1] = std::numeric_limits<long>::max();
-        }
     };
 
-    static material blueprint::*robots[rock_types] = {
+    static material blueprint::*robot_blueprints[rock_types] = {
             &blueprint::ore_robot, &blueprint::clay_robot, &blueprint::obsidian_robot, &blueprint::geode_robot};
+
+    struct end_state {};
 
     struct state {
         const blueprint* blue;
-        std::array<long, rock_types> robots;
+        material robots;
         material curren_material;
+        u8 time_state; u8 steps;
+
+        bool operator==(const state&) const = default;
 
         [[nodiscard]] state do_nothing() const {
             auto to_return = *this;
             for (int i = 0; i < rock_types; ++i) {
-                to_return.curren_material.rocks[i] += robots[i];
+                to_return.curren_material.rocks[i] += robots.rocks[i];
             }
+            to_return.time_state++;
             return to_return;
         }
 
         [[nodiscard]] state buy(material blueprint::*mat, int index) const {
             auto to_return = *this;
-            ++to_return.robots[index];
+            ++to_return.robots.rocks[index];
             to_return.curren_material -= blue->*mat;
             return to_return;
         }
 
-        [[nodiscard]] size_t savable() const { return blue->savable(robots); }
-    };
-
-    std::vector<state> get_neighbours(const state& s) {
-        std::vector<state> neighbours;
-        neighbours.reserve(rock_types);
-
-        auto new_state = s.do_nothing();
-        for (int i = 0; i < rock_types; i++) {
-            if (s.robots[i] < s.blue->max_robots[i] && s.blue->*(robots[i]) <= s.curren_material) {
-                neighbours.push_back(new_state.buy(robots[i], i));
+        material cost() {
+            material cost{.rocks = {}};
+            FOR_ROCK {
+                cost.rocks[i] = steps - robots.rocks[i];
             }
+            return cost;
         }
-        neighbours.push_back(new_state);
-        return neighbours;
-    }
 
-    long score(std::array<long, rock_types> a) {
-        return (a[3] << 48) + (a[2] << 32) + (a[1] << 16) + a[0];
-    }
+        [[nodiscard]] std::vector<std::pair<state, material>> get_neighbours() const {
+            std::vector<std::pair<state, material>> neighbours;
+            neighbours.reserve(rock_types + 1);
 
-    std::vector<state> prune(const std::vector<state>& states) {
-        std::unordered_map<long, std::vector<std::pair<state, material>>> max_scores;
-
-        double aa = 0;
-        for (const state& s : states) {
-            aa += 1.0;
-//            printf("\033[2J%lf\n", aa/states.size());
-            long robots_key = score(s.robots);
-            if (!max_scores.contains(robots_key)) {
-                max_scores.emplace(robots_key, std::vector{std::make_pair(s, s.curren_material)});
-                continue;
-            }
-
-            bool found = false;
-            for (auto& state : max_scores.at(robots_key)) {
-                if (state.second <=> s.curren_material == std::partial_ordering::less) {
-                    found = true;
-                    state = std::make_pair(s, s.curren_material);
+            auto new_state = do_nothing();
+            FOR_ROCK {
+                if (curren_material.can_by(blue->*(robot_blueprints[i]))) {
+                    auto buy_state = new_state.buy(robot_blueprints[i], i);
+                    neighbours.emplace_back(buy_state, buy_state.cost());
                 }
             }
-            if (not found) {
-//                printf("not found\n");
-                max_scores.at(robots_key).emplace_back(s, s.curren_material);
-            }
-//            printf("---------------------------------\n");
-        }
-        printf("=====================================\n");
-        auto x = max_scores | stdv::values | stdv::join | stdv::keys;
-        return {x.begin(), x.end()};
-    }
-
-    std::vector<state> calculate_next(const std::vector<state>& in, int remaining_time = 1) {
-        std::vector<state> nexts;
-        nexts.reserve(in.size() * rock_types);
-
-        for (const auto& x : in) {
-            auto v = get_neighbours(x);
-            nexts.insert(nexts.end(), std::make_move_iterator(v.begin()), std::make_move_iterator(v.end()));
+            if (neighbours.size() != 4)
+                neighbours.emplace_back(new_state, new_state.cost());
+            return neighbours;
         }
 
-        /*for (int i = rock_types; i > 2; --i) {
-            auto geo_count = [&](const state& s) {
-                return s.curren_material.rocks[i-1] + s.robots[i-1];
-            };
-            stdr::sort(nexts, std::greater<>(), geo_count);
-            auto highest = geo_count(nexts.front());
-            if (highest > 0) {
-                auto x = stdr::upper_bound(nexts, highest - 2, std::greater<>(), geo_count);
-                nexts.erase(x, nexts.end());
-                break;
-            }
-        }*/
+        material heuristic(...) const {
+            u16 remaining = steps - time_state;
+            return material{.geode = triangle_sum2(steps, robots.geode, remaining),
+                            .ore = triangle_sum2(steps, robots.ore, remaining),
+                            .obsidian = triangle_sum2(steps, robots.obsidian, remaining),
+                            .clay = triangle_sum2(steps, robots.clay, remaining)};
+        }
+    };
+} // namespace aoc2022::day19
 
-        printf("%zu\n", nexts.size());
-        return prune(nexts);
+namespace std {
+    template <>
+    struct std::hash<aoc2022::day19::state> {
+        size_t operator()(const aoc2022::day19::state& s) const {
+            auto sv = std::string_view(reinterpret_cast<const char*>(&s), sizeof(s));
+            return std::hash<std::string_view>()(sv);
+        }
+    };
+} // namespace std
+
+namespace aoc2022::day19 {
+    bool operator==(const state& s, const end_state&) {
+        return s.time_state == s.steps;
     }
 
     std::istream& operator>>(std::istream& in, blueprint& b) {
@@ -180,7 +159,7 @@ namespace aoc2022::day19 {
         sscanf(head, "Blueprint %d: %n", &b.id, &read_distance);
         head += read_distance;
 
-        for (auto robot : robots) {
+        for (auto robot : robot_blueprints) {
             char mineral_type[10];
             sscanf(head, "Each %s robot costs %n", mineral_type, &read_distance);
             head += read_distance;
@@ -192,13 +171,13 @@ namespace aoc2022::day19 {
                 sscanf(head, "%d %[^ .]%n", &amount, mineral_type, &read_distance);
                 head += read_distance;
                 if ("ore"sv == mineral_type) {
-                    (b.*robot).rocks[0] = amount;
+                    (b.*robot).ore = amount;
                 } else if ("clay"sv == mineral_type) {
-                    (b.*robot).rocks[1] = amount;
+                    (b.*robot).clay = amount;
                 } else if ("obsidian"sv == mineral_type) {
-                    (b.*robot).rocks[2] = amount;
+                    (b.*robot).obsidian = amount;
                 } else if ("geode"sv == mineral_type) {
-                    (b.*robot).rocks[3] = amount;
+                    (b.*robot).geode = amount;
                 }
 
                 if (*head == '.')
@@ -211,39 +190,40 @@ namespace aoc2022::day19 {
         return in;
     }
 
-    state geode_count(const blueprint& b) {
-        std::vector start{
-                state{.blue = &b, .robots = {1, 0, 0, 0}, .curren_material = {}}
-        };
+    std::pair<i32, u16> geode_count(const blueprint& b, u8 steps) {
+        material start{.ore = 1, .clay = 0, .obsidian = 0, .geode = 0};
 
-        for (int i = 0; i < 24; i++) {
-            start = calculate_next(start, 24 - i);
-        }
+        ox::dikstra_solver solver(
+                ox::a_start(),
+                state{.blue = &b, .robots = start, .curren_material = {}, .time_state = 0, .steps = steps},
+                end_state(),
+                &state::get_neighbours,
+                &state::heuristic);
 
-        auto result =
-                stdr::max(start, std::less<>(), [](const state& x) { return x.curren_material.rocks[rock_types - 1]; });
-        printf("state:\n\tID: %d\n\tore: %ld\n\tclay: %ld\n\tobsidian: %ld\n\tgeodes: %ld\n",
-               result.blue->id,
-               result.curren_material.rocks[0],
-               result.curren_material.rocks[1],
-               result.curren_material.rocks[2],
-               result.curren_material.rocks[3]);
-        return result;
+        auto [path, cost] = solver();
+
+        auto x = path.back();
+
+        return {b.id, x.first.curren_material.geode};
     }
 
     void puzzle1(const char* filename) {
         auto blueprints = get_from_input<blueprint>(filename);
-        std::vector<state> results;
-        stdr::for_each(blueprints, &blueprint::set_maximums);
-        stdr::transform(blueprints, std::back_inserter(results), geode_count);
-        //        auto best = stdr::max_element(results, std::less<>(), [](const state& s) { return
-        //        s.curren_material.geode; });
-        auto quality_values = results | stdv::transform([](const state& s) {
-                                  printf("%d - %ld\n", s.blue->id, s.curren_material.rocks[rock_types - 1]);
-                                  return s.blue->id * s.curren_material.rocks[rock_types - 1];
-                              });
-        printf("Sum of Quality Level %ld\n", std::accumulate(quality_values.begin(), quality_values.end(), 0l));
+        auto quality_scores = blueprints | stdv::transform([](const auto& x) { return geode_count(x, 24); })
+                            | stdv::transform([](const std::pair<i32, u16>& a) { return a.first * a.second; });
+        auto result = std::accumulate(quality_scores.begin(), quality_scores.end(), 0);
+
+        printf("The total quality score is %d\n", result);
     }
 
-    void puzzle2(const char* filename) {}
+    void puzzle2(const char* filename) {
+        auto blueprints = get_from_input<blueprint>(filename);
+        auto quality_scores = blueprints | stdv::take(3)
+                            | stdv::transform([](const auto& x) { return geode_count(x, 32); })
+                            | stdv::transform([](std::pair<i32, u16> a) { return a.second; });
+
+        auto result = std::accumulate(quality_scores.begin(), quality_scores.end(), 1, std::multiplies());
+
+        printf("The total geode product is %d\n", result);
+    }
 } // namespace aoc2022::day19
