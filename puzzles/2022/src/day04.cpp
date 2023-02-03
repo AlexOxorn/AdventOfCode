@@ -44,7 +44,7 @@ namespace aoc2022::day04 {
 
     void puzzle2(const char* filename) {
         auto groups = get_stream<std::pair<range, range>>(filename);
-        size_t count = stdr::distance(groups | stdv::filter(overlap_full));
+        size_t count = stdr::distance(groups | stdv::filter(overlap));
         printf("number of partially overlapping teams is %zu\n", count);
     }
 } // namespace aoc2022::day04

@@ -197,6 +197,6 @@ namespace aoc2022::day17 {
     }
 
     void puzzle2([[maybe_unused]] const char* filename) {
-        //        solve(filename, 1'000'000'000'000);
+        solve(filename, 1'000'000'000'000, true);
     }
 } // namespace aoc2022::day17

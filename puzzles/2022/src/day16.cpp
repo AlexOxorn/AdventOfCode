@@ -348,7 +348,7 @@ namespace aoc2022::day16 {
         start_state.init();
 
         ox::dikstra_solver solver(ox::a_start{}, start_state, eruption(), neighbour_func, min_remaining_pressure_loss);
-
+        solver.track_path();
         auto [path, cost] = solver();
 
         for (auto [x, y] : path) {

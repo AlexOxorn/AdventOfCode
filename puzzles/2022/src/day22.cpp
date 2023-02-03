@@ -255,6 +255,6 @@ namespace aoc2022::day22 {
     }
 
     void puzzle2(const char* filename) {
-        solve<true>(filename, &map_of_board::move_cube);
+        solve(filename, &map_of_board::move_cube);
     }
 } // namespace aoc2022::day22
