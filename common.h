@@ -22,7 +22,7 @@ using namespace ox::std_abbreviations;
 
 extern long year, day;
 
-template <typename T>
+template <typename T = ox::line>
 auto get_stream(const char* name) {
     char filename[512];
     sprintf(filename, "%s/../puzzles/%ld/inputs/day%02ld_%s.txt", ox::executable_folder().c_str(), year, day, name);
