@@ -16,20 +16,22 @@ namespace aoc2022::day19 {
 
     constexpr int rock_types = 4;
 
-    u16 triangle_sum2(u16 steps, u16 robots, u16 time_remaining) {
-        u16 res = 0;
-        for (int i = 0; i < time_remaining; ++i) {
+    i32 triangle_sum2(i32 steps, i32 robots, i32 time_remaining) {
+        i32 res = 0;
+        for (i32 i = 0; i < time_remaining; ++i) {
             res += steps - (robots + i);
         }
         return res;
     }
 
     union material {
-        u16 rocks[rock_types];
-        i64 data;
+        i32 rocks[rock_types];
         struct {
-            u16 ore, clay, obsidian, geode;
+            i32 ore, clay, obsidian, geode;
         };
+
+        material(): rocks{} {};
+        material(i32 ore, i32 clay, i32 obsidian, i32 geode): ore{ore}, clay{clay}, obsidian{obsidian}, geode{geode} {}
 
         material& operator-=(const material& other) {
             FOR_ROCK {
@@ -50,8 +52,20 @@ namespace aoc2022::day19 {
             return res;
         }
 
-        bool operator==(const material& other) const { return this->data == other.data; };
-        auto operator<=>(const material& other) const { return this->data <=> other.data; };
+        auto operator<=>(const material& other) const {
+            auto eq = std::strong_ordering::equal;
+            auto order = std::strong_ordering::equal;
+            if (order = geode <=> other.geode; order != eq)
+                return order;
+            if (order = obsidian <=> other.obsidian; order != eq)
+                return order;
+            if (order = clay <=> other.clay; order != eq)
+                return order;
+            return ore <=> other.ore;
+        };
+        bool operator==(const material& other) const {
+            return (*this <=> other) == std::strong_ordering::equal;
+        };
 
         [[nodiscard]] bool can_by(material m) const {
             FOR_ROCK {
@@ -97,7 +111,7 @@ namespace aoc2022::day19 {
         }
 
         material cost() {
-            material cost{.rocks = {}};
+            material cost;
             FOR_ROCK {
                 cost.rocks[i] = steps - robots.rocks[i];
             }
@@ -122,20 +136,20 @@ namespace aoc2022::day19 {
 
         material heuristic(...) const {
             u16 remaining = steps - time_state;
-            return material{.geode = triangle_sum2(steps, robots.geode, remaining),
-                            .ore = triangle_sum2(steps, robots.ore, remaining),
-                            .obsidian = triangle_sum2(steps, robots.obsidian, remaining),
-                            .clay = triangle_sum2(steps, robots.clay, remaining)};
+            return {triangle_sum2(steps, robots.ore, remaining),
+                    triangle_sum2(steps, robots.clay, remaining),
+                    triangle_sum2(steps, robots.obsidian, remaining),
+                    triangle_sum2(steps, robots.geode, remaining)};
         }
     };
 } // namespace aoc2022::day19
 
 namespace std {
     template <>
-    struct std::hash<aoc2022::day19::state> {
+    struct hash<aoc2022::day19::state> {
         size_t operator()(const aoc2022::day19::state& s) const {
             auto sv = std::string_view(reinterpret_cast<const char*>(&s), sizeof(s));
-            return std::hash<std::string_view>()(sv);
+            return hash<std::string_view>()(sv);
         }
     };
 } // namespace std
@@ -191,7 +205,7 @@ namespace aoc2022::day19 {
     }
 
     std::pair<i32, u16> geode_count(const blueprint& b, u8 steps) {
-        material start{.ore = 1, .clay = 0, .obsidian = 0, .geode = 0};
+        material start(1, 0, 0, 0);
 
         ox::dikstra_solver solver(
                 ox::a_start(),
@@ -203,7 +217,7 @@ namespace aoc2022::day19 {
         auto [path, cost] = solver();
 
         auto x = path.back();
-
+        printf("Blueprint %2d has %d geodes\n", b.id, x.first.curren_material.geode);
         return {b.id, x.first.curren_material.geode};
     }
 
