@@ -138,19 +138,19 @@ namespace aoc2021::day16 {
 
     void print_packet(const packet& p, int indent = 0);
     void print_literal(const Literal& l) {
-        printf("(%lu)", parse_int_from_bool(l.number.begin(), l.number.end()));
+        myprintf("(%lu)", parse_int_from_bool(l.number.begin(), l.number.end()));
     }
     void print_operator(const Operator& o, int indent = 0) {
         for (packet p : o.packets) {
-            printf("\n");
+            myprintf("\n");
             print_packet(p, indent + 1);
         }
     }
     void print_packet(const packet& p, int indent) {
         char temp[10];
         sprintf(temp, "%%%ds", indent * 4);
-        printf(temp, "");
-        printf("<version = %d, type = '%c'> ", p.version, type_to_op(p.type));
+        myprintf(temp, "");
+        myprintf("<version = %d, type = '%c'> ", p.version, type_to_op(p.type));
         if (p.type == 4) {
             print_literal(std::get<0>(p.body));
         } else {
@@ -182,17 +182,21 @@ namespace aoc2021::day16 {
         return b;
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto input = get_stream<char>(filename);
         std::vector<bool> b = parse_character(input);
         auto [packet, end] = parse_packet(b.begin());
-        printf("The total version count is: %ld\n", add_packet_version(packet));
+        long result = add_packet_version(packet);
+        myprintf("The total version count is: %ld\n", result);
+        return result;
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto input = get_stream<char>(filename);
         std::vector<bool> b = parse_character(input);
         auto [packet, end] = parse_packet(b.begin());
-        printf("The total version count is: %ld\n", evaluate_packet(packet));
+        long result = evaluate_packet(packet);
+        myprintf("The total version count is: %ld\n", result);
+        return result;
     }
 }

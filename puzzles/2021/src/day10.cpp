@@ -81,7 +81,7 @@ namespace aoc2021::day10 {
         }
     };
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto input = get_stream<std::string>(filename);
 
         auto scores = input
@@ -89,10 +89,11 @@ namespace aoc2021::day10 {
                       | stdv::filter(std::identity())
                       | stdv::transform(parser::close_to_score1);
         auto x = std::accumulate(scores.begin(), scores.end(), 0);
-        printf("The score is %d\n", x);
+        myprintf("The score is %d\n", x);
+        return x;
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto input = get_stream<std::string>(filename);
 
         auto scores_itr = input
@@ -106,6 +107,7 @@ namespace aoc2021::day10 {
             scores.push_back(x);
         }
         std::nth_element(scores.begin(), scores.begin() + (scores.size()/2), scores.end());
-        printf("The score is %ld\n", scores[scores.size()/2]);
+        myprintf("The score is %ld\n", scores[scores.size()/2]);
+        return scores[scores.size()/2];
     }
 }

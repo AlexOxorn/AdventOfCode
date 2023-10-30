@@ -115,7 +115,7 @@ namespace aoc2022::day19 {
         double aa = 0;
         for (const state& s : states) {
             aa += 1.0;
-//            printf("\033[2J%lf\n", aa/states.size());
+//            myprintf("\033[2J%lf\n", aa/states.size());
             long robots_key = score(s.robots);
             if (!max_scores.contains(robots_key)) {
                 max_scores.emplace(robots_key, std::vector{std::make_pair(s, s.curren_material)});
@@ -130,12 +130,12 @@ namespace aoc2022::day19 {
                 }
             }
             if (not found) {
-//                printf("not found\n");
+//                myprintf("not found\n");
                 max_scores.at(robots_key).emplace_back(s, s.curren_material);
             }
-//            printf("---------------------------------\n");
+//            myprintf("---------------------------------\n");
         }
-        printf("=====================================\n");
+        myprintf("=====================================\n");
         auto x = max_scores | stdv::values | stdv::join | stdv::keys;
         return {x.begin(), x.end()};
     }
@@ -162,7 +162,7 @@ namespace aoc2022::day19 {
             }
         }*/
 
-        printf("%zu\n", nexts.size());
+        myprintf("%zu\n", nexts.size());
         return prune(nexts);
     }
 
@@ -222,7 +222,7 @@ namespace aoc2022::day19 {
 
         auto result =
                 stdr::max(start, std::less<>(), [](const state& x) { return x.curren_material.rocks[rock_types - 1]; });
-        printf("state:\n\tID: %d\n\tore: %ld\n\tclay: %ld\n\tobsidian: %ld\n\tgeodes: %ld\n",
+        myprintf("state:\n\tID: %d\n\tore: %ld\n\tclay: %ld\n\tobsidian: %ld\n\tgeodes: %ld\n",
                result.blue->id,
                result.curren_material.rocks[0],
                result.curren_material.rocks[1],
@@ -231,7 +231,7 @@ namespace aoc2022::day19 {
         return result;
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto blueprints = get_from_input<blueprint>(filename);
         std::vector<state> results;
         stdr::for_each(blueprints, &blueprint::set_maximums);
@@ -239,11 +239,12 @@ namespace aoc2022::day19 {
         //        auto best = stdr::max_element(results, std::less<>(), [](const state& s) { return
         //        s.curren_material.geode; });
         auto quality_values = results | stdv::transform([](const state& s) {
-                                  printf("%d - %ld\n", s.blue->id, s.curren_material.rocks[rock_types - 1]);
+                                  myprintf("%d - %ld\n", s.blue->id, s.curren_material.rocks[rock_types - 1]);
                                   return s.blue->id * s.curren_material.rocks[rock_types - 1];
                               });
-        printf("Sum of Quality Level %ld\n", std::accumulate(quality_values.begin(), quality_values.end(), 0l));
+        myprintf("Sum of Quality Level %ld\n", std::accumulate(quality_values.begin(), quality_values.end(), 0l));
+        return {};
     }
 
-    void puzzle2(const char* filename) {}
+    answertype puzzle2(const char* filename) { return {}; }
 } // namespace aoc2022::day19

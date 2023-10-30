@@ -95,9 +95,9 @@ namespace aoc2022::day17 {
     public:
         void print([[maybe_unused]] int take_amount = 15) {
             for (unsigned char c : spots | stdv::reverse | stdv::take(15)) {
-                printf("|" BYTE_TO_BINARY_PATTERN "|\n", BYTE_TO_BINARY(c));
+                myprintf("|" BYTE_TO_BINARY_PATTERN "|\n", BYTE_TO_BINARY(c));
             }
-            printf("+-------+\n");
+            myprintf("+-------+\n");
         }
 
         void spawn_piece(piece p) {
@@ -119,7 +119,7 @@ namespace aoc2022::day17 {
         explicit operator bool() { return active_piece.has_value(); }
     };
 
-    void solve(const char* filename, long num_of_block, bool type) {
+    auto solve(const char* filename, long num_of_block, bool type) {
         static std::vector<char> motions{get_from_input<char>(filename)};
         board tetris;
         auto motion_iter = motions.begin();
@@ -147,7 +147,7 @@ namespace aoc2022::day17 {
                 piece_iter = pieces.begin();
 
             if (size > tetris.spots.size()) {
-                printf("at block %zu > %zu: %zu | %zu\n", size, tetris.spots.size(), loop_start, loop_count);
+                myprintf("at block %zu > %zu: %zu | %zu\n", size, tetris.spots.size(), loop_start, loop_count);
                 size = tetris.spots.size();
                 loop_count = 0;
                 return false;
@@ -161,13 +161,13 @@ namespace aoc2022::day17 {
                 break;
         }
 
-        printf("loop start : %zu\n", loop_start);
+        myprintf("loop start : %zu\n", loop_start);
 
         long number_of_loops = (num_of_block - loop_start) / loop_size;
         long loop_remainder = (num_of_block - loop_start) % loop_size;
 
-        printf("number_of_loops : %zu\n", number_of_loops);
-        printf("loop_remainder : %zu\n", loop_remainder);
+        myprintf("number_of_loops : %zu\n", number_of_loops);
+        myprintf("loop_remainder : %zu\n", loop_remainder);
 
         size_t pre_loop_height = tetris.get_max_height();
 
@@ -178,25 +178,27 @@ namespace aoc2022::day17 {
             stdr::for_each(stdv::iota(0l, loop_remainder), drop_block);
             size_t remaining_height = tetris.get_max_height() - pre_loop_height - loop_height;
 
-            printf("loop height : %zu\n", loop_height);
-            printf("remaining height : %zu\n", remaining_height);
+            myprintf("loop height : %zu\n", loop_height);
+            myprintf("remaining height : %zu\n", remaining_height);
 
-            printf("The height after %ld blocks is %ld\n==========================\n",
-                   num_of_block,
-                   pre_loop_height + (loop_height * number_of_loops) + remaining_height);
+            size_t finalhight = pre_loop_height + (loop_height * number_of_loops) + remaining_height;
+            myprintf("The height after %ld blocks is %ld\n==========================\n",
+                   num_of_block, finalhight);
+            return finalhight;
         } else {
-            printf("The height after %ld blocks is %zu\n==========================\n",
+            myprintf("The height after %ld blocks is %zu\n==========================\n",
                    num_of_block,
                    tetris.get_max_height());
+            return tetris.get_max_height();
         }
     }
 
-    void puzzle1(const char* filename) {
-        solve(filename, 2022, true);
-        solve(filename, 2022, false);
+    answertype puzzle1(const char* filename) {
+        // solve(filename, 2022, true);
+        return solve(filename, 2022, false);
     }
 
-    void puzzle2([[maybe_unused]] const char* filename) {
-        solve(filename, 1'000'000'000'000, true);
+    answertype puzzle2([[maybe_unused]] const char* filename) {
+        return solve(filename, 1'000'000'000'000, true);
     }
 } // namespace aoc2022::day17

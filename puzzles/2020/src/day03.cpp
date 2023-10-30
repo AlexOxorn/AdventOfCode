@@ -26,12 +26,14 @@ namespace aoc2020::day03 {
     }
 
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto input = get_stream<>(filename);
-        printf("The number of trees on the 3/1 diagonal is %d\n", count_trees(get_forest(filename), 3, 1));
+        int result = count_trees(get_forest(filename), 3, 1);
+        printf("The number of trees on the 3/1 diagonal is %d\n", result);
+        return result;
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto input = get_stream<>(filename);
         auto& forest = get_forest(filename);
         std::array directions{
@@ -46,5 +48,6 @@ namespace aoc2020::day03 {
                           });
         int total = std::accumulate(tree_counts.begin(), tree_counts.end(), 1, std::multiplies{});
         printf("The sum of trees on all directions is %d\n", total);
+        return total;
     }
 } // namespace aoc2020::day03

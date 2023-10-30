@@ -51,20 +51,22 @@ namespace aoc2021::day07 {
         }
     };
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto input = get_stream<int>(filename);
         crab_positions cp(input);
         int med = cp.median();
         int fuel = cp.calculate_fuel(med);
-        printf("The x position is %d\nThe fuel is %d\n", med, fuel);
+        myprintf("The x position is %d\nThe fuel is %d\n", med, fuel);
+        return fuel;
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto input = get_stream<int>(filename);
         crab_positions cp(input);
         auto [mean1, mean2] = cp.mean();
         auto [fuel1, fuel2] = std::make_pair(cp.calculate_fuel2(mean1), cp.calculate_fuel2(mean2));
         auto [fuel, mean] = std::min(std::make_pair(fuel1, mean1), std::make_pair(fuel2, mean2));
-        printf("The x position is %d\nThe fuel is %d\n", mean, fuel);
+        myprintf("The x position is %d\nThe fuel is %d\n", mean, fuel);
+        return fuel;
     }
 }

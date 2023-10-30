@@ -90,22 +90,23 @@ namespace aoc2021::day14 {
         }
     };
 
-    void solve_for(const char* filename, int steps) {
+    long solve_for(const char* filename, int steps) {
         auto input = get_stream<insertion_rule>(filename);
         polymer_decoding p(input);
         std::unordered_map<char, long> char_count = p.multistep(steps);
         auto counts = char_count | stdv::transform(&std::unordered_map<char, long>::value_type::second);
 
         auto [min, max] = stdr::minmax(counts);
-        printf("Min count after %d steps is %ld and the max is %ld\nTheir difference is %ld\n",
+        myprintf("Min count after %d steps is %ld and the max is %ld\nTheir difference is %ld\n",
                steps, min, max, max - min);
+        return max - min;
     }
 
-    void puzzle1(const char* filename) {
-        solve_for(filename, 10);
+    answertype puzzle1(const char* filename) {
+        return solve_for(filename, 10);
     }
 
-    void puzzle2(const char* filename) {
-        solve_for(filename, 40);
+    answertype puzzle2(const char* filename) {
+        return solve_for(filename, 40);
     }
 }

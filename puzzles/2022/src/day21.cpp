@@ -119,18 +119,18 @@ namespace aoc2022::day21 {
 
     void print_tree(math_tree_node& tree) {
         if (tree.children.first) {
-            printf("(");
+            myprintf("(");
             print_tree(*tree.children.first);
         }
-        std::visit(overloaded{[](long l) { printf("%ld", l); },
-                              [](char c) { printf("%c", c); },
+        std::visit(overloaded{[](long l) { myprintf("%ld", l); },
+                              [](char c) { myprintf("%c", c); },
                               [](human) {
-                                  printf("x");
+                                  myprintf("x");
                               }},
                    tree.value);
         if (tree.children.second) {
             print_tree(*tree.children.second);
-            printf(")");
+            myprintf(")");
         }
     }
 
@@ -138,9 +138,9 @@ namespace aoc2022::day21 {
         if (map.size() >= 20 and not force)
             return;
         print_tree(lhs);
-        printf(" == ");
+        myprintf(" == ");
         print_tree(rhs);
-        printf("\n");
+        myprintf("\n");
     }
 
 
@@ -166,13 +166,15 @@ namespace aoc2022::day21 {
     }
 
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto monkey_stream = get_stream<ox::line>(filename);
         stdr::for_each(monkey_stream, register_monkey);
-        printf("The 'root' monkey will yell %ld\n", get_value("root"));
+        long root_value = get_value("root");
+        myprintf("The 'root' monkey will yell %ld\n", root_value);
+        return root_value;
     }
 
-    void puzzle2([[maybe_unused]] const char* filename) {
+    answertype puzzle2([[maybe_unused]] const char* filename) {
         math_tree lhs_tree;
         math_tree rhs_tree;
         auto x = std::get<math_monkey>(map["root"]);
@@ -197,5 +199,6 @@ namespace aoc2022::day21 {
 
         reduce(rhs);
         print_equality(lhs, rhs, true);
+        return std::get<long>(rhs.value);
     }
 } // namespace aoc2022::day21

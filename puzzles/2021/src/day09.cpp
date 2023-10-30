@@ -60,30 +60,34 @@ namespace aoc2021::day09 {
                      | stdv::transform([this] (auto x) { return get_basin_size(x); });
             std::vector basin_sizes(x.begin(), x.end());
             std::nth_element(basin_sizes.begin(), basin_sizes.begin() + 3, basin_sizes.end(), std::greater<int>{});
-            return std::accumulate(basin_sizes.begin(), basin_sizes.begin() + 3, 1, std::multiplies<int>());
+            return std::accumulate(basin_sizes.begin(), basin_sizes.begin() + 3, 1, std::multiplies<>());
             return 0;
         }
 
         void print_array() {
             leveled_iterators(
                     [this](auto& elem) {
-                        printf("\033[%sm%1d\033[0m", is_low_point(elem) ? "31" : *elem == 9 ? "30" : "0", *elem);
+                        myprintf("\033[%sm%1d\033[0m", is_low_point(elem) ? "31" : *elem == 9 ? "30" : "0", *elem);
                     },
-                    []() { printf("\n"); });
-            printf("\n");
+                    []() { myprintf("\n"); });
+            myprintf("\n");
         }
     };
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         heightmap h(get_stream<ox::line>(filename), [](char a) {return a - '0';});
         auto [x, y] = h.get_dimensions();
-        printf("size = %zu x %zu\n", x, y);
+        myprintf("size = %zu x %zu\n", x, y);
         h.print_array();
-        printf("score = %d\n", h.get_score());
+        auto score = h.get_score();
+        myprintf("score = %d\n", h.get_score());
+        return score;
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         heightmap h(get_stream<ox::line>(filename), [](char a) {return a - '0';});
-        printf("score = %d\n", h.get_score2());
+        auto score = h.get_score2();
+        myprintf("score = %d\n", score);
+        return score;
     }
 }

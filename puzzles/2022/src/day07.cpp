@@ -126,19 +126,21 @@ namespace aoc2022::day07 {
         return {x.begin(), x.end()};
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         std::vector<long> dirs = get_directory_sizes(filename);
         auto big_dir = dirs | stdv::filter([](const auto& dir) { return dir <= 100000; });
         auto total_size = std::accumulate(big_dir.begin(), big_dir.end(), 0l);
-        printf("The total size of folder <= 100000 is %ld\n", total_size);
+        myprintf("The total size of folder <= 100000 is %ld\n", total_size);
+        return total_size;
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         const directory& root = get_root(filename);
         long needed_space = root.filesize - (70'000'000 - 30'000'000);
         std::vector<long> dirs = get_directory_sizes(filename);
         stdr::sort(dirs);
         auto todelete = stdr::find_if(dirs, [&](long l) { return l >= needed_space; });
-        printf("Directory to delete has size of %ld\n", *todelete);
+        myprintf("Directory to delete has size of %ld\n", *todelete);
+        return *todelete;
     }
 } // namespace aoc2022::day07

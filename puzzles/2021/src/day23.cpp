@@ -156,17 +156,17 @@ namespace aoc2021::day23 {
     template<int Depth>
     void print_state(const cave_state<Depth>& cave) {
         for (char c : cave.hallway) {
-            printf("%c", c ?: '.');
+            myprintf("%c", c ?: '.');
         }
-        printf("\n");
+        myprintf("\n");
 #define GET_CHR_(i, j) cave.caves[i][j] ?: '.'
         for (int i : stdv::iota(0, Depth)) {
-            printf("  %c %c %c %c\n", GET_CHR_(0, i), GET_CHR_(1, i), GET_CHR_(2, i), GET_CHR_(3, i));
+            myprintf("  %c %c %c %c\n", GET_CHR_(0, i), GET_CHR_(1, i), GET_CHR_(2, i), GET_CHR_(3, i));
         }
 #undef GET_CHR_
     }
 
-    void puzzle1([[maybe_unused]] const char* filename) {
+    answertype puzzle1([[maybe_unused]] const char* filename) {
         cave_state<2> part1({'C', 'B'}, {'A', 'A'}, {'B', 'D'}, {'D', 'C'});
 
         auto [path, cost] = ox::dikstra(
@@ -179,12 +179,13 @@ namespace aoc2021::day23 {
 
         for (auto& [state, cost] : path) {
             print_state<2>(state);
-            printf("Cost is %ld\n\n", cost);
+            myprintf("Cost is %ld\n\n", cost);
         }
-        printf("Cost is %ld\n", cost);
+        myprintf("Cost is %ld\n", cost);
+        return cost;
     }
 
-    void puzzle2([[maybe_unused]] const char* filename) {
+    answertype puzzle2([[maybe_unused]] const char* filename) {
         cave_state<4> part2(
                {'C', 'D', 'D', 'B'},
                {'A', 'C', 'B', 'A'},
@@ -204,8 +205,9 @@ namespace aoc2021::day23 {
 
         for (auto& [state, cost] : path) {
             print_state<4>(state);
-            printf("Cost is %ld\n\n", cost);
+            myprintf("Cost is %ld\n\n", cost);
         }
-        printf("Cost is %ld\n", cost);
+        myprintf("Cost is %ld\n", cost);
+        return cost;
     }
 } // namespace aoc2021::day23

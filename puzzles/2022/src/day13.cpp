@@ -1,4 +1,4 @@
-//
+//day6
 // Created by alexoxorn on 2021-12-01.
 //
 
@@ -94,17 +94,18 @@ namespace aoc2022::day13 {
         return in;
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto input = get_stream<std::pair<element, element>>(filename);
         auto valid_indices = input | stdv::transform([index = 0](const auto& x) mutable {
                                  ++index;
                                  return x.first < x.second ? index : 0;
                              });
         long sum = std::accumulate(valid_indices.begin(), valid_indices.end(), 0l);
-        printf("Sum of the index of the properly ordered pairs is %ld\n", sum);
+        myprintf("Sum of the index of the properly ordered pairs is %ld\n", sum);
+        return sum;
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         list input = get_from_input<element>(filename);
         const element two(list{element{list{element{2}}}});
         const element six(list{element{list{element{6}}}});
@@ -116,6 +117,7 @@ namespace aoc2022::day13 {
         long two_pos = stdr::find(input, two) - input.begin() + 1;
         long six_pos = stdr::find(input, six) - input.begin() + 1;
 
-        printf("the product of indices of the two divider packets is %ld\n", two_pos * six_pos);
+        myprintf("the product of indices of the two divider packets is %ld\n", two_pos * six_pos);
+        return two_pos * six_pos;
     }
 } // namespace aoc2022::day13

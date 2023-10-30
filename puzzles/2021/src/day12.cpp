@@ -64,17 +64,19 @@ namespace aoc2021::day12 {
         }
     };
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto input = get_stream<link>(filename);
         graph g(input);
         auto paths = g.get_valid_paths();
-        printf("Number of unique paths is: %zu\n", paths.size());
+        myprintf("Number of unique paths is: %zu\n", paths.size());
+        return paths.size();
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto input = get_stream<link>(filename);
         graph g(input);
         auto paths = g.get_valid_paths(true);
-        printf("Number of unique paths is: %zu\n", paths.size());
+        myprintf("Number of unique paths is: %zu\n", paths.size());
+        return paths.size();
     }
 }

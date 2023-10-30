@@ -58,16 +58,18 @@ namespace aoc2021::day15 {
         }
     };
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         grid g(get_stream<ox::line>(filename), [](char a) mutable { return a - '0'; });
         auto [path, risk] = g.find_path();
-        printf("Total Risk = %d\n", risk);
+        myprintf("Total Risk = %d\n", risk);
+        return risk;
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto input = get_stream<ox::line>(filename);
         grid g(input, 5);
         auto [path, risk] = g.find_path();
-        printf("Total Risk = %d\n", risk);
+        myprintf("Total Risk = %d\n", risk);
+        return risk;
     }
 } // namespace aoc2021::day15

@@ -59,21 +59,24 @@ namespace aoc2021::day17 {
         return to_return;
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         target_area t;
         auto input = get_stream<target_area>(filename);
         input >> t;
 
         int initial_speed = max_initial_y(t);
-        printf("The highest is %d using initial y speed of %d\n", height_from_initial_y(initial_speed), initial_speed);
+        int highest = height_from_initial_y(initial_speed);
+        myprintf("The highest is %d using initial y speed of %d\n", highest, initial_speed);
+        return highest;
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         target_area t;
         auto input = get_stream<target_area>(filename);
         input >> t;
 
         std::vector<std::pair<int, int>> initial_speeds = get_all_valid_starts(t);
-        printf("The number of valid initial speeds are %zu\n", initial_speeds.size());
+        myprintf("The number of valid initial speeds are %zu\n", initial_speeds.size());
+        return initial_speeds.size();
     }
 } // namespace aoc2021::day17

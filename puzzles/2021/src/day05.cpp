@@ -71,9 +71,9 @@ namespace aoc2021::day05 {
 
         void print_grid() {
             leveled_foreach(
-                    [](auto& elem) { printf(elem ? "%d " : ". ", elem); },
-                    []() { printf("\n"); });
-            printf("\n");
+                    [](auto& elem) { myprintf(elem ? "%d " : ". ", elem); },
+                    []() { myprintf("\n"); });
+            myprintf("\n");
         }
 
         [[nodiscard]] auto count_score() const {
@@ -81,23 +81,25 @@ namespace aoc2021::day05 {
         }
     };
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto input = get_stream<line>(filename);
         grid g;
         for (line l : input) {
             g.add_line(l);
         }
         g.print_grid();
-        printf("the score is: %lu\n", g.count_score());
+        myprintf("the score is: %lu\n", g.count_score());
+        return g.count_score();
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto input = get_stream<line>(filename);
         grid g(true);
         for (line l : input) {
             g.add_line(l);
         }
         g.print_grid();
-        printf("the score is: %lu", g.count_score());
+        myprintf("the score is: %lu", g.count_score());
+        return g.count_score();
     }
 }

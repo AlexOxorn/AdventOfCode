@@ -154,7 +154,7 @@ namespace aoc2022::day24 {
         return {start_x, start_y, end_x, end_y};
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto [start_x, start_y, end_x, end_y] = start_and_end(filename);
 
         ox::dikstra_solver dd(ox::a_start(),
@@ -164,10 +164,11 @@ namespace aoc2022::day24 {
                               &state::heuristic);
 
         auto [path, cost] = dd();
-        printf("the time it takes to cross the blizzard is %d\n", cost);
+        myprintf("the time it takes to cross the blizzard is %d\n", cost);
+        return cost;
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto [start_x, start_y, end_x, end_y] = start_and_end(filename);
 
         ox::dikstra_solver dd(ox::a_start(),
@@ -177,6 +178,7 @@ namespace aoc2022::day24 {
                               &state::heuristic);
 
         auto [path, cost] = dd();
-        printf("the time it takes to cross the blizzard is %d\n", cost);
+        myprintf("the time it takes to cross the blizzard is %d\n", cost);
+        return cost;
     }
 } // namespace aoc2022::day24

@@ -33,36 +33,41 @@ namespace aoc2021::day06 {
             return *this;
         }
 
+        count_type get_result() {
+            return std::accumulate(days_count.begin(), days_count.end(), count_type{});
+        }
+
         void print_state() {
             switch (day) {
                 case 0:
-                    printf("Initial State:  ");
+                    myprintf("Initial State:  ");
                     break;
                 case 1:
-                    printf("After   1 day:  ");
+                    myprintf("After   1 day:  ");
                     break;
                 default:
-                    printf("After %3d days: ", day);
+                    myprintf("After %3d days: ", day);
             }
-            std::cout << std::accumulate(days_count.begin(), days_count.end(), count_type{});
-            printf(" Total\n");
+            myprintf("%ld", get_result());
+            myprintf(" Total\n");
         }
     };
 
-    void run_test(const char* filename, int generations) {
+    answertype run_test(const char* filename, int generations) {
         auto input = get_stream<int>(filename);
         fish_population fishes(input);
         for([[maybe_unused]] int a : stdv::iota(0, generations)) {
             ++fishes;
         }
         fishes.print_state();
+        return fishes.get_result();
     }
 
-    void puzzle1(const char* filename) {
-        run_test(filename, 80);
+    answertype puzzle1(const char* filename) {
+        return run_test(filename, 80);
     }
 
-    void puzzle2(const char* filename) {
-        run_test(filename, 256);
+    answertype puzzle2(const char* filename) {
+        return run_test(filename, 256);
     }
 }

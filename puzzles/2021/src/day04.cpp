@@ -71,9 +71,9 @@ namespace aoc2021::day04 {
 
         void print_state() {
             leveled_foreach(
-                    [](auto& elem) { printf("\033[%dm%2d\033[0m ", elem->second ? 31 : 0, elem->first); },
-                    []() { printf("\n"); });
-            printf("\n");
+                    [](auto& elem) { myprintf("\033[%dm%2d\033[0m ", elem->second ? 31 : 0, elem->first); },
+                    []() { myprintf("\n"); });
+            myprintf("\n");
         }
     };
 
@@ -104,11 +104,12 @@ namespace aoc2021::day04 {
         return to_return;
     }
 
-    void print_final_result(bingo_card card, int ball) {
+    int print_final_result(bingo_card card, int ball) {
         int score = card.get_score();
-        printf("Total Score is: %d\n", card.get_score());
-        printf("Last called was: %d\n", ball);
-        printf("Their product was: %d\n", ball * score);
+        myprintf("Total Score is: %d\n", card.get_score());
+        myprintf("Last called was: %d\n", ball);
+        myprintf("Their product was: %d\n", ball * score);
+        return ball * score;
     }
 
     std::pair<bingo_inputs, std::vector<bingo_card>> init(const char* filename) {
@@ -117,35 +118,35 @@ namespace aoc2021::day04 {
         return {extract_roller(input), {input.begin(), input.end()}};
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto[roller, cards] = init(filename);
         for (auto ball: roller) {
-            printf("####################\nCurrent Ball: %d\n####################\n", ball);
+            myprintf("####################\nCurrent Ball: %d\n####################\n", ball);
             main_pool.pool.at(ball).second = true;
             for (auto card: cards) {
                 card.print_state();
                 if (card.check_for_win()) {
-                    print_final_result(card, ball);
-                    return;
+                    return print_final_result(card, ball);
                 }
             }
         }
+        __builtin_unreachable();
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto[roller, cards] = init(filename);
         for (auto ball: roller) {
-            printf("####################\nCurrent Ball: %d\n####################\n", ball);
+            myprintf("####################\nCurrent Ball: %d\n####################\n", ball);
             main_pool.pool.at(ball).second = true;
             auto endpoint = std::remove_if(cards.begin(), cards.end(), [](auto card) {
                 card.print_state();
                 return card.check_for_win();
             });
             if (endpoint == cards.begin()) {
-                print_final_result(cards.front(), ball);
-                return;
+                return print_final_result(cards.front(), ball);
             }
             cards.erase(endpoint, cards.end());
         }
+        __builtin_unreachable();
     }
 }

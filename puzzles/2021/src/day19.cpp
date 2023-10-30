@@ -115,7 +115,7 @@ namespace aoc2021::day19 {
         return std::nullopt;
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto stream(get_stream<int>(filename));
         auto input = parse_input(stream);
         std::queue<std::pair<scanner, ox::matrix<int>>> todo;
@@ -150,12 +150,13 @@ namespace aoc2021::day19 {
             return b;
         });
 
-        printf("Full list size: %zu\n", full_list.size());
+        myprintf("Full list size: %zu\n", full_list.size());
         auto unique_end = std::unique(full_list.begin(), full_list.end());
-        printf("unique list size: %zu\n", unique_end - full_list.begin());
+        myprintf("unique list size: %zu\n", unique_end - full_list.begin());
+        return unique_end - full_list.begin();
     }
 
-    void puzzle2([[maybe_unused]] const char* filename) {
+    answertype puzzle2([[maybe_unused]] const char* filename) {
         int max = 0;
 
         for (auto x = final_offsets.begin(); x != final_offsets.end(); ++x) {
@@ -166,6 +167,7 @@ namespace aoc2021::day19 {
             }
         }
 
-        printf("Largest distance is %d\n", max);
+        myprintf("Largest distance is %d\n", max);
+        return max;
     }
 } // namespace aoc2021::day19

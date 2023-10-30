@@ -44,7 +44,7 @@ namespace aoc2022::day10 {
         }
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto instructions = get_stream<instruction>(filename);
         auto checks = stdv::iota(1, 7) | stdv::transform([](int i) { return i * 40 - 20; });
         auto check = checks.begin();
@@ -60,17 +60,20 @@ namespace aoc2022::day10 {
             }
         });
 
-        printf("Sum of readings is %ld\n", std::accumulate(std::begin(values), std::end(values), 0l));
+        long sum = std::accumulate(std::begin(values), std::end(values), 0l);
+        myprintf("Sum of readings is %ld\n", sum);
+        return sum;
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto instructions = get_stream<instruction>(filename);
         simulate(instructions, [&](int& X, int& cycle) {
             long xpos = cycle%40;
             cycle++;
-            printf("\033[%dm \033[0m", xpos - 1 <= X && X <= xpos + 1 ? 41 : 0);
+            myprintf("\033[%dm \033[0m", xpos - 1 <= X && X <= xpos + 1 ? 41 : 0);
             if (xpos == 39)
-                printf("\n");
+                myprintf("\n");
         });
+        return {};
     }
 } // namespace aoc2022::day10

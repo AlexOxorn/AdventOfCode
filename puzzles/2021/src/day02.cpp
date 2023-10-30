@@ -38,10 +38,11 @@ namespace aoc2021::day02 {
         return in;
     }
 
-    void print_result(coordinates c) {
+    int print_result(coordinates c) {
         auto [forward, depth, aim] = c;
-        printf("Coordinates are %d forward and %d down\n", forward, depth);
-        printf("Their product is %d\n", forward * depth);
+        myprintf("Coordinates are %d forward and %d down\n", forward, depth);
+        myprintf("Their product is %d\n", forward * depth);
+        return forward * depth;
     }
 
     coordinates move_version1(coordinates c, const step& d) {
@@ -84,16 +85,16 @@ namespace aoc2021::day02 {
         return std::accumulate(vd.begin(), vd.end(), coordinates(), move_function);
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto input_vector = get_stream<step>(filename);
         auto result = follow_path(input_vector, move_version1);
-        print_result(result);
+        return print_result(result);
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto input_vector = get_stream<step>(filename);
         auto result = follow_path(input_vector, move_version2);
 
-        print_result(result);
+        return print_result(result);
     }
 }

@@ -57,25 +57,29 @@ namespace aoc2021::day11 {
 
         void print_array() {
             leveled_foreach(
-                    [](int i) { printf("\033[%sm%4d\033[0m", i == 0 || i > 9 ? "31" : "0", i); },
-                    []() { printf("\n"); }
+                    [](int i) { myprintf("\033[%sm%4d\033[0m", i == 0 || i > 9 ? "31" : "0", i); },
+                    []() { myprintf("\n"); }
             );
         }
     };
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         int number_of_steps = 100;
         octopuses o(get_stream<ox::line>(filename), [](char a) {return a - '0';});
         auto scores = stdv::iota(0, number_of_steps) | stdv::transform([&o] (int) { return o.next_step(); });
-        printf("Number of flashes after %d steps: %d\n", number_of_steps, std::accumulate(scores.begin(), scores.end(), 0));
+        auto steps = std::accumulate(scores.begin(), scores.end(), 0);
+        myprintf("Number of flashes after %d steps: %d\n", number_of_steps, steps);
+        return steps;
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         octopuses o(get_stream<ox::line>(filename), [](char a) {return a - '0';});
         auto scores = stdv::iota(1)
                 | stdv::transform([&o] (int a) { return std::make_pair(a, o.next_step()); })
                 | stdv::filter([&o](std::pair<int, int> a) { return std::size_t(a.second) == o.get_size(); })
                 | stdv::take(1);
-        printf("first point when all octopuses flash: %d\n", (*scores.begin()).first);
+        auto flashes = (*scores.begin()).first;
+        myprintf("first point when all octopuses flash: %d\n", flashes);
+        return flashes;
     }
 }

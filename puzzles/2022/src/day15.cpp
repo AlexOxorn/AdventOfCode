@@ -8,7 +8,6 @@
 #include <stack>
 #include <numeric>
 #include <thread>
-#include <ox/canvas.h>
 #include <ox/hash.h>
 #include <ox/matrix.h>
 #include <chrono>
@@ -95,7 +94,7 @@ namespace aoc2022::day15 {
         return *map;
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         cave_map& map = get_cave_map(filename);
         auto left_boundary = stdr::min(map | stdv::transform([](const auto& r) { return r.first.first - r.second; }));
         auto right_boundary = stdr::max(map | stdv::transform([](const auto& r) { return r.first.first + r.second; }));
@@ -105,10 +104,11 @@ namespace aoc2022::day15 {
                 | stdv::filter([&map](coord c) { return !map.contains(c) || map[c] != 0; })
                 | stdv::filter([&map](coord c) { return stdr::any_of(map, std::bind_front(within_range, c)); });
         std::size_t count = stdr::distance(visible_spots);
-        printf("There are %zu spots where the distress signal can't be\n", count);
+        myprintf("There are %zu spots where the distress signal can't be\n", count);
+        return count;
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto input = get_stream<ox::line>(filename);
         auto boundary_stream = input | stdv::transform(&covering_square);
         std::vector<int> upper_boundaries;
@@ -137,10 +137,12 @@ namespace aoc2022::day15 {
             for (int old_y : vertical_boundaries) {
                 auto candidate_pos = rotate_cl(old_x, old_y);
                 if (stdr::all_of(map, std::not_fn(std::bind_front(within_range, candidate_pos)))) {
-                    printf("%ld\n", candidate_pos.first * 4'000'000 + candidate_pos.second);
-                    return;
+                    long result = candidate_pos.first * 4'000'000 + candidate_pos.second;
+                    myprintf("%ld\n", result);
+                    return result;
                 }
             }
         }
+        __builtin_unreachable();
     }
 } // namespace aoc2022::day15

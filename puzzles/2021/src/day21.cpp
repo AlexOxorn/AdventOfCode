@@ -49,15 +49,16 @@ namespace aoc2021::day21 {
             return player_score >= winning_score;
         }
 
-        void simulate() {
+        int simulate() {
             int starting_player = 0;
             for (; !take_turn(starting_player); starting_player = !starting_player)
                 ;
-            printf("The winning player is %d with score %d\n",
+            myprintf("The winning player is %d with score %d\n",
                    starting_player + 1, player_scores[starting_player].second);
-            printf("Puzzle solution is %d x %d = %d\n",
+            myprintf("Puzzle solution is %d x %d = %d\n",
                    total_number_of_dice_roles, player_scores[!starting_player].second,
                    total_number_of_dice_roles * player_scores[!starting_player].second);
+            return total_number_of_dice_roles * player_scores[!starting_player].second;
         }
     };
 
@@ -121,7 +122,7 @@ namespace aoc2021::day21 {
            }
         }
 
-        void simulate() {
+        long simulate() {
 #ifdef _LIBCPP_VERSION
             volatile std::atomic_bool stop = false;
             std::thread a([this, &stop]() {
@@ -134,7 +135,7 @@ namespace aoc2021::day21 {
 #else
                 while(!stop_token.stop_requested()) {
 #endif
-                    printf("%ld | %ld\r", number_of_victories[0].load(), number_of_victories[1].load());
+                    myprintf("%ld | %ld\r", number_of_victories[0].load(), number_of_victories[1].load());
                     fflush(stdout);
                     std::this_thread::sleep_for(100ms);
                 }
@@ -146,8 +147,9 @@ namespace aoc2021::day21 {
 #else
             a.request_stop();
 #endif
-            printf("player 1 won %ld times\n", number_of_victories[0].load());
-            printf("player 2 won %ld times\n", number_of_victories[1].load());
+            myprintf("player 1 won %ld times\n", number_of_victories[0].load());
+            myprintf("player 2 won %ld times\n", number_of_victories[1].load());
+            return std::max(number_of_victories[0].load(), number_of_victories[1].load());
 #ifdef _LIBCPP_VERSION
             a.join();
 #endif
@@ -157,15 +159,15 @@ namespace aoc2021::day21 {
 
 
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto input = get_stream<ox::line>(filename);
         part1_simulation s(input);
-        s.simulate();
+        return s.simulate();
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto input = get_stream<ox::line>(filename);
         part2_simulation s(input);
-        s.simulate();
+        return s.simulate();
     }
 } // namespace aoc2021::day21

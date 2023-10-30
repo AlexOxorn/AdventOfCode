@@ -19,17 +19,19 @@ namespace aoc2021::day01 {
     }
 
     template<std::input_iterator I>
-    void print_adjacent_increase_count(I begin, I end, int count) {
-        std::printf("%d number of increases\n", count_difference(begin,end,count));
+    int print_adjacent_increase_count(I begin, I end, int count) {
+        auto result = count_difference(begin,end,count);
+        myprintf("%d number of increases\n", result);
+        return result;
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto input_vector = get_stream<int>(filename);
-        print_adjacent_increase_count(input_vector.begin(), input_vector.end(), 1);
+        return print_adjacent_increase_count(input_vector.begin(), input_vector.end(), 1);
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto input_vector = get_stream<int>(filename);
-        print_adjacent_increase_count(input_vector.begin(), input_vector.end(), 3);
+        return print_adjacent_increase_count(input_vector.begin(), input_vector.end(), 3);
     }
 }

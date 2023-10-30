@@ -75,7 +75,7 @@ namespace aoc2021::day22 {
     template<long N>
     constexpr cube bounds{-1 * N, N, -1 * N, N, -1 * N, N};
 
-    void solve(bool within_bounds = false) {
+    long solve(bool within_bounds = false) {
         long total_area = 0;
         for (auto& cube_itr : instructions
                       | ox::ranges::views::iterators
@@ -92,16 +92,17 @@ namespace aoc2021::day22 {
             assert(result_volume >= 0);
             total_area += result_volume;
         }
-        printf("Total volume is %ld\n", total_area);
+        myprintf("Total volume is %ld\n", total_area);
+        return total_area;
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto input = get_stream<instruction>(filename);
         instructions = std::vector(input.begin(), input.end());
-        solve(true);
+        return solve(true);
     }
 
-    void puzzle2([[maybe_unused]] const char* filename) {
-        solve();
+    answertype puzzle2([[maybe_unused]] const char* filename) {
+        return solve();
     }
 } // namespace aoc2021::day22

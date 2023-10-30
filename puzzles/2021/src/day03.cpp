@@ -61,21 +61,23 @@ namespace aoc2021::day03{
         return begin - true_begin;
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto input_stream = get_stream<reading>(filename);
         auto final = std::accumulate(input_stream.begin(), input_stream.end(), bit_population_count());
         auto[gamma, epsilon] = gamma_epsilon_rate(final.common_to_integer());
-        printf("gamma is %d and epsilon is %d\n", gamma, epsilon);
-        printf("their product is: %d\n", gamma * epsilon);
+        myprintf("gamma is %d and epsilon is %d\n", gamma, epsilon);
+        myprintf("their product is: %d\n", gamma * epsilon);
+        return std::to_string(gamma * epsilon);
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto input_stream = get_stream<reading>(filename);
         auto binary_tree = std::accumulate(input_stream.begin(), input_stream.end(), std::vector<int>(ox::power_of_2(bitwidth)));
         int o2 = recursive_decent(binary_tree.begin(), binary_tree.end());
         int co2 = recursive_decent(binary_tree.begin(), binary_tree.end(), std::less_equal<>());
-        printf("O2  is %d\n", o2);
-        printf("CO2 is %d\n", co2);
-        printf("Their product is %d\n", co2 * o2);
+        myprintf("O2  is %d\n", o2);
+        myprintf("CO2 is %d\n", co2);
+        myprintf("Their product is %d\n", co2 * o2);
+        return std::to_string(co2 * o2);
     }
 }

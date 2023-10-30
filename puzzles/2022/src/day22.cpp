@@ -185,12 +185,12 @@ namespace aoc2022::day22 {
         }
 
         void print_state() {
-            leveled_foreach([](char c) { printf("%c", c); }, []() { printf("\n"); });
+            leveled_foreach([](char c) { myprintf("%c", c); }, []() { myprintf("\n"); });
         }
 
         void print_pos(const_raw_iterator pos, move_function dir) {
             auto [x, y] = coord_from_index(pos);
-            printf("\033[%d;%dH%c", y + 1, x + 1, dir_char(dir));
+            myprintf("\033[%d;%dH%c", y + 1, x + 1, dir_char(dir));
             fflush(stdout);
         }
     };
@@ -211,14 +211,14 @@ namespace aoc2022::day22 {
     }
 
     template <bool print = false>
-    void solve(const char* filename, map_of_board::loop_function func) {
+    auto solve(const char* filename, map_of_board::loop_function func) {
         using namespace std::chrono_literals;
         auto [board, path] = get_data(filename);
         auto [pos, dir] = board.get_start();
         if constexpr (print) {
-            printf("\033[H\033[2J");
+            myprintf("\033[H\033[2J");
             board.print_state();
-            printf("\033[31m");
+            myprintf("\033[31m");
             board.print_pos(pos, dir);
         }
         for (const char* head = path.data(); head != path.end().base();) {
@@ -246,15 +246,17 @@ namespace aoc2022::day22 {
         auto [x, y] = board.coord_from_index(pos);
         ++x, ++y;
         int rotation_val = map_of_board::dir_value(dir);
-        printf("The final x and y position and rotation are %d, %d, %d\n", x, y, rotation_val);
-        printf("The result is %d\n", 1000 * y + 4 * x + rotation_val);
+        myprintf("The final x and y position and rotation are %d, %d, %d\n", x, y, rotation_val);
+        int final_result = 1000 * y + 4 * x + rotation_val;
+        myprintf("The result is %d\n", final_result);
+        return final_result;
     }
 
-    void puzzle1(const char* filename) {
-        solve(filename, &map_of_board::move_2d);
+    answertype puzzle1(const char* filename) {
+        return solve(filename, &map_of_board::move_2d);
     }
 
-    void puzzle2(const char* filename) {
-        solve(filename, &map_of_board::move_cube);
+    answertype puzzle2(const char* filename) {
+        return solve(filename, &map_of_board::move_cube);
     }
 } // namespace aoc2022::day22

@@ -26,17 +26,19 @@ namespace aoc2020::day01 {
         return {0, 0, target_sum};
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto input_vector = get_stream<int>(filename);
         std::unordered_set expenses(input_vector.begin(), input_vector.end());
         auto [exp1, exp2] = findsum(expenses, 2020);
         printf("expense 1 was %d\nexpense 2 was %d\ntheir product is %d\n\n", exp1, exp2, exp1 * exp2);
+        return exp1 * exp2;
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto input_vector = get_stream<int>(filename);
         std::unordered_set expenses(input_vector.begin(), input_vector.end());
         auto [a, b, c] = find_triple_sum(expenses, 2020);
         printf("expense 1 was %d\nexpense 2 was %d\nexpense 3 was %d\ntheir product is %d", a, b, c, a * b * c);
+        return a * b * c;
     }
 }

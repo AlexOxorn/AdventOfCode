@@ -58,13 +58,13 @@ namespace aoc2021::day18 {
 
     void print_number(const snail_number_node& node) {
         if (node.value) {
-            printf("%d", *node.value);
+            myprintf("%d", *node.value);
         } else {
-            printf("[");
+            myprintf("[");
             print_number(node.get_left_child());
-            printf(",");
+            myprintf(",");
             print_number(node.get_right_child());
-            printf("]");
+            myprintf("]");
         }
     }
 
@@ -119,7 +119,7 @@ namespace aoc2021::day18 {
         return explode(b) || split(b);
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         const int verbose_level = 0;
         auto input = get_stream<ox::line>(filename);
         std::string s = *input.begin();
@@ -128,30 +128,32 @@ namespace aoc2021::day18 {
             auto z = read_snail_number(line);
 
             if (verbose_level >= 1) {
-                printf("  "); print_number(y.head);
-                printf("\n+ "); print_number(z.head);
+                myprintf("  "); print_number(y.head);
+                myprintf("\n+ "); print_number(z.head);
             }
             y = add(y, z);
             if (verbose_level >= 2) {
-                printf("\n= "); print_number(y.head);
+                myprintf("\n= "); print_number(y.head);
             }
 
             while(fix(y)) {
                 if(verbose_level >= 3) {
-                    printf("\n= ");
+                    myprintf("\n= ");
                     print_number(y.head);
                 }
             }
             if (verbose_level >= 1) {
-                printf("\n= ");
+                myprintf("\n= ");
                 print_number(y.head);
-                printf("\n\n");
+                myprintf("\n\n");
             }
         }
-        printf("final magnitude is equal to %d\n", magnitude(y.head));
+        int result = magnitude(y.head);
+        myprintf("final magnitude is equal to %d\n", result);
+        return result;
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto input = get_stream<ox::line>(filename);
         int max = 0;
         std::vector<snail_number> numbers;
@@ -165,6 +167,7 @@ namespace aoc2021::day18 {
                 max = std::max(max, magnitude(y.head));
             }
         }
-        printf("largest magnitude is equal to %d\n", max);
+        myprintf("largest magnitude is equal to %d\n", max);
+        return max;
     }
 } // namespace aoc2021::day18

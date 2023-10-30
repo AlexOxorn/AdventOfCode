@@ -32,9 +32,9 @@ namespace aoc2022::day05 {
                     break;
                 }
                 for (auto& b : a) {
-                    printf("%c", b);
+                    myprintf("%c", b);
                 }
-                printf("\n");
+                myprintf("\n");
             }
         }
 
@@ -77,7 +77,7 @@ namespace aoc2022::day05 {
         }
     };
 
-    void solver(const char* filename, void (crate_stacks::*move)(direction dir)) {
+    answertype solver(const char* filename, void (crate_stacks::*move)(direction dir)) {
         auto input = get_stream<direction>(filename);
         crate_stacks stacks;
         input >> stacks;
@@ -87,14 +87,15 @@ namespace aoc2022::day05 {
         auto res_stream = stacks | stdv::filter(std::not_fn<>(&std::deque<char>::empty))
                         | stdv::transform((char& (std::deque<char>::*) ()) & std::deque<char>::back);
         std::string result(res_stream.begin(), res_stream.end());
-        printf("The Top Line is %s\n", result.c_str());
+        myprintf("The Top Line is %s\n", result.c_str());
+        return result;
     }
 
-    void puzzle1(const char* filename) {
-        solver(filename, &crate_stacks::apply_direction9000);
+    answertype puzzle1(const char* filename) {
+        return solver(filename, &crate_stacks::apply_direction9000);
     }
 
-    void puzzle2(const char* filename) {
-        solver(filename, &crate_stacks::apply_direction9001);
+    answertype puzzle2(const char* filename) {
+        return solver(filename, &crate_stacks::apply_direction9001);
     }
 } // namespace aoc2022::day05

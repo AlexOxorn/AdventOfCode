@@ -149,7 +149,7 @@ namespace aoc2022::day23 {
             }
             putchar('\n');
         }
-        printf("=============================\n");
+        myprintf("=============================\n");
     }
 
     elf_list& create_elves(const char* filename) {
@@ -166,7 +166,7 @@ namespace aoc2022::day23 {
         return elves;
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         elf_list& elves = create_elves(filename);
 
         for (int i = 0; i < 10; i++) {
@@ -183,10 +183,12 @@ namespace aoc2022::day23 {
 
         auto [minx, maxx] = stdr::minmax(elves | stdv::transform(&elf::x));
         auto [miny, maxy] = stdr::minmax(elves | stdv::transform(&elf::y));
-        printf("Number of empty spaces = %zu\n", (maxx - minx + 1) * (maxy - miny + 1) - elves.size());
+        size_t empty_spaces = (maxx - minx + 1) * (maxy - miny + 1) - elves.size();
+        myprintf("Number of empty spaces = %zu\n", empty_spaces);
+        return empty_spaces;
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         elf_list& elves = create_elves(filename);
 
         int index = *stdr::find_if(stdv::iota(10), [&elves](int i) {
@@ -206,6 +208,7 @@ namespace aoc2022::day23 {
             return false;
         });
 
-        printf("Number of empty spaces before no movement is %d\n", index + 1);
+        myprintf("Number of empty spaces before no movement is %d\n", index + 1);
+        return index + 1;
     }
 } // namespace aoc2022::day23

@@ -56,8 +56,8 @@ namespace aoc2022::day08 {
         }
 
         void print_map() {
-            leveled_iterators([](auto& elem) { printf("\033[%sm%1d\033[0m", elem->second ? "31" : "0", elem->first); },
-                              []() { printf("\n"); });
+            leveled_iterators([](auto& elem) { myprintf("\033[%sm%1d\033[0m", elem->second ? "31" : "0", elem->first); },
+                              []() { myprintf("\n"); });
         }
 
         [[nodiscard]] long get_tree_score_dir(const_raw_iterator tree, direction_func dir) const {
@@ -84,20 +84,22 @@ namespace aoc2022::day08 {
         return trees;
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         treemap trees = get_marked_tree(filename);
         trees.print_map();
         long count = stdr::count_if(trees.get_raw(), &std::pair<int, bool>::second);
-        printf("There are %ld number of visible trees\n", count);
+        myprintf("There are %ld number of visible trees\n", count);
+        return count;
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         treemap trees = get_marked_tree(filename);
         long result = stdr::max(trees.get_raw() | oxv::iterators
                                 | stdv::filter([](const treemap::const_raw_iterator& tree) { return tree->second; })
                                 | stdv::transform([&trees](const treemap::const_raw_iterator& tree) {
                                       return trees.get_tree_score(tree);
                                   }));
-        printf("The best Treehouse spot has a score of %ld\n", result);
+        myprintf("The best Treehouse spot has a score of %ld\n", result);
+        return result;
     }
 } // namespace aoc2022::day08

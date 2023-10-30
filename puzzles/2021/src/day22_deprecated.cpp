@@ -136,7 +136,7 @@ namespace aoc2021::day22 {
     static std::vector<double> y_boundaries;
     static std::vector<double> z_boundaries;
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         constexpr long width = 50;
         using grid_looper = three_dimensional_index_iterator<-width, width+1, -width, width+1, -width, width+1>;
         auto input = get_stream<instruction>(filename);
@@ -156,14 +156,14 @@ namespace aoc2021::day22 {
                    }
                    return false;
                });
-        printf("The number of on cubes after initialization is %zu\n", on_cubes);
+        myprintf("The number of on cubes after initialization is %zu\n", on_cubes);
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         long on_cubes = 0;
 
         for(auto x_iter : x_boundaries | ox::ranges::views::iterators) {
-            printf("%ld out of %zu\n", x_iter - x_boundaries.begin(), x_boundaries.size());
+            myprintf("%ld out of %zu\n", x_iter - x_boundaries.begin(), x_boundaries.size());
             if (std::next(x_iter) == x_boundaries.end()) break;
             for (auto y_iter : y_boundaries | ox::ranges::views::iterators) {
                 if (std::next(y_iter) == y_boundaries.end()) continue;
@@ -185,6 +185,6 @@ namespace aoc2021::day22 {
                 }
             }
         }
-        printf("The number of on cubes is %zu\n", on_cubes);
+        myprintf("The number of on cubes is %zu\n", on_cubes);
     }
 }

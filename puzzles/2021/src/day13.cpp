@@ -61,9 +61,9 @@ namespace aoc2021::day13 {
         void print_paper(int limit = 100) {
             for(int j : stdv::iota(0, std::min(dimensions.second, limit))) {
                 for (int i : stdv::iota(0,  std::min(dimensions.first, limit))) {
-                    printf("%s", points.contains({i, j}) ? "\033[41m \033[0m" : " ");
+                    myprintf("%s", points.contains({i, j}) ? "\033[41m \033[0m" : " ");
                 }
-                printf("\n");
+                myprintf("\n");
             }
         }
 
@@ -86,19 +86,21 @@ namespace aoc2021::day13 {
         return in;
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto input = get_stream<fold>(filename);
         paper p(input);
         p.fold(*input.begin());
-        printf("The number of points after one folder are %zu\n", p.point_count());
+        myprintf("The number of points after one folder are %zu\n", p.point_count());
+        return p.point_count();
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto input = get_stream<fold>(filename);
         paper p(input);
         for (auto f : input) {
             p.fold(f);
         }
         p.print_paper();
+        return {};
     }
 }

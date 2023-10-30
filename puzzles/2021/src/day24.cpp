@@ -408,17 +408,17 @@ namespace aoc2021::day24 {
 
     void print_stack(long z) {
         for (long i = z; i > 0l; i /= 26l) {
-            printf("%ld ", i % 26l);
+            myprintf("%ld ", i % 26l);
         }
-        printf("\n");
+        myprintf("\n");
     }
 
     long new_z_debug(bool a, long b, long c, long input, long z) {
         long next = new_raw(a, b, c, input, z);
-        printf("\033[%dm", a ? 0 : 31);
-        printf("\t%ld\n", next);
+        myprintf("\033[%dm", a ? 0 : 31);
+        myprintf("\t%ld\n", next);
         print_stack(z);
-        printf("\033[0m");
+        myprintf("\033[0m");
         return z;
     }
 
@@ -495,58 +495,58 @@ namespace aoc2021::day24 {
      */
 
     void print_instruction(const instruction& inst) {
-        printf("%s %c", opcode_name(inst.op), variable_name(inst.dest));
+        myprintf("%s %c", opcode_name(inst.op), variable_name(inst.dest));
         if (inst.op != INP) {
             if (inst.literal)
-                printf(" %d", inst.source_lit);
+                myprintf(" %d", inst.source_lit);
             else
-                printf(" %c", variable_name(inst.source_reg));
+                myprintf(" %c", variable_name(inst.source_reg));
         }
     }
 
     void print_instructions(const std::vector<instruction>& instructions) {
         for (const instruction& inst : instructions) {
             print_instruction(inst);
-            printf("\n");
+            myprintf("\n");
         }
     }
 
     void print_as_c(const std::vector<instruction>& instructions) {
-        printf("std::array<long, 4> simulate(const std::array<char, 14>& "
+        myprintf("std::array<long, 4> simulate(const std::array<char, 14>& "
                "input) {");
-        printf("int w, x, y, z;"
+        myprintf("int w, x, y, z;"
                "auto in = input.begin();");
         for (const instruction& inst : instructions) {
             switch (inst.op) {
-                case INP: printf("%c = *in++", variable_name(inst.dest)); break;
+                case INP: myprintf("%c = *in++", variable_name(inst.dest)); break;
                 case ADD:
-                    printf("%c +=", variable_name(inst.dest));
-                    inst.literal ? printf(" %d", inst.source_lit) : printf(" %c", variable_name(inst.source_reg));
+                    myprintf("%c +=", variable_name(inst.dest));
+                    inst.literal ? myprintf(" %d", inst.source_lit) : myprintf(" %c", variable_name(inst.source_reg));
                     break;
                 case MUL:
-                    printf("%c *=", variable_name(inst.dest));
-                    inst.literal ? printf(" %d", inst.source_lit) : printf(" %c", variable_name(inst.source_reg));
+                    myprintf("%c *=", variable_name(inst.dest));
+                    inst.literal ? myprintf(" %d", inst.source_lit) : myprintf(" %c", variable_name(inst.source_reg));
                     break;
                 case DIV:
-                    printf("%c /=", variable_name(inst.dest));
-                    inst.literal ? printf(" %d", inst.source_lit) : printf(" %c", variable_name(inst.source_reg));
+                    myprintf("%c /=", variable_name(inst.dest));
+                    inst.literal ? myprintf(" %d", inst.source_lit) : myprintf(" %c", variable_name(inst.source_reg));
                     break;
                 case MOD:
-                    printf("%c %%=", variable_name(inst.dest));
-                    inst.literal ? printf(" %d", inst.source_lit) : printf(" %c", variable_name(inst.source_reg));
+                    myprintf("%c %%=", variable_name(inst.dest));
+                    inst.literal ? myprintf(" %d", inst.source_lit) : myprintf(" %c", variable_name(inst.source_reg));
                     break;
                 case EQL:
-                    printf("%c = %c == ", variable_name(inst.dest), variable_name(inst.dest));
-                    inst.literal ? printf(" %d", inst.source_lit) : printf(" %c", variable_name(inst.source_reg));
+                    myprintf("%c = %c == ", variable_name(inst.dest), variable_name(inst.dest));
+                    inst.literal ? myprintf(" %d", inst.source_lit) : myprintf(" %c", variable_name(inst.source_reg));
                     break;
                 case SET:
-                    printf("%c =", variable_name(inst.dest));
-                    inst.literal ? printf(" %d", inst.source_lit) : printf(" %c", variable_name(inst.source_reg));
+                    myprintf("%c =", variable_name(inst.dest));
+                    inst.literal ? myprintf(" %d", inst.source_lit) : myprintf(" %c", variable_name(inst.source_reg));
                     break;
             }
-            printf(";");
+            myprintf(";");
         }
-        printf("return {w, x, y, z};}");
+        myprintf("return {w, x, y, z};}");
     }
 
     /* ================================================
@@ -587,21 +587,21 @@ namespace aoc2021::day24 {
      */
     void print_answer(const std::vector<long>& answer) {
         for (int i = 0; i < 14; i++) {
-            printf("%ld", answer[i]);
+            myprintf("%ld", answer[i]);
         }
-        printf("\n");
+        myprintf("\n");
     }
 
     void test_answer(const std::vector<long>& answer) {
-        printf("Testing: ");
+        myprintf("Testing: ");
         print_answer(answer);
 
         auto simulate1 = simulate(instructions, answer)[3];
-        printf("simulate bytecode: %ld\n", simulate1);
+        myprintf("simulate bytecode: %ld\n", simulate1);
 
         auto simulate2 = simulate(answer)[3];
         assert(simulate2 == simulate1);
-        printf("simulate c translation: %ld\n", simulate2);
+        myprintf("simulate c translation: %ld\n", simulate2);
 
         auto Aitr = As.begin();
         auto Bitr = Bs.begin();
@@ -610,7 +610,7 @@ namespace aoc2021::day24 {
             return new_z0(*Aitr++, *Bitr++, *Citr++, input, old_z);
         });
         assert(isolated_0 == simulate1);
-        printf("new_z0: %ld\n", isolated_0);
+        myprintf("new_z0: %ld\n", isolated_0);
 
         Aitr = As.begin();
         Bitr = Bs.begin();
@@ -619,7 +619,7 @@ namespace aoc2021::day24 {
             return new_raw(*Aitr++, *Bitr++, *Citr++, input, old_z);
         });
         assert(isolated_1 == simulate1);
-        printf("new_raw: %ld\n", isolated_1);
+        myprintf("new_raw: %ld\n", isolated_1);
     }
 
     void init(const char* filename) {
@@ -635,15 +635,17 @@ namespace aoc2021::day24 {
         Bs = std::vector<int>(Bs_range.begin(), Bs_range.end());
         Cs = std::vector<int>(Cs_range.begin(), Cs_range.end());
     }
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         init(filename);
         auto answer = get_valid_input<false>(As, Bs, Cs);
         print_answer(answer);
+        return {};
     }
 
-    void puzzle2([[maybe_unused]] const char* filename) {
+    answertype puzzle2([[maybe_unused]] const char* filename) {
         auto answer = get_valid_input<true>(As, Bs, Cs);
         print_answer(answer);
+        return {};
     }
 
 #undef CALL_NEXT

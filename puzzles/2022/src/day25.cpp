@@ -73,14 +73,17 @@ namespace aoc2022::day25 {
         return s;
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto input = get_stream<ox::line>(filename);
 
         auto values = input | stdv::transform(from_snafu);
         auto result_int = std::accumulate(values.begin(), values.end(), 0l);
         std::string result_snafu = to_snafu(result_int);
-        printf("The resulting sum is %ld in decimal and %s in snafu\n", result_int, result_snafu.c_str());
+        myprintf("The resulting sum is %ld in decimal and %s in snafu\n", result_int, result_snafu.c_str());
+        return result_snafu;
     }
 
-    void puzzle2([[maybe_unused]] const char* filename) {}
+    answertype puzzle2([[maybe_unused]] const char* filename) {
+        return {};
+    }
 } // namespace aoc2022::day25

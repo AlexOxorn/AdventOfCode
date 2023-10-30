@@ -99,7 +99,7 @@ namespace aoc2022::day11 {
     }
 
     template <int Iterations, bool calm>
-    void solve(const char* filename) {
+    auto solve(const char* filename) {
         troupe monkeys = get_from_input<monkey>(filename);
         for (monkey& mon : monkeys) {
             mon.group = &monkeys;
@@ -113,14 +113,15 @@ namespace aoc2022::day11 {
         stdr::transform(monkeys, std::back_inserter(inspections), &monkey::inspection_count);
         stdr::nth_element(inspections, inspections.begin() + 2, std::greater<>());
 
-        printf("the product for the two most handsy monkeys are %ld\n", inspections[0] * inspections[1]);
+        myprintf("the product for the two most handsy monkeys are %ld\n", inspections[0] * inspections[1]);
+        return inspections[0] * inspections[1];
     }
 
-    void puzzle1(const char* filename) {
-        solve<20, true>(filename);
+    answertype puzzle1(const char* filename) {
+        return solve<20, true>(filename);
     }
 
-    void puzzle2(const char* filename) {
-        solve<10000, false>(filename);
+    answertype puzzle2(const char* filename) {
+        return solve<10000, false>(filename);
     }
 } // namespace aoc2022::day11

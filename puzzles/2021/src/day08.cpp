@@ -170,31 +170,33 @@ namespace aoc2021::day08 {
         void print_parts() const {
             for (auto& s : part1) {
                 for (auto& c : s.first)
-                    printf("%c", c);
-                printf(" ");
+                    myprintf("%c", c);
+                myprintf(" ");
             }
-            printf("| ");
+            myprintf("| ");
             for (auto& s : part2) {
                 for (auto& c : s)
-                    printf("%c", c);
-                printf(" ");
+                    myprintf("%c", c);
+                myprintf(" ");
             }
-            printf("\n");
+            myprintf("\n");
         }
     };
 
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto input = get_stream<signals>(filename);
         auto counts = input | stdv::transform([](auto x){return x.count_2347_outputs();});
         auto x = std::accumulate(counts.begin(), counts.end(), 0l);
-        printf("%ld\n", x);
+        myprintf("%ld\n", x);
+        return x;
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto input = get_stream<signals>(filename);
         auto sums = input | stdv::transform([](auto x){return x.solve_and_get_number();});
         auto x = std::accumulate(sums.begin(), sums.end(), 0);
-        printf("%d\n", x);
+        myprintf("%d\n", x);
+        return x;
     }
 }

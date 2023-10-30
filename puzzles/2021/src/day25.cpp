@@ -75,18 +75,18 @@ namespace aoc2021::day25 {
         void print_array() {
             leveled_foreach(
                     [](auto& elem) {
-                        printf("%c",
+                        myprintf("%c",
                                elem == space::EMPTY          ? '.'
                                : elem == space::RIGHT_FACING ? '>'
                                : elem == space::SOUTH_FACING ? 'v'
                                                              : 'X');
                     },
-                    []() { printf("\n"); });
-            printf("\n");
+                    []() { myprintf("\n"); });
+            myprintf("\n");
         }
     };
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         using namespace std::chrono_literals;
         sea_floor cucumbers(get_stream<ox::line>(filename), [](char a) {
             switch (a) {
@@ -102,17 +102,18 @@ namespace aoc2021::day25 {
         auto prev = cucumbers;
         int i = 1;
         for (;; ++i) {
-            printf("\033[2J\033[1;1H");
+            myprintf("\033[2J\033[1;1H");
             cucumbers.print_array();
             cucumbers.move();
             if (prev == cucumbers)
                 break;
             prev = cucumbers;
-            std::this_thread::sleep_for(60ms);
+            //std::this_thread::sleep_for(60ms);
         }
 
-        printf("Stops moving after %d step\n", i);
+        myprintf("Stops moving after %d step\n", i);
+        return i;
     }
 
-    void puzzle2([[maybe_unused]] const char* filename) {}
+    answertype puzzle2([[maybe_unused]] const char* filename) { return {}; }
 } // namespace aoc2021::day25

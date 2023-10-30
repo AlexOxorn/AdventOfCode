@@ -12,6 +12,7 @@
 #include <optional>
 #include <vector>
 #include <ranges>
+#include <variant>
 #include <ox/io.h>
 #include <ox/std_abbreviation.h>
 
@@ -21,6 +22,9 @@ using namespace ox::std_abbreviations;
 #define STR(a)  #a
 
 extern long year, day;
+extern bool do_print;
+
+#define myprintf(...) (do_print ? printf(__VA_ARGS__) : 0)
 
 template <typename T = ox::line>
 auto get_stream(const char* name) {
@@ -80,7 +84,9 @@ C get_from_input(const char* filename) {
   MACRO(24) \
   MACRO(25)
 
-using puzzle_sig = void (*)(const char*);
+using answertype = std::variant<std::monostate, long, unsigned long, std::string>;
+
+using puzzle_sig = answertype (*)(const char*);
 using dayfunctions = std::pair<puzzle_sig, puzzle_sig>;
 using yearfunctions = std::array<dayfunctions, 25>;
 
@@ -91,7 +97,7 @@ using yearfunctions = std::array<dayfunctions, 25>;
   }
 
 #define COMMON_HEADER \
-  void puzzle1(const char*); \
-  void puzzle2(const char*);
+  answertype puzzle1(const char*); \
+  answertype puzzle2(const char*);
 
 #endif // ADVENTOFCODE2021_COMMON_H

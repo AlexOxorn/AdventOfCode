@@ -5,6 +5,7 @@
 #include "../../../common.h"
 #include <algorithm>
 #include <numeric>
+#include <cmath>
 #include <ox/math.h>
 
 #define DAY 02
@@ -16,14 +17,14 @@ namespace aoc2022::day02 {
         friend std::istream& operator>>(std::istream& in, round& r);
 
         [[nodiscard]] auto round_result() const {
-            ox::modulo<3, int> res = me - opponent + 1;
-            return res.result * 3 + me + 1;
+            int res = ox::mod(me - opponent + 1, 3);
+            return res * 3 + me + 1;
         }
 
         [[nodiscard]] int round_result2() const {
             int res = me;
-            ox::modulo<3, int> me = opponent + res - 1;
-            return res * 3 + me.result + 1;
+            int me = ox::mod(opponent + res - 1, 3);
+            return res * 3 + me + 1;
         }
     };
 
@@ -35,17 +36,19 @@ namespace aoc2022::day02 {
         return in;
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto inputstream = get_stream<round>(filename);
         auto x = inputstream | stdv::transform(&round::round_result);
         int total_score = std::accumulate(x.begin(), x.end(), 0);
-        printf("Total Score   = %d\n", total_score);
+        myprintf("Total Score   = %d\n", total_score);
+        return total_score;
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto inputstream = get_stream<round>(filename);
         auto x = inputstream | stdv::transform(&round::round_result2);
         int total_score = std::accumulate(x.begin(), x.end(), 0);
-        printf("Total Score 2 = %d\n", total_score);
+        myprintf("Total Score 2 = %d\n", total_score);
+        return total_score;
     }
 } // namespace aoc2022::day02

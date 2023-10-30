@@ -85,7 +85,7 @@ namespace aoc2022::day18 {
     constexpr droplet::dir back{&droplet::z, -1};
     constexpr std::array<droplet::dir, 6> adjacent{right, left, up, down, forward, back};
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         droplets_set processed_droplets;
         auto droplet_stream = get_stream<droplet>(filename);
         long surface_area = 0;
@@ -98,10 +98,11 @@ namespace aoc2022::day18 {
 
             processed_droplets.emplace(drop);
         }
-        printf("The total surface area of the droplets is %ld\n", surface_area);
+        myprintf("The total surface area of the droplets is %ld\n", surface_area);
+        return surface_area;
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto droplet_stream = get_stream<droplet>(filename);
         droplets_set droplets(droplet_stream.begin(), droplet_stream.end());
         face_set processed_faces;
@@ -121,6 +122,7 @@ namespace aoc2022::day18 {
             }
         }
 
-        printf("The total external surface area of the droplets is %zu\n", processed_faces.size());
+        myprintf("The total external surface area of the droplets is %zu\n", processed_faces.size());
+        return processed_faces.size();
     }
 } // namespace aoc2022::day18

@@ -31,7 +31,7 @@ namespace aoc2022::day09 {
 
         constexpr bool display_part1 = true;
         constexpr bool display_part2 = true;
-        constexpr int view_mode = per_instruction_view;
+        constexpr int view_mode = no_view;
         constexpr auto frequency = 8ms;
         constexpr auto wait_after_complete = 5s;
         constexpr int scale = 5;
@@ -157,7 +157,7 @@ namespace aoc2022::day09 {
     }
 
     template <size_t N, bool display>
-    void solve(const char* filename) {
+    auto solve(const char* filename) {
         positionlog visited{std::make_pair(0, 0)};
         rope<N> r{};
         auto instructions = get_stream<instruction>(filename);
@@ -168,19 +168,25 @@ namespace aoc2022::day09 {
         }
         if constexpr (display && drawer::view_mode)
             drawer::draw_rope(r, visited, false);
-        printf("The number of spaces the tail visited is %zu\n", visited.size());
+        myprintf("The number of spaces the tail visited is %zu\n", visited.size());
+        return visited.size();
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         drawer::init_drawer();
-        solve<2, drawer::display_part1>(filename);
+        auto x = solve<2, drawer::display_part1>(filename);
         if (drawer::drawing_window && drawer::display_part1)
             std::this_thread::sleep_for(drawer::wait_after_complete);
+        drawer::drawing_window.reset();
+        return x;
     }
 
-    void puzzle2(const char* filename) {
-        solve<10, drawer::display_part2>(filename);
+    answertype puzzle2(const char* filename) {
+        drawer::init_drawer();
+        auto x = solve<10, drawer::display_part2>(filename);
         if (drawer::drawing_window && drawer::display_part2)
             std::this_thread::sleep_for(drawer::wait_after_complete);
+        drawer::drawing_window.reset();
+        return x;
     }
 } // namespace aoc2022::day09

@@ -36,15 +36,17 @@ namespace aoc2022::day04 {
         return false;
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto groups = get_stream<std::pair<range, range>>(filename);
         size_t count = stdr::distance(groups | stdv::filter(overlap_full));
-        printf("number of fully overlapping teams is %zu\n", count);
+        myprintf("number of fully overlapping teams is %zu\n", count);
+        return count;
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto groups = get_stream<std::pair<range, range>>(filename);
         size_t count = stdr::distance(groups | stdv::filter(overlap));
-        printf("number of partially overlapping teams is %zu\n", count);
+        myprintf("number of partially overlapping teams is %zu\n", count);
+        return count;
     }
 } // namespace aoc2022::day04

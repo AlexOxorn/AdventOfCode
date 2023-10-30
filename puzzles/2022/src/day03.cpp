@@ -46,17 +46,19 @@ namespace aoc2022::day03 {
         return *intersection.begin();
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         auto backpack_inputs = get_stream<std::string>(filename);
         auto priorities_stream = backpack_inputs | stdv::transform(common_backpack) | stdv::transform(priorities);
         int priority_sum = std::accumulate(priorities_stream.begin(), priorities_stream.end(), 0);
-        printf("Total priority sum = %d\n", priority_sum);
+        myprintf("Total priority sum = %d\n", priority_sum);
+        return priority_sum;
     }
 
-    void puzzle2(const char* filename) {
+    answertype puzzle2(const char* filename) {
         auto group_inputs = get_stream<group>(filename);
         auto priorities_stream = group_inputs | stdv::transform(common_badge) | stdv::transform(priorities);
         int priority_sum = std::accumulate(priorities_stream.begin(), priorities_stream.end(), 0);
-        printf("Total priority sum = %d\n", priority_sum);
+        myprintf("Total priority sum = %d\n", priority_sum);
+        return priority_sum;
     }
 } // namespace aoc2022::day03

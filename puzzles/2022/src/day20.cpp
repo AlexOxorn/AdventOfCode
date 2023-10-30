@@ -32,19 +32,19 @@ namespace aoc2022::day20 {
 
     void print_message(std::vector<long>& encyption) {
         for (auto x : encyption) {
-            printf("%12ld ", x);
+            myprintf("%12ld ", x);
         }
-        printf("\n");
+        myprintf("\n");
     }
 
     void print_message2(std::vector<long>& encyption, std::vector<long>& indecies) {
         for (long index : indecies) {
-            printf("%12ld ", encyption[index]);
+            myprintf("%12ld ", encyption[index]);
         }
-        printf("\n");
+        myprintf("\n");
     }
 
-    void solve(const char* filename, int repeat = 1, long decryption_key = 1) {
+    auto solve(const char* filename, int repeat = 1, long decryption_key = 1) {
         auto encrypted = get_from_input<long>(filename);
         stdr::transform(encrypted, encrypted.begin(), std::bind_front(std::multiplies<>(), decryption_key));
         long message_size = static_cast<long>(encrypted.size());
@@ -54,7 +54,7 @@ namespace aoc2022::day20 {
         for (int iteration = 0; iteration < repeat; ++iteration) {
             for (long i = 0; i < message_size; ++i) {
                 if (message_size <= 10) {
-                    printf("Moving %-12ld: ", encrypted[decryption_index[i]]);
+                    myprintf("Moving %-12ld: ", encrypted[decryption_index[i]]);
                     print_message(encrypted);
                 }
                 long index = decryption_index[i];
@@ -72,9 +72,9 @@ namespace aoc2022::day20 {
                 encrypted.insert(encrypted.begin() + clamped, val);
             }
             if (message_size <= 10) {
-                printf("Final Result       : ");
+                myprintf("Final Result       : ");
                 print_message(encrypted);
-                printf("====================================\n");
+                myprintf("====================================\n");
             }
         }
 
@@ -83,14 +83,15 @@ namespace aoc2022::day20 {
         sum += encrypted[(zero_index + 1000) % message_size];
         sum += encrypted[(zero_index + 2000) % message_size];
         sum += encrypted[(zero_index + 3000) % message_size];
-        printf("The 3 sums post decryption %ld\n", sum);
+        myprintf("The 3 sums post decryption %ld\n", sum);
+        return sum;
     }
 
-    void puzzle1(const char* filename) {
-        solve(filename);
+    answertype puzzle1(const char* filename) {
+        return solve(filename);
     }
 
-    void puzzle2(const char* filename) {
-        solve(filename, 10, 811589153);
+    answertype puzzle2(const char* filename) {
+        return solve(filename, 10, 811589153);
     }
 } // namespace aoc2022::day20

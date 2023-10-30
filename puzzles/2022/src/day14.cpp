@@ -23,7 +23,7 @@ namespace aoc2022::day14 {
     std::mutex drawing_mutex;
 
     constexpr coord start_position{500, 0};
-    constexpr bool view = true;
+    constexpr bool view = false;
     constexpr auto refresh_frequency = 16ms;
     constexpr auto update_frequency = 2ms;
     constexpr auto update_frequency2 = 100ns;
@@ -198,7 +198,7 @@ namespace aoc2022::day14 {
     }
 
     template <bool floor>
-    void solve(const char* filename) {
+    auto solve(const char* filename) {
         grid& g = get_grid(filename);
 
         std::jthread a;
@@ -210,16 +210,22 @@ namespace aoc2022::day14 {
             });
         while (g.drop_sand<floor>() != operation::end) {}
         auto sand = stdr::count(g | stdv::values, occupied_by::sand_still);
-        printf("The amount of still sand before sand falls forever is %zu\n", sand);
+        myprintf("The amount of still sand before sand falls forever is %zu\n", sand);
         drawer::conditional_sleep(after_puzzle_wait);
+        return sand;
     }
 
-    void puzzle1(const char* filename) {
+    answertype puzzle1(const char* filename) {
         drawer::init_drawer();
-        solve<false>(filename);
+        auto result = solve<false>(filename);
+        drawer::drawing_window.reset();
+        return result;
     }
 
-    void puzzle2(const char* filename) {
-        solve<true>(filename);
+    answertype puzzle2(const char* filename) {
+        drawer::init_drawer();
+        auto result = solve<true>(filename);
+        drawer::drawing_window.reset();
+        return result;
     }
 } // namespace aoc2022::day14

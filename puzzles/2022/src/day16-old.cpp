@@ -300,7 +300,7 @@ namespace aoc2022::day16 {
         }
     }
 
-    void solve(const char* filename, int start_time,
+    auto solve(const char* filename, int start_time,
                std::vector<std::pair<flow_state, long>> (*neighbour_func)(const flow_state&)) {
         static pipe_path_map pipe_paths;
         static pipe_flow_map pipe_flows;
@@ -328,20 +328,22 @@ namespace aoc2022::day16 {
         auto [path, cost] = solver();
 
         for (auto [x, y] : path) {
-            printf("%s & %s at t = %d -> %ld\n",
+            myprintf("%s & %s at t = %d -> %ld\n",
                    x.current_position.c_str(),
                    x.elephant_position.c_str(),
                    start_time - x.time_remaining,
                    y);
         }
-        printf("%ld\n", start_state.remaining_potential * (start_time) -cost);
+        long final_cost = start_state.remaining_potential * (start_time) -cost;
+        myprintf("%ld\n", final_cost);
+        return final_cost;
     }
 
-    void puzzle1(const char* filename) {
-        solve(filename, 30, get_neighbour_states_alone);
+    answertype puzzle1(const char* filename) {
+        return solve(filename, 30, get_neighbour_states_alone);
     }
 
-    void puzzle2(const char* filename) {
-        solve(filename, 26, get_neighbour_states_with_elephant);
+    answertype puzzle2(const char* filename) {
+        return solve(filename, 26, get_neighbour_states_with_elephant);
     }
 } // namespace aoc2022::day16
