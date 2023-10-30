@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <puzzles.h>
+#include <ox/algorithms.h>
 
 #define MIN_YEAR 2020
 
@@ -8,6 +9,8 @@ long year = -1, day = -1;
 
 int main(int argc, const char** argv) {
     const char* filename = nullptr;
+
+    std::vector<int>::iterator  it;
 
     for (int i = 1; i < argc; ++i) {
         char* end;

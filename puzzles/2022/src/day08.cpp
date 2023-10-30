@@ -30,9 +30,9 @@ namespace aoc2022::day08 {
         }
 
         void check_horizontal() {
-            for (auto [begin, end] : *this) {
-                check_row(begin, end, stdv::all);
-                check_row(begin, end, stdv::reverse);
+            for (auto row : *this) {
+                check_row(std::begin(row), std::end(row), stdv::all);
+                check_row(std::begin(row), std::end(row), stdv::reverse);
             }
         }
 

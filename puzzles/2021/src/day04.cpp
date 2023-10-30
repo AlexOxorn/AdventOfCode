@@ -49,7 +49,7 @@ namespace aoc2021::day04 {
 
         [[nodiscard]] bool check_horizontal_for_win() const {
             return std::any_of(begin(), end(), [](auto subrange) {
-                return std::all_of(subrange.first, subrange.second, [](auto &element) { return element->second; });
+                return std::all_of(subrange.begin(), subrange.end(), [](auto &element) { return element->second; });
             });
         }
 
