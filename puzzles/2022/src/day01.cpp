@@ -28,14 +28,14 @@ namespace aoc2022::day01 {
         return in;
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto elves = get_stream<elf>(filename);
         auto max = stdr::max(elves, std::less<>(), &elf::calories);
         myprintf("the max elf is %ld\n", max.calories);
         return max.calories;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         auto elf_stream = get_stream<elf>(filename);
         std::vector elves(elf_stream.begin(), elf_stream.end());
         stdr::nth_element(elves, elves.begin() + 3, std::greater<>(), &elf::calories);

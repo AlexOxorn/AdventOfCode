@@ -4,25 +4,28 @@
 #include <cstring>
 #include "tester.h"
 
+#include <thread>
+
 #define MIN_YEAR 2020
 
 long year = -1, day = -1;
 bool do_print = true;
 
-auto get_answer_path() {
+auto get_answer_path(int year) {
     char filename[512] = {};
-    sprintf(filename, "%s/../puzzles/%ld/answers.txt", ox::executable_folder().c_str(), year);
+    sprintf(filename, "%s/../puzzles/%d/answers.txt", ox::executable_folder().c_str(), year);
     return std::string(filename);
 }
 
 int main(int argc, const char** argv) {
     const char* filename = nullptr;
     bool do_test = false;
-    std::vector<int>::iterator  it;
+
+    int day = -1, year = -1;
 
     for (int i = 1; i < argc; ++i) {
         char* end;
-        long argument = strtol(argv[i], &end, 10);
+        int argument = static_cast<int>(strtol(argv[i], &end, 10));
         if (*end != 0) {
             if (!strcmp(argv[i], "test")) {
                 do_test = true;
@@ -35,12 +38,13 @@ int main(int argc, const char** argv) {
 
     }
 
-    year = year < 0 ? puzzles.size() - 1 + MIN_YEAR : year;
+    year = year < 0 ? static_cast<int>(puzzles.size() - 1 + MIN_YEAR) : year;
 
     if (do_test) {
-        std::string answer_path = get_answer_path();
+        do_print = false;
+        std::string answer_path = get_answer_path(year);
 
-        test(puzzles[year - MIN_YEAR], answer_path);
+        test(year, puzzles[year - MIN_YEAR], answer_path);
         return 0;
     }
 
@@ -50,9 +54,9 @@ int main(int argc, const char** argv) {
         exit(1);
     }
 
-    printf("Year %02ld, Day %02ld:\n", year, day);
-    puzzles[year - MIN_YEAR][day-1].first(filename);
-    puzzles[year - MIN_YEAR][day-1].second(filename);
+    printf("Year %02d, Day %02d:\n", year, day);
+    puzzles[year - MIN_YEAR][day-1].first({.day = day, .year = year, .filename = filename});
+    puzzles[year - MIN_YEAR][day-1].second({.day = day, .year = year, .filename = filename});
     printf("\n");
     return 0;
 }

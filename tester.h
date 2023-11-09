@@ -7,6 +7,6 @@
 
 #include "common.h"
 
-void test(const yearfunctions& functions, const std::string& answer_key_path);
+void test(int year, const yearfunctions& functions, const std::string& answer_key_path);
 
 #endif // ADVENTOFCODE_TESTER_H

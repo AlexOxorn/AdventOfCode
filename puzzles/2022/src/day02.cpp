@@ -36,7 +36,7 @@ namespace aoc2022::day02 {
         return in;
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto inputstream = get_stream<round>(filename);
         auto x = inputstream | stdv::transform(&round::round_result);
         int total_score = std::accumulate(x.begin(), x.end(), 0);
@@ -44,7 +44,7 @@ namespace aoc2022::day02 {
         return total_score;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         auto inputstream = get_stream<round>(filename);
         auto x = inputstream | stdv::transform(&round::round_result2);
         int total_score = std::accumulate(x.begin(), x.end(), 0);

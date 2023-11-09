@@ -90,7 +90,7 @@ namespace aoc2021::day14 {
         }
     };
 
-    long solve_for(const char* filename, int steps) {
+    long solve_for(puzzle_options filename, int steps) {
         auto input = get_stream<insertion_rule>(filename);
         polymer_decoding p(input);
         std::unordered_map<char, long> char_count = p.multistep(steps);
@@ -102,11 +102,11 @@ namespace aoc2021::day14 {
         return max - min;
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         return solve_for(filename, 10);
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         return solve_for(filename, 40);
     }
 }

@@ -44,7 +44,7 @@ namespace aoc2022::day10 {
         }
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto instructions = get_stream<instruction>(filename);
         auto checks = stdv::iota(1, 7) | stdv::transform([](int i) { return i * 40 - 20; });
         auto check = checks.begin();
@@ -65,7 +65,7 @@ namespace aoc2022::day10 {
         return sum;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         auto instructions = get_stream<instruction>(filename);
         simulate(instructions, [&](int& X, int& cycle) {
             long xpos = cycle%40;

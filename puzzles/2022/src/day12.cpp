@@ -51,14 +51,14 @@ namespace aoc2022::day12 {
         }
     };
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         heightmap topology(get_stream<ox::line>(filename));
         auto [path, length] = topology.find_path_part1();
         myprintf("Path Length = %d\n", length);
         return length;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         heightmap topology(get_stream<ox::line>(filename));
         auto [path, length] = topology.find_path_part2();
         myprintf("Min Path Length = %d\n", length);

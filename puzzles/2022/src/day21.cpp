@@ -166,7 +166,7 @@ namespace aoc2022::day21 {
     }
 
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto monkey_stream = get_stream<ox::line>(filename);
         stdr::for_each(monkey_stream, register_monkey);
         long root_value = get_value("root");
@@ -174,7 +174,7 @@ namespace aoc2022::day21 {
         return root_value;
     }
 
-    answertype puzzle2([[maybe_unused]] const char* filename) {
+    answertype puzzle2([[maybe_unused]] puzzle_options filename) {
         math_tree lhs_tree;
         math_tree rhs_tree;
         auto x = std::get<math_monkey>(map["root"]);

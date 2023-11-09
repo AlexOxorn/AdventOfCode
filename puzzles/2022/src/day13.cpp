@@ -94,7 +94,7 @@ namespace aoc2022::day13 {
         return in;
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto input = get_stream<std::pair<element, element>>(filename);
         auto valid_indices = input | stdv::transform([index = 0](const auto& x) mutable {
                                  ++index;
@@ -105,7 +105,7 @@ namespace aoc2022::day13 {
         return sum;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         list input = get_from_input<element>(filename);
         const element two(list{element{list{element{2}}}});
         const element six(list{element{list{element{6}}}});

@@ -44,7 +44,7 @@ namespace aoc2022::day20 {
         myprintf("\n");
     }
 
-    auto solve(const char* filename, int repeat = 1, long decryption_key = 1) {
+    auto solve(puzzle_options filename, int repeat = 1, long decryption_key = 1) {
         auto encrypted = get_from_input<long>(filename);
         stdr::transform(encrypted, encrypted.begin(), std::bind_front(std::multiplies<>(), decryption_key));
         long message_size = static_cast<long>(encrypted.size());
@@ -87,11 +87,11 @@ namespace aoc2022::day20 {
         return sum;
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         return solve(filename);
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         return solve(filename, 10, 811589153);
     }
 } // namespace aoc2022::day20

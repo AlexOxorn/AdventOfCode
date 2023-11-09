@@ -46,7 +46,7 @@ namespace aoc2022::day03 {
         return *intersection.begin();
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto backpack_inputs = get_stream<std::string>(filename);
         auto priorities_stream = backpack_inputs | stdv::transform(common_backpack) | stdv::transform(priorities);
         int priority_sum = std::accumulate(priorities_stream.begin(), priorities_stream.end(), 0);
@@ -54,7 +54,7 @@ namespace aoc2022::day03 {
         return priority_sum;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         auto group_inputs = get_stream<group>(filename);
         auto priorities_stream = group_inputs | stdv::transform(common_badge) | stdv::transform(priorities);
         int priority_sum = std::accumulate(priorities_stream.begin(), priorities_stream.end(), 0);

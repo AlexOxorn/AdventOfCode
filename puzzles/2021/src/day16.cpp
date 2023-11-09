@@ -182,7 +182,7 @@ namespace aoc2021::day16 {
         return b;
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto input = get_stream<char>(filename);
         std::vector<bool> b = parse_character(input);
         auto [packet, end] = parse_packet(b.begin());
@@ -191,7 +191,7 @@ namespace aoc2021::day16 {
         return result;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         auto input = get_stream<char>(filename);
         std::vector<bool> b = parse_character(input);
         auto [packet, end] = parse_packet(b.begin());

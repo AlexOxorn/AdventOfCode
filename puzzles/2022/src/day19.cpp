@@ -221,7 +221,7 @@ namespace aoc2022::day19 {
         return {b.id, x.first.curren_material.geode};
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto blueprints = get_from_input<blueprint>(filename);
         auto quality_scores = blueprints | stdv::transform([](const auto& x) { return geode_count(x, 24); })
                             | stdv::transform([](const std::pair<i32, u16>& a) { return a.first * a.second; });
@@ -231,7 +231,7 @@ namespace aoc2022::day19 {
         return result;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         auto blueprints = get_from_input<blueprint>(filename);
         auto quality_scores = blueprints | stdv::take(3)
                             | stdv::transform([](const auto& x) { return geode_count(x, 32); })

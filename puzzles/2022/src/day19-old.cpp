@@ -231,7 +231,7 @@ namespace aoc2022::day19 {
         return result;
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto blueprints = get_from_input<blueprint>(filename);
         std::vector<state> results;
         stdr::for_each(blueprints, &blueprint::set_maximums);
@@ -246,5 +246,5 @@ namespace aoc2022::day19 {
         return {};
     }
 
-    answertype puzzle2(const char* filename) { return {}; }
+    answertype puzzle2(puzzle_options filename) { return {}; }
 } // namespace aoc2022::day19

@@ -17,20 +17,20 @@ namespace aoc2022::day06 {
         return window;
     }
 
-    answertype solve(const char* filename, int windowsize) {
+    answertype solve(puzzle_options filename, int windowsize) {
         std::vector<char> signal = get_from_input<char>(filename);
-        auto position = first_mismatch(signal.begin(), signal.begin() + windowsize, signal.end());
+        std::random_access_iterator auto position = first_mismatch(signal.begin(), signal.begin() + windowsize, signal.end());
         char output_message[44];
         sprintf(output_message, "The signal start is %%.%.*ds at position %%zu\n", (windowsize >= 10) + 1, windowsize);
         myprintf(output_message, position.base() - windowsize, position - signal.begin());
         return position - signal.begin();
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         return solve(filename, 4);
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         return solve(filename, 14);
     }
 } // namespace aoc2022::day05

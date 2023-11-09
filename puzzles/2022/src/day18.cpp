@@ -85,7 +85,7 @@ namespace aoc2022::day18 {
     constexpr droplet::dir back{&droplet::z, -1};
     constexpr std::array<droplet::dir, 6> adjacent{right, left, up, down, forward, back};
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         droplets_set processed_droplets;
         auto droplet_stream = get_stream<droplet>(filename);
         long surface_area = 0;
@@ -102,7 +102,7 @@ namespace aoc2022::day18 {
         return surface_area;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         auto droplet_stream = get_stream<droplet>(filename);
         droplets_set droplets(droplet_stream.begin(), droplet_stream.end());
         face_set processed_faces;

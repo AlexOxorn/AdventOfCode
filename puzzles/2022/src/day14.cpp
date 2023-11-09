@@ -186,7 +186,7 @@ namespace aoc2022::day14 {
         }
     } // namespace drawer
 
-    grid& get_grid(const char* filename) {
+    grid& get_grid(puzzle_options filename) {
         static std::optional<grid> g;
         if (g)
             return *g;
@@ -198,7 +198,7 @@ namespace aoc2022::day14 {
     }
 
     template <bool floor>
-    auto solve(const char* filename) {
+    auto solve(puzzle_options filename) {
         grid& g = get_grid(filename);
 
         std::jthread a;
@@ -215,14 +215,14 @@ namespace aoc2022::day14 {
         return sand;
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         drawer::init_drawer();
         auto result = solve<false>(filename);
         drawer::drawing_window.reset();
         return result;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         drawer::init_drawer();
         auto result = solve<true>(filename);
         drawer::drawing_window.reset();

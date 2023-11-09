@@ -96,13 +96,13 @@ namespace aoc2021::day22 {
         return total_area;
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto input = get_stream<instruction>(filename);
         instructions = std::vector(input.begin(), input.end());
         return solve(true);
     }
 
-    answertype puzzle2([[maybe_unused]] const char* filename) {
+    answertype puzzle2([[maybe_unused]] puzzle_options filename) {
         return solve();
     }
 } // namespace aoc2021::day22

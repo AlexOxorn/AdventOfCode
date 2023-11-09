@@ -86,7 +86,7 @@ namespace aoc2021::day25 {
         }
     };
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         using namespace std::chrono_literals;
         sea_floor cucumbers(get_stream<ox::line>(filename), [](char a) {
             switch (a) {
@@ -115,5 +115,5 @@ namespace aoc2021::day25 {
         return i;
     }
 
-    answertype puzzle2([[maybe_unused]] const char* filename) { return {}; }
+    answertype puzzle2([[maybe_unused]] puzzle_options filename) { return {}; }
 } // namespace aoc2021::day25

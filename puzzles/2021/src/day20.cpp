@@ -62,7 +62,7 @@ namespace aoc2021::day20 {
     static int puzzle_2_iteration_count = 50;
     static std::vector<bool> decoder;
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         int iteration_count = 2;
         auto in_stream = get_stream<ox::line>(filename);
         decoder = parse_decoder(in_stream);
@@ -80,7 +80,7 @@ namespace aoc2021::day20 {
         return count;
     }
 
-    answertype puzzle2([[maybe_unused]] const char* filename) {
+    answertype puzzle2([[maybe_unused]] puzzle_options filename) {
         for (int i = puzzle_1_iteration_count; i < puzzle_2_iteration_count; i++) {
             auto [new_image, new_empty] = next_image(image, decoder, empty);
             empty = new_empty;

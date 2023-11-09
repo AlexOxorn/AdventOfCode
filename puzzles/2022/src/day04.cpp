@@ -36,14 +36,14 @@ namespace aoc2022::day04 {
         return false;
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto groups = get_stream<std::pair<range, range>>(filename);
         size_t count = stdr::distance(groups | stdv::filter(overlap_full));
         myprintf("number of fully overlapping teams is %zu\n", count);
         return count;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         auto groups = get_stream<std::pair<range, range>>(filename);
         size_t count = stdr::distance(groups | stdv::filter(overlap));
         myprintf("number of partially overlapping teams is %zu\n", count);

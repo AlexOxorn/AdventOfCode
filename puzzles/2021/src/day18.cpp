@@ -119,7 +119,7 @@ namespace aoc2021::day18 {
         return explode(b) || split(b);
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         const int verbose_level = 0;
         auto input = get_stream<ox::line>(filename);
         std::string s = *input.begin();
@@ -153,7 +153,7 @@ namespace aoc2021::day18 {
         return result;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         auto input = get_stream<ox::line>(filename);
         int max = 0;
         std::vector<snail_number> numbers;

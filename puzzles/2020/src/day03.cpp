@@ -20,20 +20,20 @@ namespace aoc2020::day03 {
         return sum;
     }
 
-    ox::grid<bool>& get_forest(const char* filename) {
+    ox::grid<bool>& get_forest(puzzle_options filename) {
         static ox::grid<bool> forest{get_stream<>(filename), [](char c) { return c == '#'; }};
         return forest;
     }
 
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto input = get_stream<>(filename);
         int result = count_trees(get_forest(filename), 3, 1);
         printf("The number of trees on the 3/1 diagonal is %d\n", result);
         return result;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         auto input = get_stream<>(filename);
         auto& forest = get_forest(filename);
         std::array directions{

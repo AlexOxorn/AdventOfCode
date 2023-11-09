@@ -326,7 +326,7 @@ namespace aoc2022::day16 {
         }
     }
 
-    auto solve(const char* filename, int start_time,
+    auto solve(puzzle_options filename, int start_time,
                std::vector<std::pair<flow_state, long>> (*neighbour_func)(const flow_state&)) {
         if (pipe_paths.empty()) {
             auto x = get_stream<ox::line>(filename);
@@ -364,11 +364,11 @@ namespace aoc2022::day16 {
         return final_result;
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         return solve(filename, 30, get_neighbour_states_alone);
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         return solve(filename, 26, get_neighbour_states_with_elephant);
     }
 } // namespace aoc2022::day16

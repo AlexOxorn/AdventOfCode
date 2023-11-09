@@ -81,17 +81,13 @@ namespace aoc2022::day07 {
         directory_itr dir_end() const { return {}; }
     };
 
-    directory& get_root(const char* filename) {
-        static std::optional<directory> root;
-        if (root) {
-            return *root;
-        }
-        root.emplace();
-        directory* current = &*root;
+    directory calculate_root(puzzle_options filename) {
+        directory root;
+        directory* current = &root;
         auto commands = get_stream<ox::line>(filename);
         for (const std::string& command : commands) {
             if (command == "$ cd /") {
-                current = &*root;
+                current = &root;
                 continue;
             }
             if (command == "$ cd ..") {
@@ -115,18 +111,23 @@ namespace aoc2022::day07 {
             current->add_file(filename + 1, size);
         }
 
-        root->calculate_size();
-        return *root;
+        root.calculate_size();
+        return root;
     }
 
-    std::vector<long> get_directory_sizes(const char* filename) {
+    directory& get_root(puzzle_options filename) {
+        static directory root{calculate_root(filename)};
+        return root;
+    }
+
+    std::vector<long> get_directory_sizes(puzzle_options filename) {
         const directory& root = get_root(filename);
         auto x = stdr::subrange(root.dir_begin(), root.dir_end())
                | stdv::transform(&directory::filesize);
         return {x.begin(), x.end()};
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         std::vector<long> dirs = get_directory_sizes(filename);
         auto big_dir = dirs | stdv::filter([](const auto& dir) { return dir <= 100000; });
         auto total_size = std::accumulate(big_dir.begin(), big_dir.end(), 0l);
@@ -134,7 +135,7 @@ namespace aoc2022::day07 {
         return total_size;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         const directory& root = get_root(filename);
         long needed_space = root.filesize - (70'000'000 - 30'000'000);
         std::vector<long> dirs = get_directory_sizes(filename);

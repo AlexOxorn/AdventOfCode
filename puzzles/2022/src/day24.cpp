@@ -31,7 +31,7 @@ namespace aoc2022::day24 {
         }
     }
 
-    auto& get_blizzards(const char* filename = "") {
+    auto& get_blizzards(puzzle_options filename = {}) {
         static std::vector<ox::grid<char>> blizzard{ox::grid<char>(get_stream<ox::line>(filename), bitmap)};
         return blizzard;
     }
@@ -143,7 +143,7 @@ namespace std {
 } // namespace std
 
 namespace aoc2022::day24 {
-    std::tuple<int, int, int, int> start_and_end(const char* filename) {
+    std::tuple<int, int, int, int> start_and_end(puzzle_options filename) {
         auto blizzard = get_blizzards(filename).front();
         auto start_itr = stdr::find(blizzard.get_raw(), empty);
         auto end_itr = stdr::find(blizzard.get_raw() | stdv::reverse, empty).base();
@@ -154,7 +154,7 @@ namespace aoc2022::day24 {
         return {start_x, start_y, end_x, end_y};
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto [start_x, start_y, end_x, end_y] = start_and_end(filename);
 
         ox::dikstra_solver dd(ox::a_start(),
@@ -168,7 +168,7 @@ namespace aoc2022::day24 {
         return cost;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         auto [start_x, start_y, end_x, end_y] = start_and_end(filename);
 
         ox::dikstra_solver dd(ox::a_start(),

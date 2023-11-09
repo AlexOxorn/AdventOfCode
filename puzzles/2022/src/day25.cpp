@@ -73,7 +73,7 @@ namespace aoc2022::day25 {
         return s;
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto input = get_stream<ox::line>(filename);
 
         auto values = input | stdv::transform(from_snafu);
@@ -83,7 +83,7 @@ namespace aoc2022::day25 {
         return result_snafu;
     }
 
-    answertype puzzle2([[maybe_unused]] const char* filename) {
+    answertype puzzle2([[maybe_unused]] puzzle_options filename) {
         return {};
     }
 } // namespace aoc2022::day25

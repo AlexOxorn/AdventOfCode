@@ -51,7 +51,7 @@ namespace aoc2021::day07 {
         }
     };
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto input = get_stream<int>(filename);
         crab_positions cp(input);
         int med = cp.median();
@@ -60,7 +60,7 @@ namespace aoc2021::day07 {
         return fuel;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         auto input = get_stream<int>(filename);
         crab_positions cp(input);
         auto [mean1, mean2] = cp.mean();

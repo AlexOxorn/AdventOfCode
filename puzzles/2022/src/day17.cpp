@@ -119,7 +119,7 @@ namespace aoc2022::day17 {
         explicit operator bool() { return active_piece.has_value(); }
     };
 
-    auto solve(const char* filename, long num_of_block, bool type) {
+    auto solve(puzzle_options filename, long num_of_block, bool type) {
         static std::vector<char> motions{get_from_input<char>(filename)};
         board tetris;
         auto motion_iter = motions.begin();
@@ -193,12 +193,12 @@ namespace aoc2022::day17 {
         }
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         // solve(filename, 2022, true);
         return solve(filename, 2022, false);
     }
 
-    answertype puzzle2([[maybe_unused]] const char* filename) {
+    answertype puzzle2([[maybe_unused]] puzzle_options filename) {
         return solve(filename, 1'000'000'000'000, true);
     }
 } // namespace aoc2022::day17

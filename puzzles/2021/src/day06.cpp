@@ -53,7 +53,7 @@ namespace aoc2021::day06 {
         }
     };
 
-    answertype run_test(const char* filename, int generations) {
+    answertype run_test(puzzle_options filename, int generations) {
         auto input = get_stream<int>(filename);
         fish_population fishes(input);
         for([[maybe_unused]] int a : stdv::iota(0, generations)) {
@@ -63,11 +63,11 @@ namespace aoc2021::day06 {
         return fishes.get_result();
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         return run_test(filename, 80);
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         return run_test(filename, 256);
     }
 }

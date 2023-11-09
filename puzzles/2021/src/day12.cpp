@@ -64,7 +64,7 @@ namespace aoc2021::day12 {
         }
     };
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto input = get_stream<link>(filename);
         graph g(input);
         auto paths = g.get_valid_paths();
@@ -72,7 +72,7 @@ namespace aoc2021::day12 {
         return paths.size();
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         auto input = get_stream<link>(filename);
         graph g(input);
         auto paths = g.get_valid_paths(true);

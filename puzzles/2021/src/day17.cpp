@@ -59,7 +59,7 @@ namespace aoc2021::day17 {
         return to_return;
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         target_area t;
         auto input = get_stream<target_area>(filename);
         input >> t;
@@ -70,7 +70,7 @@ namespace aoc2021::day17 {
         return highest;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         target_area t;
         auto input = get_stream<target_area>(filename);
         input >> t;

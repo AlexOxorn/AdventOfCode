@@ -83,7 +83,7 @@ namespace aoc2022::day15 {
         return to_return;
     }
 
-    cave_map& get_cave_map(const char* filename) {
+    cave_map& get_cave_map(puzzle_options filename) {
         static std::optional<cave_map> map;
         if (map.has_value())
             return *map;
@@ -94,7 +94,7 @@ namespace aoc2022::day15 {
         return *map;
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         cave_map& map = get_cave_map(filename);
         auto left_boundary = stdr::min(map | stdv::transform([](const auto& r) { return r.first.first - r.second; }));
         auto right_boundary = stdr::max(map | stdv::transform([](const auto& r) { return r.first.first + r.second; }));
@@ -108,7 +108,7 @@ namespace aoc2022::day15 {
         return count;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         auto input = get_stream<ox::line>(filename);
         auto boundary_stream = input | stdv::transform(&covering_square);
         std::vector<int> upper_boundaries;

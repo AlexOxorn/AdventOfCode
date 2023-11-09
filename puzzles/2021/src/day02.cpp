@@ -85,13 +85,13 @@ namespace aoc2021::day02 {
         return std::accumulate(vd.begin(), vd.end(), coordinates(), move_function);
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto input_vector = get_stream<step>(filename);
         auto result = follow_path(input_vector, move_version1);
         return print_result(result);
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         auto input_vector = get_stream<step>(filename);
         auto result = follow_path(input_vector, move_version2);
 

@@ -152,7 +152,7 @@ namespace aoc2022::day23 {
         myprintf("=============================\n");
     }
 
-    elf_list& create_elves(const char* filename) {
+    elf_list& create_elves(puzzle_options filename) {
         static elf_list elves;
         if (elves.empty())
             stdr::for_each(get_stream<ox::line>(filename), [y=0] (const std::string& s) mutable {
@@ -166,7 +166,7 @@ namespace aoc2022::day23 {
         return elves;
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         elf_list& elves = create_elves(filename);
 
         for (int i = 0; i < 10; i++) {
@@ -188,7 +188,7 @@ namespace aoc2022::day23 {
         return empty_spaces;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         elf_list& elves = create_elves(filename);
 
         int index = *stdr::find_if(stdv::iota(10), [&elves](int i) {

@@ -81,7 +81,7 @@ namespace aoc2021::day05 {
         }
     };
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto input = get_stream<line>(filename);
         grid g;
         for (line l : input) {
@@ -92,7 +92,7 @@ namespace aoc2021::day05 {
         return g.count_score();
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         auto input = get_stream<line>(filename);
         grid g(true);
         for (line l : input) {

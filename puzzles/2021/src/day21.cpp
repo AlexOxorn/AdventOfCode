@@ -159,13 +159,13 @@ namespace aoc2021::day21 {
 
 
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto input = get_stream<ox::line>(filename);
         part1_simulation s(input);
         return s.simulate();
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         auto input = get_stream<ox::line>(filename);
         part2_simulation s(input);
         return s.simulate();

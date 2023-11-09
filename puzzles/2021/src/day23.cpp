@@ -166,7 +166,7 @@ namespace aoc2021::day23 {
 #undef GET_CHR_
     }
 
-    answertype puzzle1([[maybe_unused]] const char* filename) {
+    answertype puzzle1([[maybe_unused]] puzzle_options filename) {
         cave_state<2> part1({'C', 'B'}, {'A', 'A'}, {'B', 'D'}, {'D', 'C'});
 
         auto [path, cost] = ox::dikstra(
@@ -185,7 +185,7 @@ namespace aoc2021::day23 {
         return cost;
     }
 
-    answertype puzzle2([[maybe_unused]] const char* filename) {
+    answertype puzzle2([[maybe_unused]] puzzle_options filename) {
         cave_state<4> part2(
                {'C', 'D', 'D', 'B'},
                {'A', 'C', 'B', 'A'},

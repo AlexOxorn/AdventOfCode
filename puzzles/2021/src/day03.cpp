@@ -61,7 +61,7 @@ namespace aoc2021::day03{
         return begin - true_begin;
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto input_stream = get_stream<reading>(filename);
         auto final = std::accumulate(input_stream.begin(), input_stream.end(), bit_population_count());
         auto[gamma, epsilon] = gamma_epsilon_rate(final.common_to_integer());
@@ -70,7 +70,7 @@ namespace aoc2021::day03{
         return std::to_string(gamma * epsilon);
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         auto input_stream = get_stream<reading>(filename);
         auto binary_tree = std::accumulate(input_stream.begin(), input_stream.end(), std::vector<int>(ox::power_of_2(bitwidth)));
         int o2 = recursive_decent(binary_tree.begin(), binary_tree.end());

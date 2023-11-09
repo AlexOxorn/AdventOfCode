@@ -77,7 +77,7 @@ namespace aoc2022::day05 {
         }
     };
 
-    answertype solver(const char* filename, void (crate_stacks::*move)(direction dir)) {
+    answertype solver(puzzle_options filename, void (crate_stacks::*move)(direction dir)) {
         auto input = get_stream<direction>(filename);
         crate_stacks stacks;
         input >> stacks;
@@ -91,11 +91,11 @@ namespace aoc2022::day05 {
         return result;
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         return solver(filename, &crate_stacks::apply_direction9000);
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         return solver(filename, &crate_stacks::apply_direction9001);
     }
 } // namespace aoc2022::day05

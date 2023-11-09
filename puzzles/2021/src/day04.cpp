@@ -112,13 +112,13 @@ namespace aoc2021::day04 {
         return ball * score;
     }
 
-    std::pair<bingo_inputs, std::vector<bingo_card>> init(const char* filename) {
+    std::pair<bingo_inputs, std::vector<bingo_card>> init(puzzle_options filename) {
         main_pool.reset();
         auto input = get_stream<bingo_card>(filename);
         return {extract_roller(input), {input.begin(), input.end()}};
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto[roller, cards] = init(filename);
         for (auto ball: roller) {
             myprintf("####################\nCurrent Ball: %d\n####################\n", ball);
@@ -133,7 +133,7 @@ namespace aoc2021::day04 {
         __builtin_unreachable();
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         auto[roller, cards] = init(filename);
         for (auto ball: roller) {
             myprintf("####################\nCurrent Ball: %d\n####################\n", ball);

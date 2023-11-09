@@ -99,7 +99,7 @@ namespace aoc2022::day11 {
     }
 
     template <int Iterations, bool calm>
-    auto solve(const char* filename) {
+    auto solve(puzzle_options filename) {
         troupe monkeys = get_from_input<monkey>(filename);
         for (monkey& mon : monkeys) {
             mon.group = &monkeys;
@@ -117,11 +117,11 @@ namespace aoc2022::day11 {
         return inspections[0] * inspections[1];
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         return solve<20, true>(filename);
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         return solve<10000, false>(filename);
     }
 } // namespace aoc2022::day11

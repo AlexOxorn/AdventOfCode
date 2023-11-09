@@ -115,7 +115,7 @@ namespace aoc2021::day19 {
         return std::nullopt;
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto stream(get_stream<int>(filename));
         auto input = parse_input(stream);
         std::queue<std::pair<scanner, ox::matrix<int>>> todo;
@@ -156,7 +156,7 @@ namespace aoc2021::day19 {
         return unique_end - full_list.begin();
     }
 
-    answertype puzzle2([[maybe_unused]] const char* filename) {
+    answertype puzzle2([[maybe_unused]] puzzle_options filename) {
         int max = 0;
 
         for (auto x = final_offsets.begin(); x != final_offsets.end(); ++x) {

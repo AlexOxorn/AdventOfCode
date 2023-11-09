@@ -74,7 +74,7 @@ namespace aoc2021::day09 {
         }
     };
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         heightmap h(get_stream<ox::line>(filename), [](char a) {return a - '0';});
         auto [x, y] = h.get_dimensions();
         myprintf("size = %zu x %zu\n", x, y);
@@ -84,7 +84,7 @@ namespace aoc2021::day09 {
         return score;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         heightmap h(get_stream<ox::line>(filename), [](char a) {return a - '0';});
         auto score = h.get_score2();
         myprintf("score = %d\n", score);

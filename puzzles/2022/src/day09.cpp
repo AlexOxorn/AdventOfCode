@@ -157,7 +157,7 @@ namespace aoc2022::day09 {
     }
 
     template <size_t N, bool display>
-    auto solve(const char* filename) {
+    auto solve(puzzle_options filename) {
         positionlog visited{std::make_pair(0, 0)};
         rope<N> r{};
         auto instructions = get_stream<instruction>(filename);
@@ -172,7 +172,7 @@ namespace aoc2022::day09 {
         return visited.size();
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         drawer::init_drawer();
         auto x = solve<2, drawer::display_part1>(filename);
         if (drawer::drawing_window && drawer::display_part1)
@@ -181,7 +181,7 @@ namespace aoc2022::day09 {
         return x;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         drawer::init_drawer();
         auto x = solve<10, drawer::display_part2>(filename);
         if (drawer::drawing_window && drawer::display_part2)

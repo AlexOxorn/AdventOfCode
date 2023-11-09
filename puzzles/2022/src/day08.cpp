@@ -77,14 +77,14 @@ namespace aoc2022::day08 {
         }
     };
 
-    treemap get_marked_tree(const char* filename) {
+    treemap get_marked_tree(puzzle_options filename) {
         treemap trees(get_stream<ox::line>(filename), [](char a) { return a - '0'; });
         trees.check_horizontal();
         trees.check_vertical();
         return trees;
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         treemap trees = get_marked_tree(filename);
         trees.print_map();
         long count = stdr::count_if(trees.get_raw(), &std::pair<int, bool>::second);
@@ -92,7 +92,7 @@ namespace aoc2022::day08 {
         return count;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         treemap trees = get_marked_tree(filename);
         long result = stdr::max(trees.get_raw() | oxv::iterators
                                 | stdv::filter([](const treemap::const_raw_iterator& tree) { return tree->second; })

@@ -81,7 +81,7 @@ namespace aoc2021::day10 {
         }
     };
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto input = get_stream<std::string>(filename);
 
         auto scores = input
@@ -93,7 +93,7 @@ namespace aoc2021::day10 {
         return x;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         auto input = get_stream<std::string>(filename);
 
         auto scores_itr = input

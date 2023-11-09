@@ -63,7 +63,7 @@ namespace aoc2021::day11 {
         }
     };
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         int number_of_steps = 100;
         octopuses o(get_stream<ox::line>(filename), [](char a) {return a - '0';});
         auto scores = stdv::iota(0, number_of_steps) | stdv::transform([&o] (int) { return o.next_step(); });
@@ -72,7 +72,7 @@ namespace aoc2021::day11 {
         return steps;
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         octopuses o(get_stream<ox::line>(filename), [](char a) {return a - '0';});
         auto scores = stdv::iota(1)
                 | stdv::transform([&o] (int a) { return std::make_pair(a, o.next_step()); })

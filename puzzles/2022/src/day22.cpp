@@ -195,7 +195,7 @@ namespace aoc2022::day22 {
         }
     };
 
-    std::pair<map_of_board, std::string> get_data(const char* filename) {
+    std::pair<map_of_board, std::string> get_data(puzzle_options filename) {
         map_of_board map;
         std::string path;
         if (map.get_raw().empty()) {
@@ -211,7 +211,7 @@ namespace aoc2022::day22 {
     }
 
     template <bool print = false>
-    auto solve(const char* filename, map_of_board::loop_function func) {
+    auto solve(puzzle_options filename, map_of_board::loop_function func) {
         using namespace std::chrono_literals;
         auto [board, path] = get_data(filename);
         auto [pos, dir] = board.get_start();
@@ -252,11 +252,11 @@ namespace aoc2022::day22 {
         return final_result;
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         return solve(filename, &map_of_board::move_2d);
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         return solve(filename, &map_of_board::move_cube);
     }
 } // namespace aoc2022::day22

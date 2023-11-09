@@ -622,7 +622,7 @@ namespace aoc2021::day24 {
         myprintf("new_raw: %ld\n", isolated_1);
     }
 
-    void init(const char* filename) {
+    void init(puzzle_options filename) {
         auto instruction_range = get_stream<instruction>(filename);
         instructions = std::vector(instruction_range.begin(), instruction_range.end());
 
@@ -635,14 +635,14 @@ namespace aoc2021::day24 {
         Bs = std::vector<int>(Bs_range.begin(), Bs_range.end());
         Cs = std::vector<int>(Cs_range.begin(), Cs_range.end());
     }
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         init(filename);
         auto answer = get_valid_input<false>(As, Bs, Cs);
         print_answer(answer);
         return {};
     }
 
-    answertype puzzle2([[maybe_unused]] const char* filename) {
+    answertype puzzle2([[maybe_unused]] puzzle_options filename) {
         auto answer = get_valid_input<true>(As, Bs, Cs);
         print_answer(answer);
         return {};

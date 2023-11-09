@@ -86,7 +86,7 @@ namespace aoc2021::day13 {
         return in;
     }
 
-    answertype puzzle1(const char* filename) {
+    answertype puzzle1(puzzle_options filename) {
         auto input = get_stream<fold>(filename);
         paper p(input);
         p.fold(*input.begin());
@@ -94,7 +94,7 @@ namespace aoc2021::day13 {
         return p.point_count();
     }
 
-    answertype puzzle2(const char* filename) {
+    answertype puzzle2(puzzle_options filename) {
         auto input = get_stream<fold>(filename);
         paper p(input);
         for (auto f : input) {
