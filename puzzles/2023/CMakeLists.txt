@@ -1,6 +1,6 @@
 add_library(
-        "2020"
-        include/2020.h
+        "2023"
+        include/2023.h
         src/day01.cpp
         src/day02.cpp
         src/day03.cpp
@@ -28,5 +28,5 @@ add_library(
         src/day25.cpp
 )
 
-target_link_libraries("2020" PRIVATE "ox")
-target_include_directories("2020" PUBLIC "include")
+target_link_libraries("2023" PRIVATE "ox")
+target_include_directories("2023" PUBLIC "include")

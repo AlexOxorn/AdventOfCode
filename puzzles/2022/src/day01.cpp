@@ -39,8 +39,7 @@ namespace aoc2022::day01 {
         auto elf_stream = get_stream<elf>(filename);
         std::vector elves(elf_stream.begin(), elf_stream.end());
         stdr::nth_element(elves, elves.begin() + 3, std::greater<>(), &elf::calories);
-        auto total = std::accumulate(
-                elves.begin(), elves.begin() + 3, elf{});
+        auto total = std::accumulate(elves.begin(), elves.begin() + 3, elf{});
         myprintf("the max three elves sum to %ld", total.calories);
         return total.calories;
     }

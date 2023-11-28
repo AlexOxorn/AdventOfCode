@@ -2,15 +2,15 @@
 // Created by alexoxorn on 10/8/22.
 //
 
-#ifndef ADVENTOFCODE_2020_H
-#define ADVENTOFCODE_2020_H
+#ifndef ADVENTOFCODE_2023_H
+#define ADVENTOFCODE_2023_H
 
 #include <array>
 #include "../../../common.h"
 
-namespace aoc2020 {
+namespace aoc2023 {
     PER_DAY(INCLUDE_DAY)
     constexpr yearfunctions days{{PER_DAY(PUZZLE_PAIR)}};
-}
+} // namespace aoc2022
 
-#endif // ADVENTOFCODE_2021_H
+#endif // ADVENTOFCODE_2023_H

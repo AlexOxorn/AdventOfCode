@@ -79,6 +79,7 @@ namespace aoc2022::day25 {
         auto values = input | stdv::transform(from_snafu);
         auto result_int = std::accumulate(values.begin(), values.end(), 0l);
         std::string result_snafu = to_snafu(result_int);
+        result_snafu.erase(0, result_snafu.find_first_not_of('0'));
         myprintf("The resulting sum is %ld in decimal and %s in snafu\n", result_int, result_snafu.c_str());
         return result_snafu;
     }

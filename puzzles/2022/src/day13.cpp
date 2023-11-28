@@ -28,15 +28,15 @@ namespace aoc2022::day13 {
         auto operator()(int l, const list& r) { return (*this)(std::vector{element{l}}, r); }
     };
     struct element_output_overload {
-        void operator()(int l) { std::cout << l; }
+        void operator()(int l) { myprintf("%d", l); }
         void operator()(const list& l) {
-            std::cout << '[';
+            myprintf("%c", '[');
             for (const element& x : l) {
                 std::visit(element_output_overload{}, x);
                 if (&x != &l.back())
-                    std::cout << ',';
+                    myprintf("%c", ',');
             }
-            std::cout << ']';
+            myprintf("%c", ']');
         };
     };
 

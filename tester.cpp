@@ -13,12 +13,6 @@
 
 enum Result { CORRECT = 1, INCORRECT = 0, UNTESTABLE = -1 };
 
-struct answer_to_string {
-    std::string operator()(std::integral auto i) { return std::to_string(i); }
-    std::string operator()(const std::string& s) { return s; }
-    std::string operator()(const std::monostate&) { return "(nil)"; }
-};
-
 void test(int year, const yearfunctions& functions, const std::string& answer_key_path) {
     ox::format yellow{ox::escape::yellow};
     ox::format red{ox::escape::red};
