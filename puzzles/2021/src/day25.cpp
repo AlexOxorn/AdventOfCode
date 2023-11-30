@@ -36,13 +36,13 @@ namespace aoc2021::day25 {
             bool start_empty = *start == space::EMPTY;
 
             // Determine which cucumbers can move
-            for (auto temp_start = start; temp_start < data.end(); temp_start += width) {
+            for (auto temp_start = start; temp_start < data.end(); temp_start += get_width()) {
                 if (*temp_start != space::SOUTH_FACING)
                     continue;
                 if (auto move_location = down(std::optional(temp_start)); move_location) {
                     if (**move_location == space::EMPTY) {
                         std::swap(*temp_start, **move_location);
-                        temp_start += width;
+                        temp_start += get_width();
                     }
                 } else {
                     if (start_empty)
@@ -58,7 +58,7 @@ namespace aoc2021::day25 {
         }
 
         void move_south() {
-            for (int i : stdv::iota(0, width)) {
+            for (int i : stdv::iota(0ul, get_width())) {
                 move_south_column(i);
             }
         }

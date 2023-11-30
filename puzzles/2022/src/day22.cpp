@@ -64,7 +64,7 @@ namespace aoc2022::day22 {
             return '>';
         }
 
-        [[nodiscard]] const_raw_iterator position_at(int i, int j) const { return data.begin() + i + j * width; }
+        [[nodiscard]] const_raw_iterator position_at(int i, int j) const { return data.begin() + i + j * get_width(); }
 
         [[nodiscard]] pos_dir cube_loop(const_raw_iterator start, move_function dir) const {
             auto [x, y] = coord_from_index(start);

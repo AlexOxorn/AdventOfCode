@@ -45,7 +45,7 @@ namespace aoc2022::day08 {
         }
 
         void check_vertical() {
-            for (int j = 0; j < this->width; j++) {
+            for (int j = 0; j < int(get_width()); j++) {
                 check_column(j, stdv::all);
                 check_column(j, stdv::reverse);
             }

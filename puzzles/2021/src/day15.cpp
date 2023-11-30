@@ -21,7 +21,6 @@ namespace aoc2021::day15 {
         explicit grid(std::istream& in, int multiply) {
             std::string s;
             while (std::getline(in, s)) {
-                width = s.size() * multiply;
                 for (int offset : stdv::iota(0, multiply)) {
                     std::transform(s.begin(), s.end(), std::back_inserter(data), [offset](char a) {
                         return (a - '0' + offset) % 10 + (a - '0' + offset) / 10;
@@ -35,6 +34,7 @@ namespace aoc2021::day15 {
                     return (a + offset) % 10 + (a + offset) / 10;
                 });
             }
+            set_width(s.size() * multiply);
         }
 
         auto find_path() {
