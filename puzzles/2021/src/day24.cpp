@@ -1,7 +1,3 @@
-//
-// Created by alexoxorn on 2021-12-31.
-//
-
 #include "../../../common.h"
 #include <concepts>
 #include <optional>

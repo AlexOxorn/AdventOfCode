@@ -1,7 +1,3 @@
-//
-// Created by alexoxorn on 2021-12-19.
-//
-
 #include "../../../common.h"
 #include <vector>
 #include <bitset>

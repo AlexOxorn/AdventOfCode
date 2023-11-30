@@ -1,7 +1,3 @@
-//
-// Created by alexoxorn on 2021-12-12.
-//
-
 #include "../../../common.h"
 
 #define DAY 12

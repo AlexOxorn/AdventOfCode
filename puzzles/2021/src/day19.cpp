@@ -1,7 +1,3 @@
-//
-// Created by alexoxorn on 2021-12-22.
-//
-
 #include "../../../common.h"
 #include "ox/matrix.h"
 #include <cassert>

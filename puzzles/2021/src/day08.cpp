@@ -1,7 +1,3 @@
-//
-// Created by alexoxorn on 2021-12-09.
-//
-
 #include "../../../common.h"
 #include <sstream>
 #include <set>

@@ -1,7 +1,3 @@
-//
-// Created by alexoxorn on 2021-12-01.
-//
-
 #include "../../../common.h"
 #include <unordered_map>
 #include <algorithm>
@@ -190,7 +186,7 @@ namespace aoc2022::day22 {
 
         void print_pos(const_raw_iterator pos, move_function dir) {
             auto [x, y] = coord_from_index(pos);
-            myprintf("\033[%d;%dH%c", y + 1, x + 1, dir_char(dir));
+            myprintf("\033[%ld;%ldH%c", y + 1, x + 1, dir_char(dir));
             fflush(stdout);
         }
     };
@@ -246,8 +242,8 @@ namespace aoc2022::day22 {
         auto [x, y] = board.coord_from_index(pos);
         ++x, ++y;
         int rotation_val = map_of_board::dir_value(dir);
-        myprintf("The final x and y position and rotation are %d, %d, %d\n", x, y, rotation_val);
-        int final_result = 1000 * y + 4 * x + rotation_val;
+        myprintf("The final x and y position and rotation are %ld, %ld, %d\n", x, y, rotation_val);
+        int final_result = int(1000 * y + 4 * x + rotation_val);
         myprintf("The result is %d\n", final_result);
         return final_result;
     }

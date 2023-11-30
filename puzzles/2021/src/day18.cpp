@@ -1,7 +1,3 @@
-//
-// Created by alexoxorn on 2021-12-20.
-//
-
 #include "../../../common.h"
 #include "ox/tree.h"
 #include <algorithm>

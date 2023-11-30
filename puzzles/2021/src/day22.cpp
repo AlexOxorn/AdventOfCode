@@ -1,7 +1,3 @@
-//
-// Created by alexoxorn on 2021-12-26.
-//
-
 #include "../../../common.h"
 #include <functional>
 #include <numeric>

@@ -1,7 +1,3 @@
-//
-// Created by alexoxorn on 2021-12-06.
-//
-
 #include "../../../common.h"
 #include <limits>
 #include <numeric>

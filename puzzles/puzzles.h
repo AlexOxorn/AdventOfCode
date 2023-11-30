@@ -1,7 +1,3 @@
-//
-// Created by alexoxorn on 10/8/22.
-//
-
 #ifndef ADVENTOFCODE_PUZZLES_H
 #define ADVENTOFCODE_PUZZLES_H
 

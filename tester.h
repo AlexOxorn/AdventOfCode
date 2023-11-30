@@ -1,7 +1,3 @@
-//
-// Created by alexoxorn on 10/29/23.
-//
-
 #ifndef ADVENTOFCODE_TESTER_H
 #define ADVENTOFCODE_TESTER_H
 

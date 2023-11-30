@@ -1,7 +1,3 @@
-//
-// Created by alexoxorn on 2021-12-27.
-//
-
 #include "../../../common.h"
 #include <set>
 #include <map>

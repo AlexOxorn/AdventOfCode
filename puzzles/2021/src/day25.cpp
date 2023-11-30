@@ -1,7 +1,3 @@
-//
-// Created by alexoxorn on 2022-01-03.
-//
-
 #include "../../../common.h"
 #include "ox/grid.h"
 #include <chrono>

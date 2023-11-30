@@ -1,7 +1,3 @@
-//
-// Created by alexoxorn on 2021-12-02.
-//
-
 #ifndef ADVENTOFCODE2021_COMMON_H
 #define ADVENTOFCODE2021_COMMON_H
 

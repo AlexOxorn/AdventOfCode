@@ -1,7 +1,3 @@
-//
-// Created by alexoxorn on 2021-12-24.
-//
-
 #include "../../../common.h"
 #include "ox/ranges.h"
 #include <ranges>

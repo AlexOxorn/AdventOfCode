@@ -1,7 +1,3 @@
-//
-// Created by alexoxorn on 2021-12-01.
-//
-
 #include "../../../common.h"
 #include <ox/grid.h>
 #include <variant>

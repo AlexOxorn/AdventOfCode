@@ -1,7 +1,3 @@
-//
-// Created by alexoxorn on 2021-12-10.
-//
-
 #include "../../../common.h"
 #include "algorithms/_helper_iterators.h"
 #include <vector>
