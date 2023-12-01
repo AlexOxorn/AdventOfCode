@@ -108,10 +108,7 @@ namespace aoc2022::day19 {
     std::vector<state> prune(const std::vector<state>& states) {
         std::unordered_map<long, std::vector<std::pair<state, material>>> max_scores;
 
-        double aa = 0;
         for (const state& s : states) {
-            aa += 1.0;
-//            myprintf("\033[2J%lf\n", aa/states.size());
             long robots_key = score(s.robots);
             if (!max_scores.contains(robots_key)) {
                 max_scores.emplace(robots_key, std::vector{std::make_pair(s, s.curren_material)});
@@ -126,17 +123,15 @@ namespace aoc2022::day19 {
                 }
             }
             if (not found) {
-//                myprintf("not found\n");
                 max_scores.at(robots_key).emplace_back(s, s.curren_material);
             }
-//            myprintf("---------------------------------\n");
         }
         myprintf("=====================================\n");
         auto x = max_scores | stdv::values | stdv::join | stdv::keys;
         return {x.begin(), x.end()};
     }
 
-    std::vector<state> calculate_next(const std::vector<state>& in, int remaining_time = 1) {
+    std::vector<state> calculate_next(const std::vector<state>& in, [[maybe_unused]] int remaining_time = 1) {
         std::vector<state> nexts;
         nexts.reserve(in.size() * rock_types);
 
@@ -144,19 +139,6 @@ namespace aoc2022::day19 {
             auto v = get_neighbours(x);
             nexts.insert(nexts.end(), std::make_move_iterator(v.begin()), std::make_move_iterator(v.end()));
         }
-
-        /*for (int i = rock_types; i > 2; --i) {
-            auto geo_count = [&](const state& s) {
-                return s.curren_material.rocks[i-1] + s.robots[i-1];
-            };
-            stdr::sort(nexts, std::greater<>(), geo_count);
-            auto highest = geo_count(nexts.front());
-            if (highest > 0) {
-                auto x = stdr::upper_bound(nexts, highest - 2, std::greater<>(), geo_count);
-                nexts.erase(x, nexts.end());
-                break;
-            }
-        }*/
 
         myprintf("%zu\n", nexts.size());
         return prune(nexts);
@@ -242,5 +224,5 @@ namespace aoc2022::day19 {
         return {};
     }
 
-    answertype puzzle2(puzzle_options filename) { return {}; }
+    answertype puzzle2([[maybe_unused]] puzzle_options filename) { return {}; }
 } // namespace aoc2022::day19
