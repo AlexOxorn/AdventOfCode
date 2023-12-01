@@ -79,7 +79,7 @@ int main(int argc, const char** argv) {
         return 0;
     }
 
-    filename = filename ?: "input";
+    filename = filename ?: "";
     if (day < 0) {
         printf("ERROR: No day given");
         exit(1);

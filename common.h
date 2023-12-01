@@ -9,6 +9,7 @@
 #include <vector>
 #include <ranges>
 #include <variant>
+#include <cstring>
 #include <ox/io.h>
 #include <ox/std_abbreviation.h>
 
@@ -25,7 +26,7 @@ extern bool do_print;
 struct puzzle_options {
     int day{};
     int year{};
-    const char* filename = "input";
+    const char* filename = "";
     bool display = false;
     bool print = true;
 };
@@ -34,11 +35,12 @@ template <typename T = ox::line>
 auto get_stream(puzzle_options opt) {
     char filename[512];
     sprintf(filename,
-            "%s/../puzzles/%d/inputs/day%02d_%s.txt",
+            "%s/../puzzles/%d/inputs/day%02d_%s%sinput.txt",
             ox::executable_folder().c_str(),
             opt.year,
             opt.day,
-            opt.filename);
+            opt.filename,
+            strlen(opt.filename) ? "_" : "");
     return ox::ifstream_container<T>{filename};
 }
 
