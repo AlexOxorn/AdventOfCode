@@ -1,11 +1,8 @@
 #include "../../../common.h"
 #include <ox/grid.h>
-#include <ox/graph.h>
 #include <variant>
 #include <vector>
 #include <stack>
-#include <numeric>
-#include <thread>
 #include <ox/canvas.h>
 #include <ox/hash.h>
 
@@ -15,8 +12,6 @@ namespace aoc2022::day14 {
 
     enum class occupied_by { rock, sand_still, sand_moving };
     enum class operation { cont, still, end };
-
-    std::mutex drawing_mutex;
 
     constexpr coord start_position{500, 0};
     constexpr bool view = false;
@@ -47,7 +42,6 @@ namespace aoc2022::day14 {
         void set_max() { max_depth = stdr::max(*this | stdv::keys | stdv::transform(&coord::second)) + 2; }
 
         auto locked_insert(const value_type& val) {
-            std::lock_guard lock(drawing_mutex);
             return insert(val);
         }
 
@@ -134,7 +128,6 @@ namespace aoc2022::day14 {
 
         bool draw_cave(const grid& pos) {
             {
-                std::lock_guard lock(drawing_mutex);
                 if (not drawing_window) {
                     return false;
                 }
@@ -170,7 +163,7 @@ namespace aoc2022::day14 {
 
                 drawing_window->redraw();
             }
-            std::this_thread::sleep_for(refresh_frequency);
+            //std::this_thread::sleep_for(refresh_frequency);
             return true;
         }
 
@@ -196,15 +189,14 @@ namespace aoc2022::day14 {
     template <bool floor>
     auto solve(puzzle_options filename) {
         grid& g = get_grid(filename);
-
+        size_t count = 0;
         std::jthread a;
-        if constexpr (view)
-            a = std::jthread([&g](const std::stop_token& s) {
-                while (!s.stop_requested() && drawer::drawing_window) {
-                    drawer::draw_cave(g);
-                }
-            });
-        while (g.drop_sand<floor>() != operation::end) {}
+        while (g.drop_sand<floor>() != operation::end) {
+            if (drawer::drawing_window && (!floor || (++count % 10 == 0)))
+                drawer::draw_cave(g);
+        }
+        if (drawer::drawing_window)
+            drawer::draw_cave(g);
         auto sand = stdr::count(g | stdv::values, occupied_by::sand_still);
         myprintf("The amount of still sand before sand falls forever is %zu\n", sand);
         drawer::conditional_sleep(after_puzzle_wait);

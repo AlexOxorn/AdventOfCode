@@ -2,6 +2,7 @@
 #define ADVENTOFCODE_TESTER_H
 
 #include "common.h"
+#include <sstream>
 
 struct answer_to_string {
     std::string operator()(std::integral auto i) { return std::to_string(i); }

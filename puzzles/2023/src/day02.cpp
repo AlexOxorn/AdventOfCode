@@ -5,18 +5,13 @@
 #include <ranges>
 
 namespace aoc2023::day02 {
-    enum color : int {
-        RED,
-        GREEN,
-        BLUE,
-        LAST
-    };
+    enum color : int { RED, GREEN, BLUE, LAST };
 
     using colors = std::array<int, LAST>;
 
     struct game {
         int id{};
-        std::vector <colors> pulls;
+        std::vector<colors> pulls;
     };
 
     std::istream& operator>>(std::istream& in, game& g) {
@@ -50,13 +45,18 @@ namespace aoc2023::day02 {
         return in;
     }
 
-    constexpr int max_count[] {12, 13, 14};
+    constexpr int max_count[]{12, 13, 14};
 
     bool valid_game(const game& g) {
         return stdr::all_of(g.pulls, [](colors x) {
-            bool results[3];
-            stdr::transform(x, max_count, std::begin(results), std::less_equal<>());
-            return stdr::all_of(results, std::identity());
+#ifdef __cpp_lib_ranges_zip
+            auto valid = stdv::zip_transform(std::less_equal<>(), x, max_count);
+            return stdr::all_of(valid, std::identity());
+#else
+                    bool results[3];
+                    stdr::transform(x, max_count, std::begin(results), std::less_equal<>());
+                    return stdr::all_of(results, std::identity());
+#endif
         });
     }
 
@@ -77,7 +77,6 @@ namespace aoc2023::day02 {
         myprintf("%d\n", sum);
         return sum;
     }
-
 
     answertype puzzle2([[maybe_unused]] puzzle_options filename) {
         auto games = get_stream<game>(filename);

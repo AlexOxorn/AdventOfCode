@@ -22,7 +22,7 @@ static const char base[] =
 using unique_process = std::unique_ptr<FILE, decltype([](FILE* f) { pclose(f); })>;
 
 void submit(const answertype& ans, int year, int day, int part) {
-    char command[strlen(base) + 20];
+    char command[sizeof(base) + 20];
     char read_output[1024];
 
     auto str_ans = std::visit(answer_to_string2{}, ans);

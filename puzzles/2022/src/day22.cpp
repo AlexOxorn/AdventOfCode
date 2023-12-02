@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <thread>
 #include <queue>
+#include <ranges>
 #include <ox/grid.h>
 
 namespace aoc2022::day22 {
@@ -201,6 +202,7 @@ namespace aoc2022::day22 {
             data.pop_back();
             int width = static_cast<int>(stdr::max(data | stdv::transform(&std::string::size)));
             stdr::for_each(data, [width](std::string& s) { s.resize(width, ' '); });
+
             map = map_of_board{width, data | stdv::join};
         }
         return {map, path};
