@@ -63,7 +63,7 @@ namespace aoc2023::day01 {
         auto strings = get_stream<ox::line>(filename);
         auto blueprints = strings | stdv::transform(get_blueprint);
         auto sum = std::accumulate(blueprints.begin(), blueprints.end(), 0);
-        printf("%d\n", sum);
+        myprintf("%d\n", sum);
         return sum;
     }
 
@@ -71,7 +71,7 @@ namespace aoc2023::day01 {
         auto strings = get_stream<ox::line>(filename);
         auto blueprints = strings | stdv::transform(get_blueprint2);
         auto sum = std::accumulate(blueprints.begin(), blueprints.end(), 0);
-        printf("%d\n", sum);
+        myprintf("%d\n", sum);
         return sum;
     }
 } // namespace aoc2023::day01
