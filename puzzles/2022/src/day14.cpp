@@ -15,7 +15,7 @@ namespace aoc2022::day14 {
 
     constexpr coord start_position{500, 0};
     constexpr bool view = false;
-    constexpr auto refresh_frequency = 16ms;
+    [[maybe_unused]] constexpr auto refresh_frequency = 16ms;
     constexpr auto update_frequency = 2ms;
     constexpr auto update_frequency2 = 100ns;
     constexpr auto after_puzzle_wait = 5s;

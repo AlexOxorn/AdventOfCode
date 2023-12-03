@@ -38,6 +38,10 @@ void submit(const answertype& ans, int year, int day, int part) {
             printf("%s\n\033[0m", substring.c_str());
             return;
         }
+        if (temp.contains("incorrect")) {
+            printf("\033[31m%s\n\033[0m", read_output);
+            return;
+        }
     }
     printf("\033[32mThe answer is correct :)\033[0m\n");
 }
