@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <numeric>
 #include <ranges>
+#include <ox/parser.h>
 
 namespace aoc2023::day02 {
     enum color : int { RED, GREEN, BLUE, LAST };
@@ -14,33 +15,44 @@ namespace aoc2023::day02 {
         std::vector<colors> pulls;
     };
 
+    ox::parser::Combination getLineParser() {
+        using namespace ox::parser::literals;
+        using namespace ox::parser;
+
+        auto assignID = [](void* ref, long l) {
+            return ((game*) ref)->id = int(l);
+        };
+
+        auto pushVector = [](void* ref) {
+            return ((game*) ref)->pulls.emplace_back();
+        };
+
+        auto assignColor = [](void* ref, const std::vector<std::any>& parts) {
+            auto [amount, color] = parse_any_vector<long, std::string_view>(parts);
+            game& g = *((game*) ref);
+
+            switch (color[0]) {
+                case 'b': g.pulls.back()[BLUE] = amount; break;
+                case 'r': g.pulls.back()[RED] = amount; break;
+                case 'g': g.pulls.back()[GREEN] = amount; break;
+                default: break;
+            }
+            return nullptr;
+        };
+
+        return "Game"_l + Int(assignID) + ": "_l
+             + List(";", List(",", Combination(assignColor, Int(), ("red"_l | "blue"_l | "green"_l))), pushVector);
+    }
+
     std::istream& operator>>(std::istream& in, game& g) {
+        static auto Parser = getLineParser();
         g.pulls.clear();
         std::string line;
         std::getline(in, line);
-        const char* head = line.c_str();
-        int push;
-        sscanf(head, "Game %d: %n", &g.id, &push);
-        head += push;
 
-        colors current{};
-        while (head < line.end().base() && *head != '\n') {
-            int amount;
-            char color[10];
-            sscanf(head, "%d %s%n", &amount, color, &push);
-            head += push;
-            switch (color[0]) {
-                case 'b': current[BLUE] = amount; break;
-                case 'r': current[RED] = amount; break;
-                case 'g': current[GREEN] = amount; break;
-                default: break;
-            }
-            if (std::string_view(color).ends_with(';')) {
-                g.pulls.emplace_back(current);
-                current = {};
-            }
-        }
-        g.pulls.emplace_back(current);
+        auto x = Parser.parse(&g, line);
+        if (!x)
+            in.setstate(std::ios::failbit);
 
         return in;
     }
