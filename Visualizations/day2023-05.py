@@ -8,8 +8,10 @@ from time import time_ns, sleep
 from contextlib import contextmanager
 import itertools as it
 
-WINDOW_WIDTH = 1920
-WINDOW_HEIGHT = 1080
+TRUE_SCALE = 2
+
+WINDOW_WIDTH = 1920 * TRUE_SCALE
+WINDOW_HEIGHT = 1080 * TRUE_SCALE
 
 BG_COLOR = (0,) * 3
 OUTLINE_COLOR = (int(255 / 2),) * 3
@@ -23,13 +25,15 @@ PER_LINE_SCALE = 2 + PIPE_HEIGHT_FACTOR + SPACING
 
 SCALE_Y = 0
 SCALE_X = 0
-SEED_SIZE = 5
+SEED_SIZE = 7 * TRUE_SCALE
 
-LINE_WIDTH = 0
-RECT_WITH = 1
-TRAVEL_WIDTH = 2
+LINE_WIDTH = 0 * TRUE_SCALE
+RECT_WITH = 1 * TRUE_SCALE
+TRAVEL_WIDTH = 4 * TRUE_SCALE
 
 ANIMATE = True
+
+SPEED = 1
 
 FRAME_RATE = 60
 BILLION = 1_000_000_000
@@ -88,10 +92,12 @@ def precalc_midpoints(denom):
         yield interval * i
 
 
-QUARTER_SECOND_MIDPOINTS = list(precalc_midpoints(4))
-HALF_SECOND_MIDPOINTS = list(precalc_midpoints(2))
-FULL_SECOND_MIDPOINTS = list(precalc_midpoints(1))
-TWO_SECOND_MIDPOINTS = list(precalc_midpoints(0.5))
+QUARTER_SECOND_MIDPOINTS = list(precalc_midpoints(8))
+HALF_SECOND_MIDPOINTS = list(precalc_midpoints(4))
+FULL_SECOND_MIDPOINTS = list(precalc_midpoints(2))
+TWO_SECOND_MIDPOINTS = list(precalc_midpoints(1))
+
+print(len(QUARTER_SECOND_MIDPOINTS))
 
 
 def line_midpoint(start, end, midpoint):
@@ -215,7 +221,7 @@ class Pipeline:
 
             # SOURCE RANGES
             bounds = [((seed * SCALE_X, V1), (seed * SCALE_X, V2)) for seed in seeds_data]
-            for mid in HALF_SECOND_MIDPOINTS:
+            for mid in it.chain(HALF_SECOND_MIDPOINTS[::SPEED], (HALF_SECOND_MIDPOINTS[-1],)):
                 for start, end in bounds:
                     midpoint = line_midpoint(start, end, mid)
                     draw.line(canvas, SEED_COLOR, start, midpoint, TRAVEL_WIDTH)
@@ -224,7 +230,7 @@ class Pipeline:
             # TRANSFORMATION
             new_seeds = list(map(lambda seed: pipe.convert(seed), seeds_data))
             bounds = [((old * SCALE_X, V2), (new * SCALE_X, V3)) for old, new in zip(seeds_data, new_seeds)]
-            for mid in FULL_SECOND_MIDPOINTS:
+            for mid in it.chain(FULL_SECOND_MIDPOINTS[::SPEED], (FULL_SECOND_MIDPOINTS[-1],)):
                 for start, end in bounds:
                     midpoint = line_midpoint(start, end, mid)
                     draw.line(canvas, SEED_COLOR, start, midpoint, TRAVEL_WIDTH)
@@ -232,7 +238,7 @@ class Pipeline:
 
             # DESTINATION RANGES
             bounds = [((seed * SCALE_X, V3), (seed * SCALE_X, V4)) for seed in new_seeds]
-            for mid in HALF_SECOND_MIDPOINTS:
+            for mid in it.chain(HALF_SECOND_MIDPOINTS[::SPEED], (HALF_SECOND_MIDPOINTS[-1],)):
                 for start, end in bounds:
                     midpoint = line_midpoint(start, end, mid)
                     draw.line(canvas, SEED_COLOR, start, midpoint, TRAVEL_WIDTH)
@@ -249,7 +255,7 @@ class Pipeline:
 
             # DESTINATION
             bounds = [((seed * SCALE_X, V4), (seed * SCALE_X, V3)) for seed in mapping]
-            for mid in HALF_SECOND_MIDPOINTS:
+            for mid in it.chain(HALF_SECOND_MIDPOINTS[::SPEED], (HALF_SECOND_MIDPOINTS[-1],)):
                 for start, end in bounds:
                     midpoint = line_midpoint(start, end, mid)
                     draw.line(canvas, SEED_COLOR, start, midpoint, TRAVEL_WIDTH)
@@ -257,7 +263,7 @@ class Pipeline:
 
             # TRANSFORMATION
             bounds = [((old * SCALE_X, V3), (new * SCALE_X, V2)) for old, new in mapping.items()]
-            for mid in FULL_SECOND_MIDPOINTS:
+            for mid in it.chain(FULL_SECOND_MIDPOINTS[::SPEED], (FULL_SECOND_MIDPOINTS[-1],)):
                 for start, end in bounds:
                     midpoint = line_midpoint(start, end, mid)
                     draw.line(canvas, SEED_COLOR, start, midpoint, TRAVEL_WIDTH)
@@ -265,7 +271,7 @@ class Pipeline:
 
             # SOURCE
             bounds = [((seed * SCALE_X, V2), (seed * SCALE_X, V1)) for seed in mapping.values()]
-            for mid in HALF_SECOND_MIDPOINTS:
+            for mid in it.chain(HALF_SECOND_MIDPOINTS[::SPEED], (HALF_SECOND_MIDPOINTS[-1],)):
                 for start, end in bounds:
                     midpoint = line_midpoint(start, end, mid)
                     draw.line(canvas, SEED_COLOR, start, midpoint, TRAVEL_WIDTH)
@@ -335,7 +341,7 @@ def printSeeds2(seeds: Seed2):
 
 def drawInitialSeed(seeds: Seed, rev=False):
     bounds = [((seed * SCALE_X, SCALE_Y / 2), (seed * SCALE_X, SCALE_Y)) for seed in seeds.data]
-    for mid in FULL_SECOND_MIDPOINTS:
+    for mid in it.chain(FULL_SECOND_MIDPOINTS[::SPEED], (FULL_SECOND_MIDPOINTS[-1],)):
         for start, end in bounds:
             if rev:
                 end, start = start, end
@@ -407,7 +413,7 @@ def puzzle1(filename):
     drawInitialSeed(seeds)
     locations = pipeline.run_through_pipeline(seeds)
     min_loc, min_seed = min(locations)
-    input("Waiting for input")
+
     minseed = Seed([min_seed])
     with temp_values(SEED_COLOR=tuple(x / 2 for x in SEED_COLOR), ANIMATE=False):
         canvas.fill(BG_COLOR)
@@ -415,11 +421,12 @@ def puzzle1(filename):
         printSeeds(seeds)
         drawInitialSeed(seeds)
         pipeline.run_through_pipeline(seeds)
-    with temp_values(SEED_COLOR=(128, 255, 128), TRAVEL_WIDTH=10, SEED_SIZE=10):
+    with temp_values(SEED_COLOR=(128, 255, 128), TRAVEL_WIDTH=10*TRUE_SCALE, SEED_SIZE=10*TRUE_SCALE, SPEED=8):
         printSeeds(minseed)
         drawInitialSeed(minseed)
         pipeline.run_through_pipeline(minseed)
-    input("Waiting for input")
+
+    sleep(3)
 
     print(min_loc)
 
@@ -438,17 +445,17 @@ def puzzle2(filename):
     printPipeline(pipeline)
     printSeeds2(seeds)
     pygame.display.update()
-    input("Waiting for input")
 
-    with temp_values(SEED_COLOR=(255, 128, 128), TRAVEL_WIDTH=1):
+    sleep(3)
+
+    with temp_values(SEED_COLOR=(255, 128, 128), TRAVEL_WIDTH=TRUE_SCALE * 2, SEED_SIZE=TRUE_SCALE * 5):
         boundaries = pipeline.run_through_pipeline_rev()
         mock_seeds = Seed(list(boundaries))
         drawInitialSeed(mock_seeds, rev=True)
         printSeeds(mock_seeds)
         pygame.display.update()
 
-
-    input("Waiting for input")
+    sleep(3)
     mock_seeds.data.sort()
     widdest_bounary = max(
         (b - a, a) for a, b in it.pairwise(mock_seeds.data))
@@ -457,7 +464,7 @@ def puzzle2(filename):
         printPipeline(pipeline)
         printSeeds2(seeds)
         printSeeds(mock_seeds)
-    with temp_values(SEED_COLOR=(128, 255, 128), TRAVEL_WIDTH=5, SEED_SIZE=10):
+    with temp_values(SEED_COLOR=(128, 255, 128), TRAVEL_WIDTH=TRUE_SCALE * 5, SEED_SIZE=TRUE_SCALE * 10, ANIMATE=False):
         binded_seeds = Seed([widdest_bounary[1], widdest_bounary[0] + widdest_bounary[1] - 1])
         printSeeds2(seeds)
         printSeeds(binded_seeds)
@@ -465,18 +472,18 @@ def puzzle2(filename):
         pipeline.run_through_pipeline(binded_seeds)
 
     in_bounds_seeds = Seed([seed for seed in mock_seeds.data if seeds.in_range(seed)])
+    in_bounds_seeds.data.extend(seed[0] for seed in seeds.data)
 
-    input("Waiting for input")
     canvas.fill(BG_COLOR)
     printPipeline(pipeline)
     printSeeds2(seeds)
     printSeeds(in_bounds_seeds)
     pygame.display.update()
-    input("Waiting for input")
+    sleep(3)
     drawInitialSeed(in_bounds_seeds)
     locations = pipeline.run_through_pipeline(in_bounds_seeds)
     min_loc, min_seed = min(locations)
-    input("Waiting for input")
+
     minseed = Seed([min_seed])
     with temp_values(SEED_COLOR=tuple(x / 2 for x in SEED_COLOR), ANIMATE=False):
         canvas.fill(BG_COLOR)
@@ -485,8 +492,7 @@ def puzzle2(filename):
         printSeeds(in_bounds_seeds)
         drawInitialSeed(in_bounds_seeds)
         pipeline.run_through_pipeline(in_bounds_seeds)
-    with temp_values(SEED_COLOR=(128, 255, 128), TRAVEL_WIDTH=10, SEED_SIZE=10):
-        printSeeds2(seeds)
+    with temp_values(SEED_COLOR=(128, 255, 128), TRAVEL_WIDTH=TRUE_SCALE * 10, SEED_SIZE=TRUE_SCALE * 10, SPEED=8):
         printSeeds(minseed)
         drawInitialSeed(minseed)
         pipeline.run_through_pipeline(minseed)
@@ -500,7 +506,7 @@ def puzzle2(filename):
 def main():
     a = sys.argv[-1] == "sample"
     filename = f"../puzzles/2023/inputs/day05_{'sample_' if a else ''}input.txt"
-    # puzzle1(filename)
+    puzzle1(filename)
     puzzle2(filename)
 
     while True:
