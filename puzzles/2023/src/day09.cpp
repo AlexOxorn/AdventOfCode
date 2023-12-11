@@ -45,7 +45,7 @@ namespace aoc2023::day09 {
         auto patterns = get_stream<pattern>(filename);
         auto predictions = patterns | stdv::transform(difference_tree) | stdv::transform(find_next);
         auto res = std::accumulate(predictions.begin(), predictions.end(), 0l);
-        printf("%ld\n", res);
+        myprintf("%ld\n", res);
         return res;
     }
 
@@ -53,7 +53,7 @@ namespace aoc2023::day09 {
         auto patterns = get_stream<pattern>(filename);
         auto predictions = patterns | stdv::transform(difference_tree) | stdv::transform(find_prev);
         auto res = std::accumulate(predictions.begin(), predictions.end(), 0l);
-        printf("%ld\n", res);
+        myprintf("%ld\n", res);
         return res;
     }
 } // namespace aoc2023::day09

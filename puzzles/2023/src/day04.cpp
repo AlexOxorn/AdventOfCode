@@ -66,7 +66,7 @@ namespace aoc2023::day04 {
         auto points =
                 cards | stdv::transform(&scratchcard::get_correct_guesses) | stdv::transform(&scratchcard::get_score);
         auto total = std::accumulate(points.begin(), points.end(), 0l);
-        printf("%ld\n", total);
+        myprintf("%ld\n", total);
         return total;
     }
 
@@ -86,7 +86,7 @@ namespace aoc2023::day04 {
         }
 
         long total_copies = std::accumulate(copies_list.begin(), copies_list.end(), 0l);
-        printf("%ld\n", total_copies);
+        myprintf("%ld\n", total_copies);
         return total_copies;
     }
 } // namespace aoc2023::day04

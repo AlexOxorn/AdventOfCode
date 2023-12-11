@@ -269,7 +269,7 @@ namespace aoc2023::day10 {
         auto start = pipes.calculate_start();
         long answer = pipes.traverse_path(start);
         pipes.print();
-        printf("%ld\n", answer);
+        myprintf("%ld\n", answer);
         return answer;
     }
 
@@ -280,7 +280,7 @@ namespace aoc2023::day10 {
         pipes.traverse_path(start);
         long answer = pipes.count_bounded();
         pipes.print();
-        printf("%ld\n", answer);
+        myprintf("%ld\n", answer);
         return answer;
     }
 } // namespace aoc2023::day10

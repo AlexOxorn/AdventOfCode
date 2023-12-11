@@ -123,7 +123,7 @@ namespace aoc2023::day07 {
         stdr::transform(ordered_bids, stdv::iota(1l), winnings.begin(), std::multiplies<>());
 
         long total_winnings = std::accumulate(winnings.begin(), winnings.end(), 0l);
-        printf("%ld\n", total_winnings);
+        myprintf("%ld\n", total_winnings);
         return total_winnings;
     }
 
