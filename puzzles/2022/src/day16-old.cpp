@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <ox/graph.h>
 
-namespace aoc2022::day16 {
+namespace aoc2022::day16_2 {
     struct eruption {};
     using pipe_path_map = std::unordered_multimap<std::string, std::string>;
     using pipe_flow_map = std::unordered_map<std::string, int>;
@@ -263,8 +263,8 @@ namespace aoc2022::day16 {
 
 namespace std {
     template <>
-    struct hash<aoc2022::day16::flow_state> {
-        size_t operator()(const aoc2022::day16::flow_state& x) const {
+    struct hash<aoc2022::day16_2::flow_state> {
+        size_t operator()(const aoc2022::day16_2::flow_state& x) const {
             size_t result = 0;
             for (auto& open_pipe : x.pipes_opened) {
                 result += std::hash<std::string>()(open_pipe);
@@ -279,7 +279,7 @@ namespace std {
     };
 } // namespace std
 
-namespace aoc2022::day16 {
+namespace aoc2022::day16_2 {
     void valve_data(pipe_path_map& pipe_paths, pipe_flow_map& pipe_flows, const std::string& s) {
         char source[3], dest[3];
         int flow, read_upto;

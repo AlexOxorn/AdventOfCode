@@ -1,5 +1,6 @@
 add_library(
         "2021"
+        SHARED
         include/2021.h
         src/day01.cpp
         src/day02.cpp

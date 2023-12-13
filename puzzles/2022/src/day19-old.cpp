@@ -5,7 +5,7 @@
 #include <queue>
 #include <numeric>
 
-namespace aoc2022::day19 {
+namespace aoc2022::day19_2 {
     constexpr int rock_types = 4;
     struct material {
         std::array<long, rock_types> rocks;
@@ -225,4 +225,4 @@ namespace aoc2022::day19 {
     }
 
     answertype puzzle2([[maybe_unused]] puzzle_options filename) { return {}; }
-} // namespace aoc2022::day19
+} // namespace aoc2022::day19_2

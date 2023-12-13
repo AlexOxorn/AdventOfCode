@@ -4,7 +4,7 @@
 #include <unordered_set>
 #include <ox/canvas.h>
 
-namespace aoc2023::day05 {
+namespace aoc2023::day05_2 {
     using lset = std::unordered_set<long>;
 
     struct seeds {
@@ -290,4 +290,4 @@ namespace aoc2023::day05 {
         myprintf("%ld\n", min_location);
         return min_location;
     }
-} // namespace aoc2023::day05
+} // namespace aoc2023::day05_2
