@@ -6,8 +6,6 @@
 
 #include <thread>
 
-#define MIN_YEAR 2020
-
 long year = -1, day = -1;
 bool do_print = true;
 
@@ -73,13 +71,13 @@ int main(int argc, const char** argv) {
         (argument < 1000 ? day : year) = argument;
     }
 
-    year = year < 0 ? static_cast<int>(puzzles.size() - 1 + MIN_YEAR) : year;
+    year = year < 0 ? pseudo_puzzle_array::current_year() : year;
 
     if (do_test) {
         do_print = false;
         std::string answer_path = get_answer_path(year);
 
-        test(year, puzzles[year - MIN_YEAR], answer_path);
+        test(year, puzzles[year], answer_path);
         return 0;
     }
 
@@ -91,7 +89,7 @@ int main(int argc, const char** argv) {
 
     printf("Year %02d, Day %02d:\n", year, day);
     puzzle_options opt{.day = day, .year = year, .filename = filename};
-    auto puzzle = puzzles[year - MIN_YEAR][day - 1];
+    auto puzzle = puzzles[year][day - 1];
     if (part & 0b01) {
         auto ans = puzzle.first(opt);
         if (do_submit) {
