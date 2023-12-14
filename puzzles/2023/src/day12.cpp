@@ -3,9 +3,8 @@
 #include <algorithm>
 #include <numeric>
 #include <thread>
-#include <atomic>
+#include <unordered_set>
 #include <ox/parser.h>
-#include <ox/math.h>
 
 namespace aoc2023::day12 {
 
@@ -21,16 +20,89 @@ namespace aoc2023::day12 {
                     std::vector(new_broken_view.begin(), new_broken_view.end())
             };
         }
+    };
 
-        [[nodiscard]] auto unfold2() const {
-            std::pair<std::array<std::string, 3>, std::vector<int>> to_return;
-            to_return.first[0] = blueprint;
-            std::string ref = std::string("?") + blueprint;
-            to_return.first[1] = ref;
-            stdr::rotate(ref, ref.begin() + 1);
-            to_return.first[2] = ref;
-            to_return.second = broken;
-            return to_return;
+    struct NFA {
+        struct state {
+            state* dot{};
+            state* hash{};
+            bool valid{};
+        };
+
+        std::vector<state> states;
+
+        explicit NFA(const std::vector<int>& broken_pattern) :
+                states(std::accumulate(broken_pattern.begin(), broken_pattern.end(), 0) + int(broken_pattern.size())
+                       + 1) {
+            states[0].dot = &states[0];
+            states[0].hash = &states[1];
+
+            int i = 1;
+            for (auto& b : broken_pattern) {
+                for (int j = 0; j < b - 1; ++i, ++j) {
+                    states[i].hash = &states[i + 1];
+                }
+                states[i].dot = &states[i + 1];
+                ++i;
+                states[i].dot = &states[i];
+                if (i + 1 < int(states.size()))
+                    states[i].hash = &states[i + 1];
+                ++i;
+            }
+
+            states[states.size() - 1].valid = true;
+            states[states.size() - 2].valid = true;
+        }
+
+        [[nodiscard]] auto count(const std::string& match) const {
+            using maptype = std::unordered_map<const state*, size_t>;
+            std::unordered_map<const state*, size_t> curr{
+                    {&states[0], 1zu}
+            };
+            for (char c : match) {
+                switch (c) {
+                    case '.':
+                        {
+                            maptype next;
+                            next.reserve(curr.size());
+                            for (auto& [key, value] : curr) {
+                                if (key->dot)
+                                    next[key->dot] += value;
+                            }
+                            curr = std::move(next);
+                            break;
+                        }
+                    case '#':
+                        {
+                            maptype next;
+                            next.reserve(curr.size());
+                            for (auto& [key, value] : curr) {
+                                if (key->hash)
+                                    next[key->hash] += value;
+                            }
+                            curr = std::move(next);
+                            break;
+                        }
+                    case '?':
+                        {
+                            maptype next;
+                            next.reserve(curr.size());
+                            for (auto& [key, value] : curr) {
+                                if (key->hash)
+                                    next[key->hash] += value;
+                                if (key->dot)
+                                    next[key->dot] += value;
+                            }
+                            curr = std::move(next);
+                            break;
+                        }
+                    default: break;
+                }
+            }
+            auto x = std::accumulate(curr.begin(), curr.end(), 0zu, [](size_t res, const maptype::value_type& m) {
+                return res + (m.first->valid ? m.second : 0zu);
+            });
+            return x;
         }
     };
 
@@ -100,76 +172,23 @@ namespace aoc2023::day12 {
         myprintf("%s -> %ld\n", s.c_str(), res);
         return res;
     }
-    long count_configurations(const std::array<std::string, 3>& s, const std::vector<int>& broken) {
-        auto [init, pre, post] = s;
-        long res1 = count_configurations(init, broken);
-
-        int last_non_pos = int(init.find_last_of("#?"));
-        int last_start_pos = int(init.rfind('.', last_non_pos)) + 1;
-
-        if (last_non_pos - last_start_pos == broken.back()) {
-            if (std::any_of(init.begin() + last_start_pos, init.begin() + last_non_pos + 1, [](char c) {
-                    return c == '#';
-                })) {
-                myprintf("%s -> %ld\n", init.c_str(), res1);
-                return res1;
-            }
-        }
-        long res2 = count_configurations(pre, broken);
-        long res3 = count_configurations(post, broken);
-        long res = res1 * ox::fast_pow(std::max(res2, res3), 4u);
-        myprintf("%s -> %ld\n", init.c_str(), res);
-        return res;
-    }
 
     answertype puzzle1([[maybe_unused]] puzzle_options filename) {
         auto x = get_stream<springs>(filename);
-        auto configs =
-                x | stdv::transform([](const springs& s) { return count_configurations(s.blueprint, s.broken); });
-        auto res = std::accumulate(configs.begin(), configs.end(), 0l);
-        printf("%ld\n", res);
+        auto configs = x | stdv::transform([](const springs& s) { return std::pair(s.blueprint, NFA(s.broken)); })
+                     | stdv::transform([](const std::pair<std::string, NFA>& p) { return p.second.count(p.first); });
+        auto res = std::accumulate(configs.begin(), configs.end(), 0zu);
+        myprintf("%zu\n", res);
         return res;
     }
 
     answertype puzzle2([[maybe_unused]] puzzle_options filename) {
-        auto x = get_from_input<springs>(filename);
-        auto configs = x | stdv::transform(&springs::unfold);
-        std::vector unfolded_springs(configs.begin(), configs.end());
-        std::vector<long> results(unfolded_springs.size() * 16);
-        std::atomic_int index = 0;
-        std::vector<std::thread> threads;
-        for (int i = 0; i < int(std::thread::hardware_concurrency()); ++i) {
-            threads.emplace_back([&]() {
-                while(true) {
-                    int i = index.fetch_add(1);
-                    if (i >= int(unfolded_springs.size())) {
-                        return;
-                    }
-                    auto& sprg = unfolded_springs[i];
-                    results[i * 16] = count_configurations(sprg.blueprint, sprg.broken);
-                }
-            });
-        }
-        for (std::thread& t : threads) {
-            t.join();
-        }
-        long res = std::accumulate(results.begin(), results.end(), 0l);
-
-//        for (const auto& [xx, yy] : stdv::zip(x, configs)) {
-//            springs new_sping = xx.unfold();
-//            long proper = count_configurations(new_sping.blueprint, new_sping.broken);
-//            if (proper != yy) {
-//                printf("%s | ", xx.blueprint.c_str());
-//                for (int i : xx.broken) {
-//                    printf("%d, ", i);
-//                }
-//                printf("\n");
-//                long og = count_configurations(xx.blueprint, xx.broken);
-//                printf("\t%ld -> %ld\n----------------------\n", og, proper);
-//            }
-//        }
-//        auto res = std::accumulate(configs.begin(), configs.end(), 0l);
-        printf("%ld\n", res);
+        auto x = get_stream<springs>(filename);
+        auto configs = x | stdv::transform(&springs::unfold)
+                     | stdv::transform([](const springs& s) { return std::pair(s.blueprint, NFA(s.broken)); })
+                     | stdv::transform([](const std::pair<std::string, NFA>& p) { return p.second.count(p.first); });
+        auto res = std::accumulate(configs.begin(), configs.end(), 0zu);
+        myprintf("%zu\n", res);
         return res;
     }
 } // namespace aoc2023::day12
