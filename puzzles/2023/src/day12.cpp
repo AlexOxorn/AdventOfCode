@@ -13,7 +13,16 @@ namespace aoc2023::day12 {
         std::vector<int> broken;
 
         [[nodiscard]] springs unfold() const {
+#ifdef __cpp_lib_ranges_join_with
             auto new_blueprint_view = stdv::repeat(blueprint) | stdv::take(5) | stdv::join_with(std::string("?"));
+#else
+            std::string new_blueprint_view;
+            for (int i = 0; i < 4; i++) {
+                new_blueprint_view += blueprint;
+                new_blueprint_view += "?";
+            }
+            new_blueprint_view += blueprint;
+#endif
             auto new_broken_view = stdv::repeat(broken) | stdv::take(5) | stdv::join;
             return {
                     std::string{new_blueprint_view.begin(), new_blueprint_view.end()},
