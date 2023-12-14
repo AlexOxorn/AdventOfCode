@@ -67,7 +67,6 @@ namespace aoc2023::day13 {
                     return 100 * row;
                 }
             }
-            printf("\n");
             return sum;
         }
     };
@@ -88,7 +87,7 @@ namespace aoc2023::day13 {
         auto data = get_stream<maze>(filename);
         auto mirror_notes = data | stdv::transform([](const maze& m) { return m.find_mirror(0); } );
         long res = std::accumulate(mirror_notes.begin(), mirror_notes.end(), 0l);
-        printf("%ld\n", res);
+        myprintf("%ld\n", res);
         return res;
     }
 
@@ -96,7 +95,7 @@ namespace aoc2023::day13 {
         auto data = get_stream<maze>(filename);
         auto mirror_notes = data | stdv::transform([](const maze& m) { return m.find_mirror(1); } );
         long res = std::accumulate(mirror_notes.begin(), mirror_notes.end(), 0l);
-        printf("%ld\n", res);
+        myprintf("%ld\n", res);
         return res;
     }
 } // namespace aoc2023::day13
