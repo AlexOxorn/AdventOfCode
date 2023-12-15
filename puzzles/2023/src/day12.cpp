@@ -65,48 +65,19 @@ namespace aoc2023::day12 {
 
         [[nodiscard]] auto count(const std::string& match) const {
             using maptype = std::unordered_map<const state*, size_t>;
-            std::unordered_map<const state*, size_t> curr{
+            maptype curr{
                     {&states[0], 1zu}
             };
             for (char c : match) {
-                switch (c) {
-                    case '.':
-                        {
-                            maptype next;
-                            next.reserve(curr.size());
-                            for (auto& [key, value] : curr) {
-                                if (key->dot)
-                                    next[key->dot] += value;
-                            }
-                            curr = std::move(next);
-                            break;
-                        }
-                    case '#':
-                        {
-                            maptype next;
-                            next.reserve(curr.size());
-                            for (auto& [key, value] : curr) {
-                                if (key->hash)
-                                    next[key->hash] += value;
-                            }
-                            curr = std::move(next);
-                            break;
-                        }
-                    case '?':
-                        {
-                            maptype next;
-                            next.reserve(curr.size());
-                            for (auto& [key, value] : curr) {
-                                if (key->hash)
-                                    next[key->hash] += value;
-                                if (key->dot)
-                                    next[key->dot] += value;
-                            }
-                            curr = std::move(next);
-                            break;
-                        }
-                    default: break;
+                maptype next;
+                next.reserve(states.size());
+                for (auto& [key, value] : curr) {
+                    if ((c == '.' || c == '?') && key->dot)
+                        next[key->dot] += value;
+                    if ((c == '#' || c == '?') && key->hash)
+                        next[key->hash] += value;
                 }
+                curr = std::move(next);
             }
             auto x = std::accumulate(curr.begin(), curr.end(), 0zu, [](size_t res, const maptype::value_type& m) {
                 return res + (m.first->valid ? m.second : 0zu);
@@ -139,7 +110,12 @@ namespace aoc2023::day12 {
         return in;
     }
 
-    long count_configurations_rec(std::string s, const std::vector<int>& broken, int s_pos, int b_pos) {
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
+    [[deprecated("Old Solution")]] long count_configurations_rec(std::string s, const std::vector<int>& broken,
+                                                                 int s_pos, int b_pos) {
         if (b_pos >= int(broken.size())) {
             return std::none_of(s.begin() + long(s_pos), s.end(), [](char c) { return c == '#'; });
         }
@@ -176,11 +152,12 @@ namespace aoc2023::day12 {
         return result;
     }
 
-    long count_configurations(const std::string& s, const std::vector<int>& broken) {
+    [[deprecated("Old Solution")]] long count_configurations(const std::string& s, const std::vector<int>& broken) {
         long res = count_configurations_rec(s, broken, 0, 0);
         myprintf("%s -> %ld\n", s.c_str(), res);
         return res;
     }
+#pragma GCC diagnostic pop
 
     answertype puzzle1([[maybe_unused]] puzzle_options filename) {
         auto x = get_stream<springs>(filename);
