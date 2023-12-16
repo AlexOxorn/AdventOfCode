@@ -79,12 +79,19 @@ namespace aoc2023::day14 {
         auto rr = get_stream(filename);
         rocks rrr(rr);
         rrr.tilt_north();
-
+#ifdef __cpp_lib_ranges_chunk
+        auto counts = stdv::enumerate(rrr | stdv::reverse) | stdv::transform([](const auto& row_index) {
+            const auto& [index, row] = row_index;
+            return (index + 1) * stdr::count(row, 'O');
+        });
+        long res = std::accumulate(counts.begin(), counts.end(), 0l);
+#else
         long res = 0;
         int rank = int(rrr.get_height());
         for (const auto& row : rrr) {
             res += rank-- * stdr::count(row, 'O');
         }
+#endif
 
         myprintf("%ld\n", res);
         return res;
@@ -113,11 +120,19 @@ namespace aoc2023::day14 {
 
         rocks& final = prev[loop_start + loop_offset];
 
+#ifdef __cpp_lib_ranges_chunk
+        auto counts = stdv::enumerate(final | stdv::reverse) | stdv::transform([](const auto& row_index) {
+                          const auto& [index, row] = row_index;
+                          return (index + 1) * stdr::count(row, 'O');
+                      });
+        long res = std::accumulate(counts.begin(), counts.end(), 0l);
+#else
         long res = 0;
         int rank = int(final.get_height());
         for (const auto& row : final) {
             res += rank-- * stdr::count(row, 'O');
         }
+#endif
 
         myprintf("%ld\n", res);
         return res;
