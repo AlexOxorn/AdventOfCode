@@ -11,10 +11,10 @@ namespace aoc2021::day19 {
     using beacon = ox::matrix<int>;
     using scanner = std::vector<beacon>;
 
-    static transformation rotate_z(3, 0, -1, 0, 1, 0, 0, 0, 0, 1);
-    static transformation rotate_y(3, 0, 0, -1, 0, 1, 0, 1, 0, 0);
-    static transformation rotate_x(3, 1, 0, 0, 0, 0, -1, 0, 1, 0);
-    static transformation identity(3, 1, 0, 0, 0, 1, 0, 0, 0, 1);
+    static transformation rotate_z(3, {0, -1, 0, 1, 0, 0, 0, 0, 1});
+    static transformation rotate_y(3, {0, 0, -1, 0, 1, 0, 1, 0, 0});
+    static transformation rotate_x(3, {1, 0, 0, 0, 0, -1, 0, 1, 0});
+    static transformation identity(3, {1, 0, 0, 0, 1, 0, 0, 0, 1});
 
     std::array<transformation, 24> rotation_combinations() {
         std::array<transformation, 4 * 4 * 4> temp{};
@@ -47,7 +47,7 @@ namespace aoc2021::day19 {
         in >> x >> l >> y >> m >> z;
         assert(l == ',' && m == ',');
 
-        return beacon(1, x, y, z);
+        return beacon(1, {x, y, z});
     }
 
     scanner parse_scanner(std::istream& in) {
@@ -116,7 +116,7 @@ namespace aoc2021::day19 {
         auto input = parse_input(stream);
         std::queue<std::pair<scanner, ox::matrix<int>>> todo;
 
-        todo.push(std::make_pair(std::move(input.front()), ox::matrix<int>(1, 0, 0, 0)));
+        todo.push(std::make_pair(std::move(input.front()), ox::matrix<int>(1, {0, 0, 0})));
         input.erase(input.begin());
 
         while (!todo.empty()) {
