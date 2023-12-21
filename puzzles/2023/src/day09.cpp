@@ -11,7 +11,7 @@ namespace aoc2023::day09 {
     static auto const_back = static_cast<typename pattern::const_reference (pattern::*)(void) const>(&pattern::back);
     static auto const_front = static_cast<typename pattern::const_reference (pattern::*)(void) const>(&pattern::front);
 
-    std::istream& operator>>(std::istream& in, pattern& p) {
+    STREAM_IN(pattern, p) {
         p.clear();
         std::string line;
         std::getline(in, line);

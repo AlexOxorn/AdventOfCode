@@ -13,7 +13,7 @@ namespace aoc2022::day10 {
         int arg;
     };
 
-    std::istream& operator>>(std::istream& in, instruction& inst) {
+    STREAM_IN(instruction, inst) {
         std::string s;
         in >> s;
         if (s == "noop")

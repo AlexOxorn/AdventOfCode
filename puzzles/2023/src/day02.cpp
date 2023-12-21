@@ -44,7 +44,7 @@ namespace aoc2023::day02 {
              + List(";", List(",", Combination(assignColor, Int(), ("red"_l | "blue"_l | "green"_l))), pushVector);
     }
 
-    std::istream& operator>>(std::istream& in, game& g) {
+    STREAM_IN(game, g) {
         static auto Parser = getLineParser();
         g.pulls.clear();
         std::string line;

@@ -11,7 +11,7 @@
 namespace aoc2021::day14 {
     struct insertion_rule : public std::pair<std::string, char> {};
 
-    std::istream& operator>>(std::istream& in, insertion_rule& i) {
+    STREAM_IN(insertion_rule, i) {
         std::string temp;
         in >> i.first;
         in >> temp;

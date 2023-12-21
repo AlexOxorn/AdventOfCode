@@ -25,7 +25,7 @@ namespace aoc2021::day05 {
         [[nodiscard]] bool horizontal() const { return p1.y == p2.y; }
     };
 
-    std::istream& operator>>(std::istream& in, line& l) {
+    STREAM_IN(line, l) {
         std::string line;
         std::getline(in, line);
         std::sscanf(line.c_str(), "%d,%d -> %d,%d", &l.p1.x, &l.p1.y, &l.p2.x, &l.p2.y);

@@ -13,7 +13,7 @@ namespace aoc2020::day02 {
         char rep;
     };
 
-    std::istream& operator>>(std::istream& in, password_and_policy& pass) {
+    STREAM_IN(password_and_policy, pass) {
         std::string line;
         std::getline(in, line);
         memset(pass.password, 0, 50);

@@ -46,7 +46,7 @@ namespace aoc2023::day04 {
              + List("|", List(Int(addScratch)), pushVector);
     }
 
-    std::istream& operator>>(std::istream& in, scratchcard& s) {
+    STREAM_IN(scratchcard, s) {
         std::string line;
         std::getline(in, line);
         s.games.clear();

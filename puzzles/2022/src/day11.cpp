@@ -40,7 +40,7 @@ namespace aoc2022::day11 {
 
     long monkey::modulo = 0;
 
-    std::istream& operator>>(std::istream& in, monkey& mon) {
+    STREAM_IN(monkey, mon) {
         std::string s;
         long i;
         char c;

@@ -96,7 +96,7 @@ namespace aoc2022::day09 {
         char dir;
     };
 
-    std::istream& operator>>(std::istream& in, instruction& inst) {
+    STREAM_IN(instruction, inst) {
         in >> inst.dir;
         in >> inst.amount;
         return in;

@@ -33,7 +33,7 @@ namespace aoc2023::day18 {
     // PARSING
     // ==========================================
 
-    std::istream& operator>>(std::istream& in, dig_directions& d) {
+    STREAM_IN(dig_directions, d) {
         std::string color;
         in >> d.dir >> d.amount >> color;
         if (!in)
@@ -43,7 +43,7 @@ namespace aoc2023::day18 {
         return in;
     }
 
-    std::ostream& operator<<(std::ostream& out, const dig_directions& d) {
+    STREAM_OUT(dig_directions, d) {
         return out << ox::color(d.color) << d.dir << " " << d.amount << ox::format{ox::escape::reset} << std::endl;
     }
 

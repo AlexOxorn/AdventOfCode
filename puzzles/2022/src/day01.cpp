@@ -8,14 +8,14 @@ namespace aoc2022::day01 {
     struct elf {
         long calories;
 
-        friend std::istream& operator>>(std::istream& in, elf& self);
+        friend STREAM_IN(elf, self);
 
         elf operator+(const elf& other) const {
             return elf{calories + other.calories};
         }
     };
 
-    std::istream& operator>>(std::istream& in, elf& self) {
+    STREAM_IN(elf, self) {
         std::string line;
         self.calories = 0;
         while (std::getline(in, line) && !line.empty()) {

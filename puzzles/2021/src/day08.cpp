@@ -33,7 +33,7 @@ namespace aoc2021::day08 {
             part2.clear();
         }
 
-        friend std::istream& operator>>(std::istream& in, signals& self) {
+        friend STREAM_IN(signals, self) {
             self.reset();
             std::string line;
             getline(in, line);

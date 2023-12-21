@@ -71,7 +71,7 @@ namespace aoc2023::day13 {
         }
     };
 
-    std::istream& operator>>(std::istream& in, maze& m) {
+    STREAM_IN(maze, m) {
         if (in.eof()) {
             in.setstate(std::ios::failbit);
             return in;

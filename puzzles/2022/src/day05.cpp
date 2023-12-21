@@ -13,7 +13,7 @@ namespace aoc2022::day05 {
         int amount;
         int start;
         int end;
-        friend std::istream& operator>>(std::istream& in, direction& dir) {
+        friend STREAM_IN(direction, dir) {
             std::string line;
             std::getline(in, line);
             sscanf(line.c_str(), "move %d from %d to %d", &dir.amount, &dir.start, &dir.end);
@@ -34,7 +34,7 @@ namespace aoc2022::day05 {
             }
         }
 
-        friend std::istream& operator>>(std::istream& in, crate_stacks& cs) {
+        friend STREAM_IN(crate_stacks, cs) {
             std::string s;
             while (std::getline(in, s), !s.empty()) {
                 for (unsigned i = 1; i < s.length(); i += 4) {

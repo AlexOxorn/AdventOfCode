@@ -20,7 +20,7 @@ namespace aoc2021::day02 {
     };
     using coordinates = std::tuple<int, int, int>;
 
-    std::istream& operator>>(std::istream& in, step& out) {
+    STREAM_IN(step, out) {
         std::string line;
         int magnitude;
         getline(in, line);

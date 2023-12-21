@@ -18,7 +18,7 @@ namespace aoc2022::day18 {
             return to_return;
         }
 
-        friend std::istream& operator>>(std::istream& in, droplet& d) {
+        friend STREAM_IN(droplet, d) {
             char c;
             return in >> d.x >> c >> d.y >> c >> d.z;
         }

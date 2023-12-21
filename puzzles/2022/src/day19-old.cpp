@@ -144,7 +144,7 @@ namespace aoc2022::day19_2 {
         return prune(nexts);
     }
 
-    std::istream& operator>>(std::istream& in, blueprint& b) {
+    STREAM_IN(blueprint, b) {
         using namespace std::literals::string_view_literals;
 
         std::string line;

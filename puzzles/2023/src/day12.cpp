@@ -94,7 +94,7 @@ namespace aoc2023::day12 {
         ((springs*) ref)->blueprint = str;
         return str;
     }
-    std::istream& operator>>(std::istream& in, springs& s) {
+    STREAM_IN(springs, s) {
         using namespace ox::parser::literals;
         using namespace ox::parser;
         static auto parser = String(blueprint_callback) + List(",", Int(broken_pipe_callback));

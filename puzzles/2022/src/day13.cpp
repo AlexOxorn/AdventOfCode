@@ -48,7 +48,7 @@ namespace aoc2022::day13 {
                                                                    : std::strong_ordering::greater;
     }
 
-    std::istream& operator>>(std::istream& in, element& elm) {
+    STREAM_IN(element, elm) {
         std::string s;
         while (std::getline(in, s) && s.empty())
             ;

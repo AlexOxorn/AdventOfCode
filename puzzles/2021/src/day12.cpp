@@ -17,7 +17,7 @@ p.pop_back();
 namespace aoc2021::day12 {
     class link : public std::pair<std::string, std::string> {};
 
-    std::istream& operator>>(std::istream& in, link& l) {
+    STREAM_IN(link, l) {
         std::string s;
         std::getline(in, l.first, '-');
         std::getline(in, l.second);

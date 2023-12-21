@@ -9,7 +9,7 @@
 namespace aoc2022::day03 {
     struct group {
         std::string elves[3];
-        friend std::istream& operator>>(std::istream& in, group& g) {
+        friend STREAM_IN(group, g) {
             for (auto& x : g.elves)
                 in >> x;
             return in;

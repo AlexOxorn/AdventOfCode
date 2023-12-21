@@ -89,7 +89,7 @@ namespace aoc2021::day22 {
         auto operator<=>(const three_dimensional_index_iterator& other) const = default;
     };
 
-    std::istream& operator>>(std::istream& in, instruction& inst) {
+    STREAM_IN(instruction, inst) {
         std::string s;
         std::getline(in, s);
         char on_off[4] = {};

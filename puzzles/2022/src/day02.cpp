@@ -10,7 +10,7 @@ namespace aoc2022::day02 {
     struct round {
         int me, opponent;
 
-        friend std::istream& operator>>(std::istream& in, round& r);
+        friend STREAM_IN(round, r);
 
         [[nodiscard]] auto round_result() const {
             int res = ox::mod(me - opponent + 1, 3);
@@ -24,7 +24,7 @@ namespace aoc2022::day02 {
         }
     };
 
-    std::istream& operator>>(std::istream& in, round& r) {
+    STREAM_IN(round, r) {
         unsigned char played, play;
         in >> played >> play;
         r.me = play - 'X';

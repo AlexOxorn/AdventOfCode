@@ -155,7 +155,7 @@ namespace aoc2022::day19 {
         return s.time_state == s.steps;
     }
 
-    std::istream& operator>>(std::istream& in, blueprint& b) {
+    STREAM_IN(blueprint, b) {
         using namespace std::literals::string_view_literals;
 
         std::string line;

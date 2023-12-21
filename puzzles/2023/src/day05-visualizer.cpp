@@ -96,7 +96,7 @@ namespace aoc2023::day05_2 {
         }
     };
 
-    std::istream& operator>>(std::istream& in, seeds& s) {
+    STREAM_IN(seeds, s) {
         s.data.clear();
         std::string line;
         std::getline(in, line);
@@ -109,7 +109,7 @@ namespace aoc2023::day05_2 {
         }
         return in;
     }
-    std::istream& operator>>(std::istream& in, seeds2& s) {
+    STREAM_IN(seeds2, s) {
         s.data.clear();
         std::string line;
         std::getline(in, line);
@@ -122,10 +122,10 @@ namespace aoc2023::day05_2 {
         }
         return in;
     }
-    std::istream& operator>>(std::istream& in, int_map& s) {
+    STREAM_IN(int_map, s) {
         return in >> s.dest_start >> s.source_start >> s.distance;
     }
-    std::istream& operator>>(std::istream& in, int_maps& s) {
+    STREAM_IN(int_maps, s) {
         s.maps.clear();
         std::string line;
         while (std::getline(in, line)) {
@@ -137,7 +137,7 @@ namespace aoc2023::day05_2 {
         }
         return in;
     }
-    std::istream& operator>>(std::istream& in, pipeline& s) {
+    STREAM_IN(pipeline, s) {
         s.pipe.clear();
         std::string line;
         while (std::getline(in, line)) {

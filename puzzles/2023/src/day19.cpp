@@ -99,20 +99,20 @@ namespace aoc2023::day19 {
         std::vector<rule> rules;
     };
 
-    std::ostream& operator<<(std::ostream& out, const rule& w) {
+    STREAM_OUT(rule, w) {
         if (w.op) {
             return out << w.measure << w.op << w.value << ":" << w.dest;
         }
         return out << w.dest;
     }
-    std::ostream& operator<<(std::ostream& out, const workflow& w) {
+    STREAM_OUT(workflow, w) {
         out << w.name << "{";
         for (auto& x : w.rules) {
             out << x << ",";
         }
         return out << "}" << std::endl;
     }
-    std::ostream& operator<<(std::ostream& out, const part& w) {
+    STREAM_OUT(part, w) {
         return out << "{x=" << w.extreme << ",m=" << w.musical << ",a=" << w.aero << ",s=" << w.shiny << "}\n";
     }
 
@@ -160,7 +160,7 @@ namespace aoc2023::day19 {
         return String("{", assign_name_value) + "{"_l + List(",", std::move(rule), push_new_rule) + "}"_l;
     }
 
-    std::istream& operator>>(std::istream& in, workflow& w) {
+    STREAM_IN(workflow, w) {
         w.rules.clear();
         static auto parser = get_workflow_parser();
         std::string s;
@@ -179,7 +179,7 @@ namespace aoc2023::day19 {
         }
         return in;
     }
-    std::istream& operator>>(std::istream& in, part& p) {
+    STREAM_IN(part, p) {
         char quality;
         char dummy;
         long l;

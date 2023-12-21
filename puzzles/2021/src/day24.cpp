@@ -549,7 +549,7 @@ namespace aoc2021::day24 {
      * FILE PARSING
      * ===============================================
      */
-    std::istream& operator>>(std::istream& in, instruction& inst) {
+    STREAM_IN(instruction, inst) {
         std::string s;
         std::getline(in, s);
         char c1, c2;

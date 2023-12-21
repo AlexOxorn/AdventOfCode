@@ -54,7 +54,7 @@ namespace aoc2021::day22 {
         return head_volume + tail_volume - tail_union;
     }
 
-    std::istream& operator>>(std::istream& in, instruction& inst) {
+    STREAM_IN(instruction, inst) {
         std::string s;
         std::getline(in, s);
         char on_off[4] = {};

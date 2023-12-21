@@ -8,7 +8,7 @@
 namespace aoc2021::day17 {
     struct target_area : public std::pair<std::pair<int, int>, std::pair<int, int>> {};
 
-    std::istream& operator>>(std::istream& in, target_area& t) {
+    STREAM_IN(target_area, t) {
         std::string s;
         std::getline(in, s);
         sscanf(s.c_str(), "target area: x=%d..%d, y=%d..%d",

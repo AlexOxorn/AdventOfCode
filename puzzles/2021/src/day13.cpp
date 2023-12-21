@@ -75,7 +75,7 @@ namespace aoc2021::day13 {
         }
     };
 
-    std::istream& operator>>(std::istream& in, fold& f) {
+    STREAM_IN(fold, f) {
         std::string s;
         std::getline(in, s);
         sscanf(s.c_str(), "fold along %c=%d", &f.first, &f.second);

@@ -101,7 +101,7 @@ namespace aoc2023::day07 {
     };
 
     template <typename Bid> requires (std::is_same_v<Bid, bid> || std::is_same_v<Bid, bid2>)
-    std::istream& operator>>(std::istream& in, Bid& b) {
+    STREAM_IN(Bid, b) {
         char card_r[HAND_SIZE];
         for (char& i : card_r)
             in >> i;
