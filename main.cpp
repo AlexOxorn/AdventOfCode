@@ -4,8 +4,6 @@
 #include <cstring>
 #include "tester.h"
 
-#include <thread>
-
 long year = -1, day = -1;
 bool do_print = true;
 
