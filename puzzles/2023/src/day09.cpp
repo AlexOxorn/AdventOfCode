@@ -2,6 +2,7 @@
 #include <sstream>
 #include <numeric>
 #include <algorithm>
+#include <ox/combinators.h>
 
 namespace aoc2023::day09 {
     struct pattern : std::vector<long> {
@@ -38,7 +39,7 @@ namespace aoc2023::day09 {
 
     long find_prev(const std::vector<pattern>& pp) {
         auto fronts = pp | stdv::reverse | stdv::transform(const_front);
-        return std::accumulate(fronts.begin(), fronts.end(), 0l, [](long part, long n) { return n - part; });
+        return std::accumulate(fronts.begin(), fronts.end(), 0l, ox::Cardinal(std::minus()));
     }
 
     answertype puzzle1([[maybe_unused]] puzzle_options filename) {
