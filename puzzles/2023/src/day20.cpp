@@ -4,13 +4,19 @@
 #include <functional>
 #include <format>
 #include <ox/parser.h>
+#include <ostream>
+#include <filesystem>
+#include <algorithm>
+#include <numeric>
 
 namespace aoc2023::day20 {
     enum Pulse { Low, High };
     enum NodeType { Sink, Flipflop, Disjoint, Broadcast };
 
     struct node;
-    using pulse_map = std::unordered_map<std::string, node>;
+    struct pulse_map : std::unordered_map<std::string, node> {
+        using std::unordered_map<std::string, node>::unordered_map;
+    };
 
     struct pulse_event {
         std::string source;
@@ -34,6 +40,26 @@ namespace aoc2023::day20 {
         Pulse memory = Low;
         std::unordered_map<std::string, Pulse> disjoint_memory;
         NodeType type = Sink;
+
+        [[nodiscard]] const char* color_type() const {
+            switch (type) {
+                case Sink: return "black";
+                case Flipflop: return "red";
+                case Disjoint: return "blue";
+                case Broadcast: return "green";
+                default: std::unreachable();
+            }
+        }
+
+        explicit operator bool() const {
+            switch (type) {
+                case Flipflop: return memory == High;
+                case Disjoint: return stdr::all_of(disjoint_memory | stdv::values, [](Pulse p) { return p == High; });
+
+                default: return false;
+            }
+        }
+
         void receive_pulse(pulse_queue& q, const pulse_event& event) {
             Pulse send = Low;
             auto& [from, _, pulse] = event;
@@ -75,10 +101,6 @@ namespace aoc2023::day20 {
         map[t.dest].receive_pulse(*this, t);
     }
 
-    struct input_node : std::pair<std::string, node> {
-        using std::pair<std::string, node>::pair;
-    };
-
 #define NodeTypeCallback(name, type_parsed) \
     std::string_view read_##name(void* ref, std::string_view s) { \
         ((node*) ref)->type = type_parsed; \
@@ -99,6 +121,21 @@ namespace aoc2023::day20 {
         return s;
     }
 
+    STREAM_OUT(pulse_map, grid) {
+#ifdef __cpp_lib_print
+        std::println(out, "digraph G {{\n    node [style=filled]");
+        for (const node& n : grid | stdv::values) {
+            std::println(out, "    {} [fillcolor={}, color={}]", n.name, n ? "pink" : "white", n.color_type());
+
+            for (const auto& dest : n.dest) {
+                std::println(out, "    {} -> {} [color={}]", n.name, dest, n.color_type());
+            }
+        }
+        std::println(out, "}}");
+#endif
+        return out;
+    }
+
     STREAM_OUT(node, n) {
         switch (n.type) {
             case Broadcast: out << ""; break;
@@ -109,27 +146,27 @@ namespace aoc2023::day20 {
         return out << n.name;
     }
 
-    STREAM_IN(input_node, n) {
+    STREAM_IN(node, n) {
         using namespace ox::parser;
         using namespace literals;
         static auto parser = ((("%"_l(read_ff) | "&"_l(read_dis) | "broadcaster"_l(read_bb)) + !String("-", set_name)))
                            + "->"_l + List(",", String(push_dest));
 
-        n.second.dest.clear();
-        n.second.name.clear();
+        n.dest.clear();
+        n.name.clear();
         std::string line;
         std::getline(in, line);
-        auto res = parser.parse(&n.second, line);
-        n.first = n.second.name;
+        auto res = parser.parse(&n, line);
         if (!res) {
             in.setstate(std::ios::failbit);
         }
         return in;
     }
 
-    answertype puzzle1([[maybe_unused]] puzzle_options filename) {
-        auto input = get_stream<input_node>(filename);
-        pulse_map map(input.begin(), input.end());
+    pulse_queue get_data(puzzle_options filename) {
+        auto input = get_stream<node>(filename);
+        auto key_values = input | stdv::transform([](const node& n) { return std::pair(n.name, n); });
+        pulse_map map(key_values.begin(), key_values.end());
         map["rx"].type = Sink;
         map["rx"].name = "rx";
 
@@ -141,6 +178,42 @@ namespace aoc2023::day20 {
 
         pulse_queue q;
         q.map = std::move(map);
+        return q;
+    }
+
+    void test_loop_points(puzzle_options filename, std::array<long, 4> loops) {
+        pulse_queue q = get_data(filename);
+        std::fstream out;
+        auto generate_file = [&out, &q](long count) {
+            std::string text_file_path = std::format("../puzzles/2023/data/day20/source/{:05}.txt", count);
+            std::string image_file_path = std::format("../puzzles/2023/data/day20/images/{:05}.svg", count);
+            if (stdfs::exists(image_file_path))
+                return;
+            out.open(text_file_path, out.out);
+            out << q.map;
+            out.close();
+            std::string command = std::format("dot {} -Tsvg > {}", text_file_path, image_file_path);
+            std::system(command.c_str());
+        };
+
+        for (long count = 1;; ++count) {
+            q.emplace("button", "broadcast", Low);
+            while (!q.empty()) {
+                q.handle();
+            }
+            if (q.dest_counts["rx"].first == 1) {
+                break;
+            }
+            if (stdr::any_of(loops, [count](long l) { return l == count; })) {
+                generate_file(count);
+            }
+            if (count > stdr::max(loops))
+                break;
+        }
+    }
+
+    answertype puzzle1([[maybe_unused]] puzzle_options filename) {
+        pulse_queue q = get_data(filename);
         for (long count = 0; count < 1000; ++count) {
             q.emplace("button", "broadcast", Low);
             while (!q.empty()) {
@@ -154,107 +227,10 @@ namespace aoc2023::day20 {
     }
 
     answertype puzzle2([[maybe_unused]] puzzle_options filename) {
-        auto input = get_stream<input_node>(filename);
-        pulse_map map(input.begin(), input.end());
-        map["rx"].type = Sink;
-        map["rx"].name = "rx";
-
-        for (auto& node : map | stdv::values) {
-            for (auto& d : node.dest) {
-                map[d].disjoint_memory[node.name] = Low;
-            }
-        }
-
-        std::queue<node> dependencies;
-        dependencies.push(map["rx"]);
-        std::queue<node> dependencies_next;
-        long indent = 0;
-        for (int i = 0; i < 0; ++i, ++indent, std::swap(dependencies, dependencies_next)) {
-            auto p_indent = [indent]() {
-                for (char c : stdv::repeat(' ') | stdv::take(indent * 2)) {
-                    std::cout << c;
-                }
-            };
-
-            while (!dependencies.empty()) {
-                node top = dependencies.front();
-                dependencies.pop();
-                p_indent();
-                std::cout << top << " depends on ";
-                for (auto& name : top.disjoint_memory | stdv::keys) {
-                    auto& dop = map[name];
-                    std::cout << dop << ", ";
-                    dependencies_next.push(dop);
-                }
-                std::cout << std::endl;
-            }
-        }
-
-        pulse_queue q;
-        q.map = std::move(map);
-
-        /*
-rx depends on &th,
-&th depends on &qn, &xf, &xn, &zl,
-  &qn depends on &vc,
-  &xf depends on &db,
-  &xn depends on &gf,
-  &zl depends on &qx,
-    &vc depends on %qk, %vz, %cd, %pm, %sb, %cr, %hd,
-    &db depends on %jz, %ch, %mc, %qj, %nn, %pl, %xm, %bp,
-    &gf depends on %vl, %zd, %fn, %pr, %qq, %sr, %ln, %tj, %lc, %gm,
-    &qx depends on %bx, %rz, %kt, %bf, %cl, %jd, %qp, %pf,
-        %qk depends on %pm,
-        %vz depends on %ks,
-        %cd depends on %gx,
-        %pm depends on %cd,
-        %sb depends on %lr,
-        %cr depends on %vz,
-        %hd depends on broadcast, &vc,
-
-        %jz depends on %bp,
-        %ch depends on broadcast, &db,
-        %mc depends on %ch,
-        %qj depends on %jz,
-        %nn depends on %cc,
-        %pl depends on %ff,
-        %xm depends on %qj,
-        %bp depends on %sf,
-
-        %vl depends on %sr,
-        %zd depends on %fj,
-        %fn depends on %lc,
-        %pr depends on %fn,
-        %qq depends on %ln,
-        %sr depends on broadcast, &gf,
-        %ln depends on %zd,
-        %tj depends on %gm,
-        %lc depends on %tj,
-        %gm depends on %qm,
-
-        %bx depends on broadcast, &qx,
-        %rz depends on %kt,
-        %kt depends on %cb,
-        %bf depends on %cl,
-        %cl depends on %vm,
-        %jd depends on %xz,
-        %qp depends on %bx,
-        %pf depends on %bf,
-         */
-
-        long count = 1;
-        for (;; ++count) {
-            q.emplace("button", "broadcast", Low);
-            while (!q.empty()) {
-                q.handle();
-            }
-            if (q.dest_counts["rx"].first == 1) {
-                break;
-            }
-            std::cout << std::format("{}\n", q.dest_counts);
-            q.dest_counts.clear();
-        }
-        printf("%ld\n", count + 1);
-        return count;
+        std::array<long, 4> loop_points{0b111110111011, 0b111101010011, 0b111010011011, 0b111011010001};
+        test_loop_points(filename, loop_points);
+        long res = std::accumulate(std::begin(loop_points), std::end(loop_points), 1l, std::lcm<long, long>);
+        printf("%ld\n", res);
+        return res;
     }
 } // namespace aoc2023::day20
