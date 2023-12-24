@@ -23,8 +23,8 @@ extern bool do_print;
 
 #define myprintf(...) (do_print ? printf(__VA_ARGS__) : 0)
 
-#define STREAM_IN(type, name) std::istream& operator>>(std::istream& in, type& name)
-#define STREAM_OUT(type, name) std::ostream& operator<<(std::ostream& out, const type& name)
+#define STREAM_IN(type, name) std::istream& operator>>(std::istream& in, [[maybe_unused]] type& name)
+#define STREAM_OUT(type, name) std::ostream& operator<<(std::ostream& out, [[maybe_unused]] const type& name)
 
 struct puzzle_options {
     int day{};
