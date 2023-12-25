@@ -31,18 +31,16 @@ namespace aoc2023::day12 {
         }
     };
 
-    struct NFA {
+    struct DFA {
         struct state {
             state* dot{};
             state* hash{};
-            bool valid{};
         };
 
         std::vector<state> states;
 
-        explicit NFA(const std::vector<int>& broken_pattern) :
-                states(std::accumulate(broken_pattern.begin(), broken_pattern.end(), 0) + int(broken_pattern.size())
-                       + 1) {
+        explicit DFA(const std::vector<int>& broken_pattern) :
+                states(std::accumulate(broken_pattern.begin(), broken_pattern.end(), 0) + int(broken_pattern.size())) {
             states[0].dot = &states[0];
             states[0].hash = &states[1];
 
@@ -51,16 +49,17 @@ namespace aoc2023::day12 {
                 for (int j = 0; j < b - 1; ++i, ++j) {
                     states[i].hash = &states[i + 1];
                 }
-                states[i].dot = &states[i + 1];
-                ++i;
-                states[i].dot = &states[i];
-                if (i + 1 < int(states.size()))
+
+                if (i + 2 < int(states.size())){
+                    states[i].dot = &states[i + 1];
+                    ++i;
+                    states[i].dot = &states[i];
                     states[i].hash = &states[i + 1];
+                }
                 ++i;
             }
 
-            states[states.size() - 1].valid = true;
-            states[states.size() - 2].valid = true;
+            states.back().dot = &states.back();
         }
 
         [[nodiscard]] auto count(const std::string& match) const {
@@ -79,9 +78,7 @@ namespace aoc2023::day12 {
                 }
                 curr = std::move(next);
             }
-            auto x = std::accumulate(curr.begin(), curr.end(), 0zu, [](size_t res, const maptype::value_type& m) {
-                return res + (m.first->valid ? m.second : 0zu);
-            });
+            auto x = curr[&states.back()];
             return x;
         }
     };
@@ -161,8 +158,8 @@ namespace aoc2023::day12 {
 
     answertype puzzle1([[maybe_unused]] puzzle_options filename) {
         auto x = get_stream<springs>(filename);
-        auto configs = x | stdv::transform([](const springs& s) { return std::pair(s.blueprint, NFA(s.broken)); })
-                     | stdv::transform([](const std::pair<std::string, NFA>& p) { return p.second.count(p.first); });
+        auto configs = x | stdv::transform([](const springs& s) { return std::pair(s.blueprint, DFA(s.broken)); })
+                     | stdv::transform([](const std::pair<std::string, DFA>& p) { return p.second.count(p.first); });
         auto res = std::accumulate(configs.begin(), configs.end(), 0zu);
         myprintf("%zu\n", res);
         return res;
@@ -171,8 +168,8 @@ namespace aoc2023::day12 {
     answertype puzzle2([[maybe_unused]] puzzle_options filename) {
         auto x = get_stream<springs>(filename);
         auto configs = x | stdv::transform(&springs::unfold)
-                     | stdv::transform([](const springs& s) { return std::pair(s.blueprint, NFA(s.broken)); })
-                     | stdv::transform([](const std::pair<std::string, NFA>& p) { return p.second.count(p.first); });
+                     | stdv::transform([](const springs& s) { return std::pair(s.blueprint, DFA(s.broken)); })
+                     | stdv::transform([](const std::pair<std::string, DFA>& p) { return p.second.count(p.first); });
         auto res = std::accumulate(configs.begin(), configs.end(), 0zu);
         myprintf("%zu\n", res);
         return res;
