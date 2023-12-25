@@ -184,17 +184,21 @@ namespace aoc2023::day20 {
     void test_loop_points(puzzle_options filename, std::array<long, 4> loops) {
         pulse_queue q = get_data(filename);
         std::fstream out;
-        auto generate_file = [&out, &q](long count) {
-            std::string text_file_path = std::format("../puzzles/2023/data/day20/source/{:05}.txt", count);
-            std::string image_file_path = std::format("../puzzles/2023/data/day20/images/{:05}.svg", count);
+        auto generate_file = [&out, &q, filename](long count) {
+            std::string text_file_path =
+                    std::format("../puzzles/2023/data/day20/source/{:05}{}.txt", count, filename.filename);
+            std::string image_file_path =
+                    std::format("../puzzles/2023/data/day20/images/{:05}{}.svg", count, filename.filename);
             if (stdfs::exists(image_file_path))
-                return;
-            out.open(text_file_path, out.out);
+                return 0;
+            out.open(text_file_path, std::fstream::out);
             out << q.map;
             out.close();
             std::string command = std::format("dot {} -Tsvg > {}", text_file_path, image_file_path);
-            std::system(command.c_str());
+            return std::system(command.c_str());
         };
+
+        generate_file(0);
 
         for (long count = 1;; ++count) {
             q.emplace("button", "broadcast", Low);
