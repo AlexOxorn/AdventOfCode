@@ -1,13 +1,25 @@
 #include "../../../common.h"
 #include <ox/grid.h>
-#include <ox/math.h>
 #include <set>
 #include <unordered_set>
 #include <string_view>
-#include <concepts>
 #include <format>
+#include <cassert>
 
 namespace aoc2023::day21 {
+    constexpr static long INPUT_WIDTH = 131;
+    constexpr static long MIDPOINT = INPUT_WIDTH / 2;
+    constexpr static long STEPS = 26501365;
+    constexpr static long LOOPS = (STEPS - (MIDPOINT)) / INPUT_WIDTH;
+    constexpr static long LOOPS_WIDTH = 2 * LOOPS + 1;
+
+    template <typename T>
+    concept has_unique_object_representations = std::has_unique_object_representations_v<T>;
+
+    static auto trivial_hash = []<has_unique_object_representations T>(const T& data) {
+        std::string_view ss((char*) &data, sizeof(data));
+        return std::hash<std::string_view>()(ss);
+    };
 
     struct flower_map : ox::grid<char> {
         using ox::grid<char>::grid;
@@ -19,12 +31,15 @@ namespace aoc2023::day21 {
             leveled_iterators(
                     [&](auto c) {
                         if (highlight.contains(c)) {
-                            printf("\033[41m ");
+                            myprintf("\033[41m ");
                         } else {
-                            printf("\033[0m%c", *c);
+                            if (auto [x, y] = coord_from_index(c); x % 131 == 0 || y % 131 == 0)
+                                myprintf("\033[44m%c\033[0m", *c);
+                            else
+                                myprintf("\033[0m%c", *c);
                         }
                     },
-                    []() { printf("\033[0m\n"); });
+                    []() { myprintf("\033[0m\n"); });
         }
 
         void print(const std::set<flower_map::const_raw_iterator>& highlight,
@@ -32,39 +47,213 @@ namespace aoc2023::day21 {
             leveled_iterators(
                     [&](auto c) {
                         if (highlight.contains(c)) {
-                            printf("\033[41m ");
+                            myprintf("\033[41m ");
                         } else if (seen.contains(c)) {
-                            printf("\033[42m ");
+                            myprintf("\033[42m ");
                         } else {
-                            printf("\033[0m%c", *c);
+                            myprintf("\033[0m%c", *c);
                         }
                     },
-                    []() { printf("\033[0m\n"); });
+                    []() { myprintf("\033[0m\n"); });
         }
-    };
 
-    template <typename T>
-    concept trivially_copyable = std::is_trivially_copyable_v<T>;
-
-    static auto trivial_hash = []<trivially_copyable T>(const T& data) {
-        std::string_view ss((char*) &data, sizeof(data));
-        return std::hash<std::string_view>()(ss);
-    };
-
-    static auto vector_hash = [](const auto& data) {
-        std::string ss = std::format("{}", data);
-        return std::hash<std::string>()(ss);
+        void print(const std::unordered_set<std::array<long, 2>, decltype(trivial_hash)>& highlight,
+                   const std::unordered_set<std::array<long, 2>, decltype(trivial_hash)>& seen) const {
+            for (long j = 0; j < long(get_height()); ++j) {
+                for (long i = 0; i < long(get_width()); ++i) {
+                    if (highlight.contains({i, j})) {
+                        myprintf("\033[41m ");
+                    } else if (seen.contains({i, j})) {
+                        myprintf("\033[42m ");
+                    } else {
+                        myprintf("\033[0m%c", (*this)[i, j]);
+                    }
+                }
+                myprintf("\033[0m\n");
+            }
+        }
     };
 
     using positions = std::set<flower_map::const_raw_iterator>;
     using positions2 = std::unordered_set<std::array<long, 2>, decltype(trivial_hash)>;
-    template <size_t N = 5>
-    using start_cache = std::unordered_map<std::array<long, N>, long, decltype(trivial_hash)>;
-    using start_cache2 = std::unordered_map<std::vector<long>, long, decltype(vector_hash)>;
-    using positions3 = std::unordered_map<std::array<long, 2>, long, decltype(trivial_hash)>;
+    using area_map = std::unordered_map<char, long>;
 
-    long calculate_steps(flower_map& map, flower_map::const_raw_iterator start, long num_steps) {
+    long calculate_area(const area_map& even, const area_map& odd) {
+        using namespace std::string_literals;
+        auto get_area_part_even = [even](char c) {
+            return c ? even.at(c) : 0l;
+        };
+        auto get_area_even = [&get_area_part_even](const auto& s) {
+            return stdr::fold_left(s | stdv::transform(get_area_part_even), 0l, std::plus());
+        };
+
+
+        long full_even = stdr::fold_left(even | stdv::values, 0l, std::plus());
+        long full_odd = stdr::fold_left(odd | stdv::values, 0l, std::plus());
+        long top = full_even - get_area_even("AB");
+        long bottom = full_even - get_area_even("CD");
+        long right = full_even - get_area_even("BD");
+        long left = full_even - get_area_even("AC");
+
+        long NE1 = full_even - even.at('B');
+        long NE2 = odd.at('C');
+
+        long NW1 = full_even - even.at('A');
+        long NW2 = odd.at('D');
+
+        long SE1 = full_even - even.at('D');
+        long SE2 = odd.at('A');
+
+        long SW1 = full_even - even.at('C');
+        long SW2 = odd.at('B');
+
+        long perimeter_area = 0;
+
+        perimeter_area += top;
+        perimeter_area += (LOOPS - 1) * (NE1 + NE2) + NE2;
+        perimeter_area += right;
+        perimeter_area += (LOOPS - 1) * (SE1 + SE2) + SE2;
+        perimeter_area += bottom;
+        perimeter_area += (LOOPS - 1) * (SW1 + SW2) + SW2;
+        perimeter_area += left;
+        perimeter_area += (LOOPS - 1) * (NW1 + NW2) + NW2;
+
+        long inner_area = 0;
+        for (long x = 1; x < LOOPS_WIDTH - 1; ++x) {
+            long s_x = std::min(x, LOOPS_WIDTH - x - 1);
+            for (long y = LOOPS - s_x + 1; y < LOOPS + s_x; ++y) {
+                inner_area += (x + y) % 2 == 0 ? full_even : full_odd;
+            }
+        }
+
+        return perimeter_area + inner_area;
+    }
+
+    /*
+     A A A A O B B B B
+     A A A I P J B B B
+     A A I E P F J B B
+     A I E E P F F J B
+     K R R R T S S S L
+     C M G G Q H H N D
+     C C M G Q H N D D
+     C C C M Q N D D D
+     C C C C U D D D D
+     */
+
+    void area_test(const area_map& amap, const positions2& pos) {
+#ifdef __cpp_lib_print
+        std::print("{}\n", amap);
+#endif
+        assert(stdr::fold_left(amap | stdv::values, 0l, std::plus()) == long(pos.size()));
+    }
+
+#define DEFINE_CALCULATE_CORNER(X, BODY) \
+    long calculate_##X(const positions2& seen, positions2& checked) { \
+        long count = 0; \
+        for (long i = 0; i < MIDPOINT; ++i) { \
+            for (long j = 0; j < MIDPOINT - i; ++j) { \
+                assert(!checked.contains BODY); \
+                count += seen.contains BODY; \
+                checked.insert BODY; \
+            }; \
+        } \
+        return count; \
+    }
+
+#define DEFINE_CALCULATE_INNER(X, BODY) \
+    long calculate_##X(const positions2& seen, positions2& checked) { \
+        long count = 0; \
+        for (long i = 2; i < MIDPOINT; ++i) { \
+            for (long j = MIDPOINT + 1 - i; j < MIDPOINT; ++j) { \
+                assert(!checked.contains BODY); \
+                count += seen.contains BODY; \
+                checked.insert BODY; \
+            }; \
+        } \
+        return count; \
+    }
+
+#define DEFINE_CALCULATE_LINE(X, BODY) \
+    long calculate_##X(const positions2& seen, positions2& checked) { \
+        long count = 0; \
+        for (long i = 1; i < MIDPOINT; ++i) { \
+            [[maybe_unused]] long j = i; \
+            assert(!checked.contains BODY); \
+            count += seen.contains BODY; \
+            checked.insert BODY; \
+        } \
+        return count; \
+    }
+
+#define DEFINE_CALCULATE_POINTS(X, POINT) \
+    long calculate_##X(const positions2& seen, positions2& checked) { \
+        assert(!checked.contains POINT); \
+        checked.insert POINT; \
+        return seen.contains POINT; \
+    }
+
+#define MIRROR(X) (INPUT_WIDTH - (X) -1)
+
+    DEFINE_CALCULATE_CORNER(A, ({i, j}))
+    DEFINE_CALCULATE_CORNER(B, ({MIRROR(i), j}))
+    DEFINE_CALCULATE_CORNER(C, ({i, MIRROR(j)}))
+    DEFINE_CALCULATE_CORNER(D, ({MIRROR(i), MIRROR(j)}))
+
+    DEFINE_CALCULATE_INNER(E, ({i, j}))
+    DEFINE_CALCULATE_INNER(F, ({MIRROR(i), j}))
+    DEFINE_CALCULATE_INNER(G, ({i, MIRROR(j)}))
+    DEFINE_CALCULATE_INNER(H, ({MIRROR(i), MIRROR(j)}))
+
+    DEFINE_CALCULATE_LINE(I, ({MIRROR(i + MIDPOINT), j}))
+    DEFINE_CALCULATE_LINE(J, ({i + MIDPOINT, j}))
+    DEFINE_CALCULATE_LINE(M, ({i, j + MIDPOINT}))
+    DEFINE_CALCULATE_LINE(N, ({MIRROR(i), j + MIDPOINT}))
+    DEFINE_CALCULATE_LINE(P, ({INPUT_WIDTH / 2, j}))
+    DEFINE_CALCULATE_LINE(Q, ({INPUT_WIDTH / 2, j + MIDPOINT}))
+    DEFINE_CALCULATE_LINE(R, ({i, INPUT_WIDTH / 2}))
+    DEFINE_CALCULATE_LINE(S, ({i + MIDPOINT, INPUT_WIDTH / 2}))
+
+    DEFINE_CALCULATE_POINTS(K, ({0, MIDPOINT}))
+    DEFINE_CALCULATE_POINTS(L, ({INPUT_WIDTH - 1, MIDPOINT}))
+    DEFINE_CALCULATE_POINTS(O, ({MIDPOINT, 0}))
+    DEFINE_CALCULATE_POINTS(U, ({MIDPOINT, INPUT_WIDTH - 1}))
+    DEFINE_CALCULATE_POINTS(T, ({MIDPOINT, MIDPOINT}))
+
+#define ADD_AREA(X) to_return[*#X] = calculate_##X(seen, checked)
+
+    area_map get_area_part(const positions2& seen) {
+        area_map to_return;
+        positions2 checked;
+        ADD_AREA(A);
+        ADD_AREA(B);
+        ADD_AREA(C);
+        ADD_AREA(D);
+        ADD_AREA(E);
+        ADD_AREA(F);
+        ADD_AREA(G);
+        ADD_AREA(H);
+        ADD_AREA(I);
+        ADD_AREA(J);
+        ADD_AREA(K);
+        ADD_AREA(L);
+        ADD_AREA(M);
+        ADD_AREA(N);
+        ADD_AREA(O);
+        ADD_AREA(P);
+        ADD_AREA(Q);
+        ADD_AREA(R);
+        ADD_AREA(S);
+        ADD_AREA(T);
+        ADD_AREA(U);
+        assert(checked.size() == (INPUT_WIDTH * INPUT_WIDTH));
+        return to_return;
+    }
+
+    positions calculate_steps(flower_map& map, flower_map::const_raw_iterator start, long num_steps) {
         positions curr{start};
+
+        std::string line;
 
         for (long count = 0; count < num_steps; ++count) {
             positions next;
@@ -80,255 +269,36 @@ namespace aoc2023::day21 {
             next.clear();
         }
 
-        return curr.size();
+        return curr;
     }
 
-    std::vector<positions> visual_steps(flower_map& map, flower_map::const_raw_iterator start, long max = 64,
-                                        bool repeat = false) {
-        positions curr{start};
-        positions seen{start};
-        std::vector<positions> past{curr};
-        size_t previous_seen_count = 0;
-        for (long count = 0; count < max and !curr.empty() and previous_seen_count != seen.size(); ++count) {
-            previous_seen_count = seen.size();
-            positions next;
-            for (auto pos : curr) {
-                auto neighbours = map.cardinal_neighbour_range(pos);
-                for (auto adj : neighbours | flower_map::const_valid_index()) {
-                    if ((*adj == '.' or *adj == 'S') and (repeat or !seen.contains(adj))) {
-                        next.insert(adj);
-                        seen.insert(adj);
-                    }
-                }
-            }
-            std::swap(curr, next);
-            past.push_back(curr);
-            map.print(curr, seen);
-            next.clear();
-            printf("\n");
-        }
-
-        return past;
-    }
-
-    size_t calculate_steps2(const flower_map& map, flower_map::const_raw_iterator start, long num_steps) {
-        auto start_pos = map.coord_from_index(start);
-        positions2 curr{start_pos};
-        positions3 seen{{start_pos, map.get_size()}};
-        positions2 next;
-
-        bool even = (num_steps % 2 == 0) != ((start_pos[0] + start_pos[1]) % 2 == 0);
-        long res = 0;
-
-        for (long count = 0; count < num_steps; ++count) {
-            for (auto pos : curr) {
-                std::array<std::array<long, 2>, 4> neighbours{
-                        std::array{pos[0] - 1, pos[1]    },
-                        {pos[0] + 1, pos[1]    },
-                        {pos[0],     pos[1] - 1},
-                        {pos[0],     pos[1] + 1}
-                };
-                for (auto adj : neighbours) {
-                    if (seen.contains(adj))
-                        continue;
-                    std::array<long, 2> bounded{ox::mod(adj[0], long(map.get_width())),
-                                                ox::mod(adj[1], long(map.get_height()))};
-                    if (auto val = map[bounded]; val == '.' || val == 'S') {
-                        if ((adj[0] + adj[1]) % 2 == even) {
-                            ++res;
-                        }
-                        next.insert(adj);
-                        seen[adj] = map.get_size();
-                    }
-                }
-            }
-
-            for (auto& [x, v]: seen) {
-                --v;
-            }
-            std::erase_if(seen, [](auto& x) {
-               return x.second <= 0;
-            });
-
-//            printf("%8ld -> %zu\n", count, curr.size());
-            std::swap(curr, next);
-            next.clear();
-            next.reserve(curr.size() * 2);
-        }
-
-        return res;
-    }
-
-    enum DIR : long { NONE, NORTH = 1 << 1, EAST = 1 << 2, WEST = 1 << 3, SOUTH = 1 << 4 };
-
-    long update_forbidden(long init, DIR from) {
-        long to_return = 0;
-        switch (from) {
-            case NONE: std::unreachable();
-            case NORTH:
-
-            case SOUTH:
-            case WEST:
-            case EAST:
-                return 0;
-        }
-        return 0;
-    }
-
-/*    auto calculate_steps3(start_cache<4>& cache, const flower_map& map, std::array<long, 2> start, long forbid,
-                          long num_steps) {
-        std::array key{start[0], start[1], num_steps, forbid};
-
-        if (cache.contains(key)) {
-            //            printf("CACHE HIT\n");
-            return cache.at(key);
-        }
-        //        printf("CACHE MISS\n");
-
-        positions2 curr{start};
-        positions2 next;
-
-        long res = 0;
-        for (long count = 0; count < num_steps; ++count) {
-            for (auto pos : curr) {
-                std::array<std::array<long, 2>, 4> neighbours{
-                        std::array{pos[0] - 1, pos[1]    },
-                        {pos[0] + 1, pos[1]    },
-                        {pos[0],     pos[1] - 1},
-                        {pos[0],     pos[1] + 1}
-                };
-                for (auto adj : neighbours) {
-                    if (auto x = map.get(adj); x) {
-                        if (x == '.' || x == 'S') {
-                            next.insert(adj);
-                        }
-                    } else {
-                        DIR to;
-                        std::array<long, 2> new_world = from.back();
-                        if (adj[0] >= long(map.get_width())) {
-                            ++new_world[0];
-                        }
-                        if (adj[0] < 0l) {
-                            --new_world[0];
-                        }
-                        if (adj[1] >= long(map.get_height())) {
-                            ++new_world[1];
-                        }
-                        if (adj[1] < 0l) {
-                            --new_world[1];
-                        }
-                        if (stdr::find(from, new_world) != from.end())
-                            continue;
-
-                        from.push_back(new_world);
-                        std::array<long, 2> bounded{ox::mod(adj[0], long(map.get_width())),
-                                                    ox::mod(adj[1], long(map.get_height()))};
-                        if (auto val = map[bounded]; val == '.' || val == 'S') {
-                            res += calculate_steps3(cache, map, bounded, from, num_steps - (count + 1));
-                        }
-                        from.pop_back();
-                    }
-                }
-            }
-
-            std::swap(curr, next);
-            next.clear();
-            next.reserve(curr.size() * 2);
-        }
-
-        long ans = res + long(curr.size());
-        //        printf("CACHED\n");
-        cache[{start[0], start[1], num_steps}] = ans;
-
-        return ans;
-    }
-
-    long calculate_steps4(start_cache& cache, const flower_map& map, std::array<long, 2> pos, std::array<long, 2> world,
-                          long num_steps) {
-        std::array key{pos[0], pos[1], world[0], world[1], num_steps};
-
-        if (num_steps == 0) {
-            cache[key] = 1;
-            return 1;
-        }
-        if (cache.contains(key)) {
-            return 0;
-            return cache.at(key);
-        }
-        long res = 0;
-        std::array<std::array<long, 2>, 4> neighbours{
-                std::array{pos[0] - 1, pos[1]    },
-                {pos[0] + 1, pos[1]    },
-                {pos[0],     pos[1] - 1},
-                {pos[0],     pos[1] + 1}
-        };
-        for (auto adj : neighbours) {
-            if (auto x = map.get(adj); x) {
-                if (x == '.' || x == 'S') {
-                    res += calculate_steps4(cache, map, adj, world, num_steps - 1);
-                }
-            } else {
-                std::array<long, 2> bounded{ox::mod(adj[0], long(map.get_width())),
-                                            ox::mod(adj[1], long(map.get_height()))};
-                if (auto val = map[bounded]; val == '#') {
-                    continue;
-                }
-                std::array<long, 2> new_world = world;
-                if (adj[0] >= long(map.get_width())) {
-                    ++new_world[0];
-                }
-                if (adj[0] < 0l) {
-                    --new_world[0];
-                }
-                if (adj[1] >= long(map.get_height())) {
-                    ++new_world[1];
-                }
-                if (adj[1] < 0l) {
-                    --new_world[1];
-                }
-
-                res += calculate_steps4(cache, map, bounded, new_world, num_steps - 1);
-            }
-        }
-
-        cache[key] = res;
-        return res;
-    }*/
+    positions2 pos_to_pos2(const flower_map& map, const positions& data) {
+        auto x = data | stdv::transform([&map](auto y) { return map.coord_from_index(y); });
+        return positions2{x.begin(), x.end()};
+    };
 
     answertype puzzle1([[maybe_unused]] puzzle_options filename) {
         auto input = get_stream(filename);
         flower_map map(input);
-        long res = calculate_steps(map, map.find_start(), 64);
-        printf("%ld\n", res);
-        return res;
+        positions res = calculate_steps(map, map.find_start(), 64);
+        myprintf("%zu\n", res.size());
+        return res.size();
     }
 
     answertype puzzle2([[maybe_unused]] puzzle_options filename) {
         auto input = get_stream(filename);
         flower_map map(input);
 
-        /*
-         *
-In exactly 6 steps, he can still reach 16 garden plots.
-In exactly 10 steps, he can reach any of 50 garden plots.
-In exactly 50 steps, he can reach 1594 garden plots.
-In exactly 100 steps, he can reach 6536 garden plots.
-In exactly 500 steps, he can reach 167004 garden plots.
-In exactly 1000 steps, he can reach 668697 garden plots.
-In exactly 5000 steps, he can reach 16733044 garden plots.
-
-         */
-        std::array steps{6, 10, 50, 100, 500, 1000, 5000};
-        auto start = map.coord_from_index(map.find_start());
-        for (long step : steps) {
-            start_cache<> cache;
-            std::array start_world{0l, 0l};
-            std::vector from{start_world};
-            size_t res = calculate_steps2(map, map.find_start(), step);
-            printf("%ld -> %zu\n", step, res+1);
-        }
-        size_t res = calculate_steps2(map, map.find_start(), 26501365);
-        printf("%ld -> %zu\n", 26501365l, res + 1);
-        return res+1;
+        positions area_template_iter_even = calculate_steps(map, map.find_start(), INPUT_WIDTH);
+        positions area_template_iter_odd = calculate_steps(map, map.find_start(), INPUT_WIDTH + 1);
+        positions2 area_template_even = pos_to_pos2(map, area_template_iter_even);
+        positions2 area_template_odd = pos_to_pos2(map, area_template_iter_odd);
+        area_map areas_even = get_area_part(area_template_even);
+        area_map areas_odd = get_area_part(area_template_odd);
+        area_test(areas_even, area_template_even);
+        area_test(areas_odd, area_template_odd);
+        long total_area = calculate_area(areas_even, areas_odd);
+        myprintf("%ld\n", total_area);
+        return total_area;
     }
 } // namespace aoc2023::day21
