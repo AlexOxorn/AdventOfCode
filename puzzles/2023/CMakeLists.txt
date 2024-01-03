@@ -1,3 +1,5 @@
+find_package (Eigen3 3.4 REQUIRED NO_MODULE)
+
 add_library(
         "2023"
         SHARED
@@ -29,6 +31,6 @@ add_library(
         src/day24.cpp
         src/day25.cpp
 )
-
+target_link_libraries("2023" PRIVATE Eigen3::Eigen)
 target_link_libraries("2023" PRIVATE "ox")
 target_include_directories("2023" PUBLIC "include")
