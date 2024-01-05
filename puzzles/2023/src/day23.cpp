@@ -2,6 +2,7 @@
 #include <ox/grid.h>
 #include <unordered_set>
 #include <ox/hash.h>
+#include <ox/array.h>
 
 namespace aoc2023::day23 {
     struct raw_map : ox::grid<char> {
@@ -27,7 +28,6 @@ namespace aoc2023::day23 {
     using visited_set = std::unordered_set<position, ox::trivial_hash>;
     using visited_set2 = std::unordered_set<coord, ox::trivial_hash>;
     using dfs_result = std::pair<long, visited_set>;
-
 
     struct graph_node {
         coord pos;
@@ -133,8 +133,7 @@ namespace aoc2023::day23 {
         visited.insert(start.pos);
 
         auto neighbours =
-                start.to
-                | stdv::transform([&](std::pair<long, long> l) { return std::pair(source[l.first], l.second); })
+                start.to | stdv::transform(ox::transform_N<0>([&](long l) { return source[l]; }))
                 | stdv::filter([&](const std::pair<graph_node, long>& x) { return !visited.contains(x.first.pos); });
         for (auto [next, length] : neighbours) {
             res = stdr::max(res, max_dfs2(source, next, end, visited, depth + length));
