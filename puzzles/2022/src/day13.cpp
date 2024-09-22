@@ -1,5 +1,5 @@
-//day6
-// Created by alexoxorn on 2021-12-01.
+// day6
+//  Created by alexoxorn on 2021-12-01.
 //
 
 #include "../../../common.h"
@@ -17,13 +17,17 @@ namespace aoc2022::day13 {
 
     struct element : std::variant<int, list> {
         using std::variant<int, list>::variant;
+        bool operator==(const element&) const = default;
     };
 
-    std::strong_ordering operator<=>(const element&, const element&);
+    std::weak_ordering operator<=>(const element&, const element&);
 
     struct element_comparison_overload {
-        auto operator()(int l, int r) { return l < r; }
-        auto operator()(const list& l, const list& r) { return stdr::lexicographical_compare(l, r); }
+        auto operator()(int l, int r) -> std::weak_ordering { return l <=> r; }
+        auto operator()(const list& l, const list& r) {
+            void(l.front() <=> r.front());
+            return std::lexicographical_compare_three_way(l.begin(), l.end(), r.begin(), r.end());
+        }
         auto operator()(const list& l, int r) { return (*this)(l, std::vector{element{r}}); }
         auto operator()(int l, const list& r) { return (*this)(std::vector{element{l}}, r); }
     };
@@ -40,12 +44,8 @@ namespace aoc2022::day13 {
         };
     };
 
-    std::strong_ordering operator<=>(const element& lhs, const element& rhs) {
-        if (lhs == rhs) {
-            return std::strong_ordering::equal;
-        }
-        return std::visit(element_comparison_overload{}, lhs, rhs) ? std::strong_ordering::less
-                                                                   : std::strong_ordering::greater;
+    std::weak_ordering operator<=>(const element& lhs, const element& rhs) {
+        return std::visit(element_comparison_overload{}, lhs, rhs);
     }
 
     STREAM_IN(element, elm) {
