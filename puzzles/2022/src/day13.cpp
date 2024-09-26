@@ -6,12 +6,13 @@
 #include <ox/grid.h>
 #include <ox/graph.h>
 #include <ox/utils.h>
+#include <ox/future/vector_format.h>
+#include <ox/combinators.h>
 #include <variant>
 #include <vector>
 #include <stack>
 #include <numeric>
 #include <format>
-#include <string_view>
 
 namespace aoc2022::day13 {
     struct element;
@@ -30,38 +31,9 @@ template <>
 struct std::formatter<aoc2022::day13::element, char> {
     constexpr static auto parse(std::format_parse_context& ctx) { return ctx.begin(); }
 
-#ifndef __cpp_lib_format_ranges
-    template <typename FormatContext>
-    [[nodiscard]] FormatContext::iterator list_formatter(FormatContext ctx, const aoc2022::day13::list& l) const {
-        auto out = ctx.out();
-        *out++ = '[';
-        auto first = stdr::begin(l);
-        auto last = stdr::end(l);
-        if (first != last) {
-            ctx.advance_to(out);
-            out = format(*first, ctx);
-            for (++first; first != last; ++first) {
-                *out++ = ',';
-                *out++ = ' ';
-                ctx.advance_to(out);
-                out = format(*first, ctx);
-            }
-        }
-        *out++ = ']';
-        return out;
-    }
-#endif
-
     template <typename FormatContext>
     FormatContext::iterator format(const aoc2022::day13::element& obj, FormatContext& ctx) const {
-        using namespace aoc2022::day13;
-#ifdef __cpp_lib_format_ranges
-        return std::visit([&](const auto& e) { return std::format_to(ctx.out(), "{}", e); }, obj.data);
-#else
-        return std::visit(ox::overload([&](int i) { return std::format_to(ctx.out(), "{}", i); },
-                                       [&](const list& l) { return std::format_to(ctx.out(), "{}", l); }),
-                          obj.data);
-#endif
+        return std::visit([&ctx](const auto& e) { return std::format_to(ctx.out(), "{}", e); }, obj.data);
     }
 };
 
@@ -134,11 +106,11 @@ namespace aoc2022::day13 {
 
     answertype puzzle1(puzzle_options filename) {
         auto input = get_stream<std::pair<element, element>>(filename);
-        auto valid_indices = input | stdv::transform([index = 0](const auto& x) mutable {
-                                 ++index;
-                                 return x.first < x.second ? index : 0;
-                             });
-        long sum = std::accumulate(valid_indices.begin(), valid_indices.end(), 0l);
+        long i = 0;
+        long sum = 0;
+        for (const auto& [x, y] : input) {
+            sum += (x < y) * ++i;
+        }
         myprintf("Sum of the index of the properly ordered pairs is %ld\n", sum);
         return sum;
     }
@@ -151,10 +123,6 @@ namespace aoc2022::day13 {
         input.emplace_back(two);
         input.emplace_back(six);
         stdr::sort(input);
-
-        for (const auto& x : input) {
-            std::cout << x << std::endl;
-        }
 
         long two_pos = stdr::find(input, two) - input.begin() + 1;
         long six_pos = stdr::find(input, six) - input.begin() + 1;
