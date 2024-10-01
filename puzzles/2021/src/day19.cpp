@@ -36,7 +36,10 @@ namespace aoc2021::day19 {
         return to_return;
     }
 
-    static std::array<transformation, 24> all_3d_rotations = rotation_combinations();
+    static auto& get_rotation_combinations() {
+        static std::array<transformation, 24> all_3d_rotations = rotation_combinations();
+        return all_3d_rotations;
+    }
 
     static std::vector<std::pair<scanner, ox::matrix<int>>> final_offsets;
 
@@ -80,7 +83,7 @@ namespace aoc2021::day19 {
         b_cpy.resize(b.size());
         b_rotated.resize(b.size());
 
-        for (const auto& rotation : all_3d_rotations) {
+        for (const auto& rotation : get_rotation_combinations()) {
             std::copy(b.begin(), b.end(), b_rotated.begin());
             for (size_t i = 0; i < b.size(); i++) {
                 ox::matrix<int>::in_place_multiplication(b_rotated[i], rotation, b[i]);
