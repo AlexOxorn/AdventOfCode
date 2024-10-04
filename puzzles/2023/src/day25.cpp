@@ -10,9 +10,12 @@
 #include <ox/combinators.h>
 #include <ox/parser.h>
 #include <ox/canvas.h>
+#include <ox/graph.h>
 #include <ox/future/generator.h>
 
 namespace aoc2023::day25 {
+    constexpr bool SIMULATE = false;
+
     using grid_type = std::multimap<std::string, std::string>;
     using edge = std::pair<std::string, std::string>;
     using path = std::vector<edge>;
@@ -284,23 +287,64 @@ namespace aoc2023::day25 {
         }
     }
 
+    std::array<edge, 3> find_taut_dikstra(const std::set<std::string>& names, const grid_type& grid) {
+        auto get_neighbours = [&grid](std::string s) {
+            std::vector<std::pair<std::string, long>> to_return;
+            auto [x, y] = grid.equal_range(s);
+            for (; x != y; ++x) {
+                to_return.emplace_back(x->second, 1l);
+            }
+            return to_return;
+        };
+        std::map<edge, long> edge_count;
+
+        for (auto name : names) {
+            myprintf("Calculating name: %s\n", name.c_str());
+            ox::dikstra_solver solver(ox::full_dikstra{}, name, get_neighbours);
+            solver.track_path();
+            for (auto [path, cost] : solver) {
+                std::string prev;
+                for (auto node : path | stdv::keys) {
+                    if (!prev.empty()) {
+                        edge e = prev < node ? edge{prev, node} : edge{node, prev};
+                        edge_count[e]++;
+                    }
+                    prev = node;
+                }
+            }
+        }
+
+        std::vector<std::pair<edge, long>> edge_count_list(edge_count.begin(), edge_count.end());
+        stdr::nth_element(edge_count_list,
+                          edge_count_list.begin() + 2,
+                          std::greater(),
+                          &decltype(edge_count_list)::value_type::second);
+        return {edge_count_list[0].first, edge_count_list[1].first, edge_count_list[2].first};
+    }
+
     answertype puzzle1([[maybe_unused]] puzzle_options filename) {
         auto in = get_stream(filename);
         auto [names, grid] = parse(in);
 
         std::string start;
         std::string end;
-        if (grid.size() > 100) {
-            start = "tqg";
-            end = "bgm";
-        } else {
-            start = "rhn";
-            end = "lhk";
-        }
+        std::array<edge, 3> real_cut;
 
-        std::array<edge, 3> real_cut =
-                (do_print ? simulate(names, grid, start, end)
-                          : std::array{edge("fql", "rmg"), edge("mfc", "vph"), edge("sfm", "vmt")});
+        if constexpr (SIMULATE) {
+            if (grid.size() > 100) {
+                start = "tqg";
+                end = "bgm";
+            } else {
+                start = "rhn";
+                end = "lhk";
+            }
+            real_cut = (do_print ? simulate(names, grid, start, end)
+                                 : std::array{edge("fql", "rmg"), edge("mfc", "vph"), edge("sfm", "vmt")});
+        } else {
+            real_cut = find_taut_dikstra(names, grid);
+            start = real_cut[0].first;
+            end = real_cut[0].second;
+        }
 
         if (real_cut == std::array<edge, 3>{}) {
             return {};
