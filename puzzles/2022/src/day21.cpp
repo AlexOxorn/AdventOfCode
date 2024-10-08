@@ -173,6 +173,10 @@ namespace aoc2022::day21 {
     answertype puzzle2([[maybe_unused]] puzzle_options filename) {
         math_tree lhs_tree;
         math_tree rhs_tree;
+        if (map.empty()) {
+            auto monkey_stream = get_stream<ox::line>(filename);
+            stdr::for_each(monkey_stream, register_monkey);
+        }
         auto x = std::get<math_monkey>(map["root"]);
 
         get_tree_data(lhs_tree.head, x.monkey1);
