@@ -299,7 +299,6 @@ namespace aoc2023::day25 {
         std::map<edge, long> edge_count;
 
         for (auto name : names) {
-            myprintf("Calculating name: %s\n", name.c_str());
             ox::dikstra_solver solver(ox::full_dikstra{}, name, get_neighbours);
             solver.track_path();
             for (auto [path, cost] : solver) {
